@@ -28,7 +28,6 @@ export function thunkButtonsetClick(el, geoids) {
                 dispatch(finishedLoadingStyleData(data));
             });
 
-
     };
 }
 
