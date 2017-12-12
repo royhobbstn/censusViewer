@@ -22,6 +22,7 @@ class Map extends Component {
 
     window.map.on('load', () => {
       window.map.addSource('tiles', this.props.polygon_source);
+
       window.map.addLayer({
         'id': 'tiles-polygons',
         'type': 'fill',
@@ -32,6 +33,19 @@ class Map extends Component {
           'fill-opacity': 0.75
         }
       }, "admin-2-boundaries-dispute");
+
+      window.map.addLayer({
+        'id': 'tiles-lines',
+        'type': 'line',
+        'source': 'tiles',
+        'source-layer': 'placegeojson',
+        'paint': {
+          'line-color': 'yellow',
+          'line-width': 1,
+          'line-offset': 0.5
+        }
+      }, "admin-2-boundaries-dispute");
+
     });
 
     window.map.on('moveend', (e, f) => {
@@ -43,21 +57,24 @@ class Map extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     // redraw layer on redux style change
 
+
     if (this.props.polygon_stops !== nextProps.polygon_stops) {
       console.log('redrawing');
       console.log(nextProps.polygon_stops);
+
+      // Update Shape Layer
       window.map.setPaintProperty('tiles-polygons', 'fill-color', {
         property: 'geoid',
         type: 'categorical',
         stops: nextProps.polygon_stops
       });
 
-      // TODO
-      // window.map.setPaintProperty('tiles-polygons', 'fill-outline-color', {
-      //   property: 'geoid',
-      //   type: 'categorical',
-      //   stops: nextProps.polygon_stops
-      // });
+      // Update Outline Layer
+      window.map.setPaintProperty('tiles-lines', 'line-color', {
+        property: 'geoid',
+        type: 'categorical',
+        stops: nextProps.polygon_stops
+      });
 
     }
 
