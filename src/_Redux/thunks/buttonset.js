@@ -2,11 +2,14 @@
 
 import { busyLoadingStyleData, finishedLoadingStyleData } from '../actions/map.js';
 
-export function thunkButtonsetClick(el, geoids) {
+import { datatree } from '../../_Config_JSON/datatree.js';
+
+console.log(datatree)
+
+export function thunkButtonsetClick(el, geoids, attr) {
     return (dispatch, getState) => {
 
         dispatch(busyLoadingStyleData(true));
-
 
         fetch('https://kb7eqof39c.execute-api.us-west-2.amazonaws.com/dev/collate-s3-data', {
                 method: 'post',
@@ -14,21 +17,20 @@ export function thunkButtonsetClick(el, geoids) {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ "geoids": geoids, "expression": ["B19013001"] })
+                body: JSON.stringify({ "geoids": geoids, "expression": getExpressionFromAttr(attr) })
             })
             .then(res => res.json())
             .then(res => {
-                console.log(res);
-                const data2 = [
-                    ['0820000', 'green'],
-                    ['0812815', 'pink']
-                ];
-                const data = convertDataToStops(res)
-                console.log(data);
+                const data = convertDataToStops(res);
                 dispatch(finishedLoadingStyleData(data));
             });
 
     };
+}
+
+function getExpressionFromAttr(attr) {
+    //
+    return datatree.acs1115[attr.split('_')[1]].expression;
 }
 
 function convertDataToStops(data) {

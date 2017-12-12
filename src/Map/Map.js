@@ -16,6 +16,7 @@ class Map extends Component {
       center: [-104.9, 39.75],
       zoom: 9,
       maxZoom: 10,
+      minZoom: 7,
       preserveDrawingBuffer: true
     });
 
@@ -30,7 +31,11 @@ class Map extends Component {
           'fill-color': 'green',
           'fill-opacity': 0.75
         }
-      });
+      }, "admin-2-boundaries-dispute");
+    });
+
+    window.map.on('moveend', (e, f) => {
+      console.log('moveend');
     });
 
   }
@@ -38,7 +43,6 @@ class Map extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     // redraw layer on redux style change
 
-    // TODO: redux for all paint properties, thus if only one changes, only that update is performed
     if (this.props.polygon_stops !== nextProps.polygon_stops) {
       console.log('redrawing');
       console.log(nextProps.polygon_stops);
@@ -47,6 +51,13 @@ class Map extends Component {
         type: 'categorical',
         stops: nextProps.polygon_stops
       });
+
+      // TODO
+      // window.map.setPaintProperty('tiles-polygons', 'fill-outline-color', {
+      //   property: 'geoid',
+      //   type: 'categorical',
+      //   stops: nextProps.polygon_stops
+      // });
 
     }
 

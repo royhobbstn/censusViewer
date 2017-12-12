@@ -17,20 +17,18 @@ const mapDispatchToProps = dispatch => {
     buttonClick: e => {
       const el = e.target.id;
 
-      // get geoids of all polygons on screen
-      const features = window.map.queryRenderedFeatures({ layers: ['tiles-polygons'] });
-
-      const geoids = features.map(d => {
-        return d.properties.geoid;
-      });
-
-      console.log(geoids);
-
       if (el === 'attr_empty') {
         dispatch(clearButtonPress());
       }
       else {
-        dispatch(thunkButtonsetClick(el, geoids));
+        // get geoids of all polygons on screen
+        const features = window.map.queryRenderedFeatures({ layers: ['tiles-polygons'] });
+
+        const geoids = features.map(d => {
+          return d.properties.geoid;
+        });
+
+        dispatch(thunkButtonsetClick(el, geoids, el));
       }
 
     }
