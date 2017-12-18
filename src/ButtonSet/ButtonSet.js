@@ -1,14 +1,25 @@
 import React from 'react';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 
-const style = { position: 'absolute', 'zIndex': 1000, top: '10px', left: '10px', backgroundColor: 'white' };
+const style = { position: 'absolute', 'zIndex': 1000, top: '10px', left: '10px', backgroundColor: 'white', width: '250px' };
 
 const ButtonSet = ({
-    buttonClick
+    handleChange,
+    source_dataset
 }) => {
     return (
         <div className="button_set" style={style}>
-            <button id="attr_empty" onClick={buttonClick}>Clear</button>
-            <button id="attr_mhi" onClick={buttonClick}>MHI</button>
+            <Select
+                name="dataset-select"
+                value={source_dataset}
+                onChange={handleChange}
+                options={[
+                    { value: 'acs1014', label: 'ACS1014' },
+                    { value: 'acs1115', label: 'ACS1115' },
+                    { value: 'acs1216', label: 'ACS1216' }
+                ]}
+                />
         </div>
     );
 };

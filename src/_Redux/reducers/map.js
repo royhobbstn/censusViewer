@@ -3,14 +3,10 @@
 const default_stops = [];
 
 
-const default_source = {
-  "type": "vector",
-  "tiles": ["https://s3-us-west-2.amazonaws.com/serve-vector-tiles/place_carto_c2010/{z}/{x}/{y}.pbf"]
-};
-
 const default_state = {
   polygon_stops: default_stops,
-  polygon_source: default_source
+  source_geography: 'county',
+  source_dataset: 'acs1014'
 };
 
 const map = (
@@ -24,13 +20,12 @@ const map = (
       return Object.assign({}, state, {
         polygon_stops: action.stops
       });
-    case 'UPDATE_POLYGON_SOURCE':
+    case 'UPDATE_DATASET':
+      console.log('updating dataset');
       return Object.assign({}, state, {
-        polygon_source: action.data
+        source_dataset: action.dataset,
+        polygon_stops: []
       });
-    case 'RESET_MAP':
-      console.log('map cleared');
-      return Object.assign({}, JSON.parse(JSON.stringify(default_state)));
     default:
       return state;
   }

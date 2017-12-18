@@ -1,5 +1,8 @@
-export function clearButtonPress() {
+//
+
+export function updateDataset(dataset) {
     return {
-        type: 'RESET_MAP'
+        type: 'UPDATE_DATASET',
+        dataset
     };
 }

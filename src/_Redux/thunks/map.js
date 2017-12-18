@@ -4,10 +4,17 @@ import { busyLoadingStyleData, finishedLoadingStyleData } from '../actions/map.j
 
 import { datatree } from '../../_Config_JSON/datatree.js';
 
-console.log(datatree)
 
-export function thunkButtonsetClick(el, geoids, attr) {
+export function thunkUpdateGeoids(geoids) {
     return (dispatch, getState) => {
+
+        const source_dataset = getState().map.source_dataset;
+        const attr = getState().buttonset.selected_attr;
+
+        console.log('thunk');
+        console.log(geoids);
+        console.log(source_dataset);
+        console.log(attr);
 
         dispatch(busyLoadingStyleData(true));
 
@@ -17,10 +24,11 @@ export function thunkButtonsetClick(el, geoids, attr) {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ "geoids": geoids, "expression": getExpressionFromAttr(attr) })
+                body: JSON.stringify({ "geoids": geoids, "expression": getExpressionFromAttr(attr), dataset: source_dataset })
             })
             .then(res => res.json())
             .then(res => {
+                console.log(res);
                 const data = convertDataToStops(res);
                 dispatch(finishedLoadingStyleData(data));
             });

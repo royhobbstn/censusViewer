@@ -5,6 +5,7 @@ import '../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 import key from './mapbox_api_key.js';
 
+import { datasetToYear } from '../_Modules/util.js';
 
 class Map extends Component {
   componentDidMount() {
@@ -15,19 +16,23 @@ class Map extends Component {
       style: 'mapbox://styles/mapbox/dark-v9',
       center: [-104.9, 39.75],
       zoom: 9,
-      maxZoom: 10,
-      minZoom: 7,
+      maxZoom: 12,
+      minZoom: 4,
       preserveDrawingBuffer: true
     });
 
     window.map.on('load', () => {
-      window.map.addSource('tiles', this.props.polygon_source);
+
+      window.map.addSource('tiles', {
+        "type": "vector",
+        "tiles": [`https://s3-us-west-2.amazonaws.com/static-tiles/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
+      });
 
       window.map.addLayer({
         'id': 'tiles-polygons',
         'type': 'fill',
         'source': 'tiles',
-        'source-layer': 'placegeojson',
+        'source-layer': 'main',
         'paint': {
           'fill-color': 'green',
           'fill-opacity': 0.75
@@ -38,7 +43,7 @@ class Map extends Component {
         'id': 'tiles-lines',
         'type': 'line',
         'source': 'tiles',
-        'source-layer': 'placegeojson',
+        'source-layer': 'main',
         'paint': {
           'line-color': 'yellow',
           'line-width': 1,
@@ -48,8 +53,31 @@ class Map extends Component {
 
     });
 
-    window.map.on('moveend', (e, f) => {
-      console.log('moveend');
+    window.map.on('data', (e) => {
+
+
+
+      console.log(e.isSourceLoaded);
+      const is_source_loaded = e.isSourceLoaded;
+
+      if (is_source_loaded) {
+        console.log(e.sourceId);
+        console.log(e);
+        // get new geoids
+        // get geoids of all polygons on screen
+        const features = window.map.queryRenderedFeatures({ layers: ['tiles-polygons'] });
+
+        const geoids = features.map(d => {
+          return d.properties.GEOID;
+        });
+
+        const geoid_set = new Set(geoids);
+
+        console.log('calling update geoids');
+        this.props.updateGeoids(Array.from(geoid_set));
+      }
+
+      // logic to restyle, refetch new data that is not cached
     });
 
   }
@@ -57,21 +85,42 @@ class Map extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     // redraw layer on redux style change
 
+    let redraw = false;
+
+
+    if (this.props.source_geography !== nextProps.source_geography || this.props.source_dataset !== nextProps.source_dataset) {
+      console.log('changing due to geography or dataset');
+      // geography or year changed.  update source and redraw
+      window.map.removeSource('tiles');
+      window.map.addSource('tiles', {
+        "type": "vector",
+        "tiles": [`https://s3-us-west-2.amazonaws.com/static-tiles/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
+      });
+      redraw = true;
+    }
+
 
     if (this.props.polygon_stops !== nextProps.polygon_stops) {
+      // visible area on the map changed
+      console.log('changing due to polygon stops');
+      redraw = true;
+    }
+
+
+    // TODO debounce?
+    if (redraw) {
       console.log('redrawing');
-      console.log(nextProps.polygon_stops);
 
       // Update Shape Layer
       window.map.setPaintProperty('tiles-polygons', 'fill-color', {
-        property: 'geoid',
+        property: 'GEOID',
         type: 'categorical',
         stops: nextProps.polygon_stops
       });
 
       // Update Outline Layer
       window.map.setPaintProperty('tiles-lines', 'line-color', {
-        property: 'geoid',
+        property: 'GEOID',
         type: 'categorical',
         stops: nextProps.polygon_stops
       });

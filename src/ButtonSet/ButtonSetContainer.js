@@ -3,8 +3,7 @@
 import { connect } from 'react-redux';
 import ButtonSet from './ButtonSet.js';
 
-import { clearButtonPress } from '../_Redux/actions/buttonset.js';
-import { thunkButtonsetClick } from '../_Redux/thunks/buttonset.js';
+import { updateDataset } from '../_Redux/actions/buttonset.js';
 
 const mapStateToProps = state => {
   return {
@@ -14,23 +13,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    buttonClick: e => {
-      const el = e.target.id;
-
-      if (el === 'attr_empty') {
-        dispatch(clearButtonPress());
-      }
-      else {
-        // get geoids of all polygons on screen
-        const features = window.map.queryRenderedFeatures({ layers: ['tiles-polygons'] });
-
-        const geoids = features.map(d => {
-          return d.properties.geoid;
-        });
-
-        dispatch(thunkButtonsetClick(el, geoids, el));
-      }
-
+    handleChange: selectedOption => {
+      console.log(selectedOption);
+      dispatch(updateDataset(selectedOption.value));
     }
 
   };

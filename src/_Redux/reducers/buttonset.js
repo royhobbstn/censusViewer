@@ -1,5 +1,5 @@
 const default_state = {
-  selected_attr: 'attr_empty',
+  selected_attr: 'attr_mhi',
 };
 
 const buttonset = (
@@ -12,8 +12,6 @@ const buttonset = (
       return Object.assign({}, state, {
         selected_attr: action.attr
       });
-    case 'RESET_MAP':
-      return Object.assign({}, default_state);
     default:
       return state;
   }
