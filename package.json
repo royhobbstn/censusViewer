@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "https://royhobbstn.github.io/censusViewer",
   "dependencies": {
+    "localforage": "^1.5.5",
+    "lodash": "^4.17.4",
     "mapbox-gl": "^0.42.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",

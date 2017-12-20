@@ -4,8 +4,13 @@ import React, { Component } from 'react';
 import '../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 import key from './mapbox_api_key.js';
-
+import _ from 'lodash';
 import { datasetToYear } from '../_Modules/util.js';
+
+
+
+
+
 
 class Map extends Component {
   componentDidMount() {
@@ -22,6 +27,17 @@ class Map extends Component {
     });
 
     window.map.on('load', () => {
+
+      const updateTiles = _.debounce(() => {
+
+        // get all geoids
+        const features = window.map.queryRenderedFeatures({ layers: ['tiles-polygons'] });
+        const geoids = features.map(d => {
+          return d.properties.GEOID;
+        });
+
+        this.props.updateGeoids(Array.from(new Set(geoids)));
+      }, 300);
 
       window.map.addSource('tiles', {
         "type": "vector",
@@ -51,36 +67,24 @@ class Map extends Component {
         }
       }, "admin-2-boundaries-dispute");
 
+      window.map.on('data', (e) => {
+        if (e.isSourceLoaded && (e.sourceId === 'tiles')) {
+          updateTiles();
+        }
+      });
+
+      window.map.on('moveend', (e) => {
+        updateTiles();
+      });
+
     });
 
-    window.map.on('data', (e) => {
 
-
-
-      console.log(e.isSourceLoaded);
-      const is_source_loaded = e.isSourceLoaded;
-
-      if (is_source_loaded) {
-        console.log(e.sourceId);
-        console.log(e);
-        // get new geoids
-        // get geoids of all polygons on screen
-        const features = window.map.queryRenderedFeatures({ layers: ['tiles-polygons'] });
-
-        const geoids = features.map(d => {
-          return d.properties.GEOID;
-        });
-
-        const geoid_set = new Set(geoids);
-
-        console.log('calling update geoids');
-        this.props.updateGeoids(Array.from(geoid_set));
-      }
-
-      // logic to restyle, refetch new data that is not cached
-    });
 
   }
+
+
+
 
   shouldComponentUpdate(nextProps, nextState) {
     // redraw layer on redux style change
@@ -134,5 +138,6 @@ class Map extends Component {
     return <div id="map" />;
   }
 }
+
 
 export default Map;

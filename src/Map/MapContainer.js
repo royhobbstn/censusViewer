@@ -18,7 +18,6 @@ const mapDispatchToProps = dispatch => {
   return {
     updateGeoids: geoids => {
       console.log('updating geoids');
-      console.log(geoids);
       dispatch(thunkUpdateGeoids(geoids));
     }
   };
