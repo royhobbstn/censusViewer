@@ -71,8 +71,14 @@ class Map extends Component {
         if (e.isSourceLoaded) {
           updateTiles();
         }
-
       });
+
+      // worth it to debounce?
+      window.map.on('mousemove', 'tiles-polygons', function(e) {
+        // window.map.getCanvas().style.cursor = 'pointer';
+        console.log(e.features[0].properties.GEOID);
+      });
+
 
     });
 
