@@ -6,11 +6,7 @@ import mapboxgl from 'mapbox-gl';
 import key from './mapbox_api_key.js';
 import _ from 'lodash';
 import { datasetToYear } from '../_Modules/util.js';
-
-
-
-
-
+import equal from 'fast-deep-equal';
 
 class Map extends Component {
   componentDidMount() {
@@ -29,7 +25,6 @@ class Map extends Component {
     window.map.on('load', () => {
 
       const updateTiles = _.debounce(() => {
-
         // get all geoids
         const features = window.map.queryRenderedFeatures({ layers: ['tiles-polygons'] });
         const geoids = features.map(d => {
@@ -50,7 +45,7 @@ class Map extends Component {
         'source': 'tiles',
         'source-layer': 'main',
         'paint': {
-          'fill-color': 'green',
+          'fill-color': 'black',
           'fill-opacity': 0.75
         }
       }, "admin-2-boundaries-dispute");
@@ -61,36 +56,31 @@ class Map extends Component {
         'source': 'tiles',
         'source-layer': 'main',
         'paint': {
-          'line-color': 'yellow',
+          'line-color': 'grey',
           'line-width': 1,
           'line-offset': 0.5
         }
       }, "admin-2-boundaries-dispute");
 
-      window.map.on('data', (e) => {
-        if (e.isSourceLoaded && (e.sourceId === 'tiles')) {
-          updateTiles();
-        }
-      });
-
       window.map.on('moveend', (e) => {
         updateTiles();
       });
 
+      // when map data source is changed
+      window.map.on('sourcedata', (e) => {
+        if (e.isSourceLoaded) {
+          updateTiles();
+        }
+
+      });
+
     });
-
-
 
   }
 
 
-
-
   shouldComponentUpdate(nextProps, nextState) {
     // redraw layer on redux style change
-
-    let redraw = false;
-
 
     if (this.props.source_geography !== nextProps.source_geography || this.props.source_dataset !== nextProps.source_dataset) {
       console.log('changing due to geography or dataset');
@@ -98,35 +88,37 @@ class Map extends Component {
       window.map.removeSource('tiles');
       window.map.addSource('tiles', {
         "type": "vector",
-        "tiles": [`https://s3-us-west-2.amazonaws.com/static-tiles/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
+        "tiles": [`https://s3-us-west-2.amazonaws.com/static-tiles/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
-      redraw = true;
+      return false;
     }
 
-
-    if (this.props.polygon_stops !== nextProps.polygon_stops) {
+    if (!equal(this.props.polygon_stops, nextProps.polygon_stops)) {
       // visible area on the map changed
-      console.log('changing due to polygon stops');
-      redraw = true;
-    }
+      console.log('re-rendering');
 
+      // convert object keys:values to stops array
+      const stops = Object.keys(nextProps.polygon_stops).map(key => {
+        return [key, nextProps.polygon_stops[key]];
+      });
 
-    // TODO debounce?
-    if (redraw) {
-      console.log('redrawing');
+      // to avoid 'must have stops' errors
+      const drawn_stops = (stops.length) ? stops : [
+        ["0", 'black']
+      ];
 
       // Update Shape Layer
       window.map.setPaintProperty('tiles-polygons', 'fill-color', {
         property: 'GEOID',
         type: 'categorical',
-        stops: nextProps.polygon_stops
+        stops: drawn_stops
       });
 
       // Update Outline Layer
       window.map.setPaintProperty('tiles-lines', 'line-color', {
         property: 'GEOID',
         type: 'categorical',
-        stops: nextProps.polygon_stops
+        stops: drawn_stops
       });
 
     }

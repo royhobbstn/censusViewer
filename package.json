@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://royhobbstn.github.io/censusViewer",
   "dependencies": {
+    "fast-deep-equal": "^1.0.0",
     "localforage": "^1.5.5",
     "lodash": "^4.17.4",
     "mapbox-gl": "^0.42.2",

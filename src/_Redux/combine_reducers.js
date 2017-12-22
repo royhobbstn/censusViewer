@@ -1,10 +1,8 @@
 import { combineReducers } from 'redux';
-import map from './reducers/map';
-import buttonset from './reducers/buttonset';
+import map from './reducers/r_map';
 
 const Store = combineReducers({
-    map,
-    buttonset
+    map
 });
 
 export default Store;

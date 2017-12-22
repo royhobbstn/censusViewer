@@ -3,21 +3,28 @@
 import { connect } from 'react-redux';
 import ButtonSet from './ButtonSet.js';
 
-import { updateDataset } from '../_Redux/actions/buttonset.js';
+import { updateDataset, updateGeography, updateTheme } from '../_Redux/actions/a_buttonset.js';
 
 const mapStateToProps = state => {
   return {
-    selected_attr: state.buttonset.selected_attr
+    selected_attr: state.map.selected_attr,
+    source_dataset: state.map.source_dataset,
+    source_geography: state.map.source_geography
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    handleChange: selectedOption => {
-      console.log(selectedOption);
+    handleDatasetChange: selectedOption => {
       dispatch(updateDataset(selectedOption.value));
-    }
-
+    },
+    handleGeographyChange: selectedOption => {
+      dispatch(updateGeography(selectedOption.value));
+    },
+    handleThemeChange: selectedOption => {
+      console.log('theme change');
+      dispatch(updateTheme(selectedOption.value));
+    },
   };
 };
 
