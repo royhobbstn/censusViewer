@@ -8,7 +8,10 @@ const default_state = {
   source_geography: 'county',
   source_dataset: 'acs1115',
   selected_attr: 'attr_mhi',
-  is_busy: false
+  is_busy: false,
+  mouseover_statistic: '',
+  mouseover_moe: '',
+  mouseover_label: ''
 };
 
 const map = (
@@ -38,6 +41,12 @@ const map = (
       return Object.assign({}, state, {
         selected_attr: action.theme,
         polygon_stops: []
+      });
+    case 'UPDATE_MOUSEOVER':
+      return Object.assign({}, state, {
+        mouseover_statistic: action.mouseover_statistic,
+        mouseover_moe: action.mouseover_moe,
+        mouseover_label: action.mouseover_label
       });
     case 'BUSY_LOADING_STYLE':
       return Object.assign({}, state, { is_busy: true });

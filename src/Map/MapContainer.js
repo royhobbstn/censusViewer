@@ -3,8 +3,7 @@
 import { connect } from 'react-redux';
 import Map from './Map';
 
-import { thunkUpdateGeoids } from '../_Redux/thunks/t_map.js';
-
+import { thunkUpdateGeoids, thunkChangeMouseover } from '../_Redux/thunks/t_map.js';
 
 const mapStateToProps = state => {
   return {
@@ -18,6 +17,9 @@ const mapDispatchToProps = dispatch => {
   return {
     updateGeoids: geoids => {
       dispatch(thunkUpdateGeoids(geoids));
+    },
+    updateMouseover: geoid => {
+      dispatch(thunkChangeMouseover(geoid));
     }
   };
 };

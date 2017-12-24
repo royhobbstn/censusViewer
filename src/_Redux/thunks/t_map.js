@@ -1,6 +1,6 @@
 /* global fetch*/
 
-import { busyLoadingStyleData, finishedLoadingStyleData } from '../actions/a_map.js';
+import { busyLoadingStyleData, finishedLoadingStyleData, changeMouseover } from '../actions/a_map.js';
 
 import { datatree } from '../../_Config_JSON/datatree.js';
 import localforage from "localforage";
@@ -12,6 +12,32 @@ localforage.config({
 });
 
 window.llstore = {};
+
+export function thunkChangeMouseover(geoid) {
+    return (dispatch, getState) => {
+        // acs1115:mhi:05000US08005:63265
+        // acs1115:mhi:05000US08005_label:"Arapahoe County, Colorado"
+        // acs1115:mhi:05000US08005_moe:942
+
+        const state = getState();
+        const source_dataset = state.map.source_dataset;
+        const sumlev = getSumlevFromGeography(state.map.source_geography);
+        const attr = state.map.selected_attr;
+        const attr_short = attr.split('_')[1];
+
+        const formatted_geoid = `${source_dataset}:${attr_short}:${sumlev}00US${geoid}`;
+
+        const obj = {
+            mouseover_statistic: window.llstore[formatted_geoid],
+            mouseover_label: window.llstore[formatted_geoid + '_label'],
+            mouseover_moe: window.llstore[formatted_geoid + '_moe']
+        };
+
+        dispatch(changeMouseover(obj));
+
+    };
+}
+
 
 export function thunkUpdateGeoids(geoids) {
     return (dispatch, getState) => {
@@ -33,7 +59,6 @@ export function thunkUpdateGeoids(geoids) {
 
         const attr_short = attr.split('_')[1];
 
-        var t0 = performance.now();
 
         // convert geoids queried from the screen to a unique key that can be stored in memory
         const formatted_ids = geoids.map(id => {
@@ -59,10 +84,6 @@ export function thunkUpdateGeoids(geoids) {
                 key_with_value[geoid] = value_store[index];
             }
         });
-
-        var t2 = performance.now();
-
-        console.log("Call to doSomething took " + (t2 - t0) + " milliseconds.");
 
         fetchRemoteData(no_value, attr, attr_short, source_dataset).then(data => {
 
@@ -94,7 +115,7 @@ function fetchRemoteData(geoids, attr, attr_short, source_dataset) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "geoids": geoids, "expression": getExpressionFromAttr(attr), dataset: source_dataset, e_or_m: 'e' })
+            body: JSON.stringify({ "geoids": geoids, "expression": getExpressionFromAttr(attr), "moe_expression": getMoeExpressionFromAttr(attr), dataset: source_dataset })
         })
         .then(res => res.json())
         .then(res => {
@@ -112,8 +133,13 @@ function fetchRemoteData(geoids, attr, attr_short, source_dataset) {
 }
 
 function getExpressionFromAttr(attr) {
-    //
+    // TODO acs1115 hardcoded here
     return datatree.acs1115[attr.split('_')[1]].expression;
+}
+
+function getMoeExpressionFromAttr(attr) {
+    // TODO acs1115 hardcoded here
+    return datatree.acs1115[attr.split('_')[1]].moe_expression;
 }
 
 function convertDataToStops(data) {
