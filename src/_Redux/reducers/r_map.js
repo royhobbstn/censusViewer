@@ -7,7 +7,7 @@ const default_state = {
   polygon_stops: default_stops,
   source_geography: 'county',
   source_dataset: 'acs1115',
-  selected_attr: 'attr_mhi',
+  selected_attr: 'attr_pcth',
   is_busy: false,
   mouseover_statistic: '',
   mouseover_moe: '',
