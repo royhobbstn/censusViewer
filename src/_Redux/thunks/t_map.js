@@ -23,9 +23,8 @@ export function thunkChangeMouseover(geoid) {
         const source_dataset = state.map.source_dataset;
         const sumlev = getSumlevFromGeography(state.map.source_geography);
         const attr = state.map.selected_attr;
-        const attr_short = attr.split('_')[1];
 
-        const formatted_geoid = `${source_dataset}:${attr_short}:${sumlev}00US${geoid}`;
+        const formatted_geoid = `${source_dataset}:${attr}:${sumlev}00US${geoid}`;
 
         const obj = {
             mouseover_statistic: window.llstore[formatted_geoid],
@@ -57,12 +56,9 @@ export function thunkUpdateGeoids(geoids) {
         const sumlev = getSumlevFromGeography(state.map.source_geography);
         const attr = state.map.selected_attr;
 
-        const attr_short = attr.split('_')[1];
-
-
         // convert geoids queried from the screen to a unique key that can be stored in memory
         const formatted_ids = geoids.map(id => {
-            return `${source_dataset}:${attr_short}:${sumlev}00US${id}`;
+            return `${source_dataset}:${attr}:${sumlev}00US${id}`;
         });
 
         // get the value of that unique key (pulling from memory)
@@ -85,7 +81,7 @@ export function thunkUpdateGeoids(geoids) {
             }
         });
 
-        fetchRemoteData(no_value, attr, attr_short, source_dataset).then(data => {
+        fetchRemoteData(no_value, attr, source_dataset).then(data => {
 
             // combine the values we already have locally, with those we just found via ajax
             const results = Object.assign({}, key_with_value, data);
@@ -104,7 +100,7 @@ export function thunkUpdateGeoids(geoids) {
 }
 
 // call to lambda functions to retrieve data
-function fetchRemoteData(geoids, attr, attr_short, source_dataset) {
+function fetchRemoteData(geoids, attr, source_dataset) {
     if (geoids.length === 0) {
         return Promise.resolve({});
     }
@@ -124,8 +120,8 @@ function fetchRemoteData(geoids, attr, attr_short, source_dataset) {
             // cache value in memory and create data return object
             const fetched_data = {};
             Object.keys(res).forEach(key => {
-                window.llstore[`${source_dataset}:${attr_short}:${key}`] = res[key];
-                fetched_data[`${source_dataset}:${attr_short}:${key}`] = res[key];
+                window.llstore[`${source_dataset}:${attr}:${key}`] = res[key];
+                fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
             });
 
             return fetched_data;
@@ -134,12 +130,12 @@ function fetchRemoteData(geoids, attr, attr_short, source_dataset) {
 
 function getExpressionFromAttr(attr) {
     // TODO acs1115 hardcoded here
-    return datatree.acs1115[attr.split('_')[1]].expression;
+    return datatree.acs1115[attr].expression;
 }
 
 function getMoeExpressionFromAttr(attr) {
     // TODO acs1115 hardcoded here
-    return datatree.acs1115[attr.split('_')[1]].moe_expression;
+    return datatree.acs1115[attr].moe_expression;
 }
 
 function convertDataToStops(data) {

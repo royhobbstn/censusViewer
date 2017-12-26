@@ -20,7 +20,7 @@ const ButtonSet = ({
 }) => {
 
     const themes = Object.keys(datatree[source_dataset]).map(key => {
-        return { value: `attr_${key}`, label: datatree[source_dataset][key]['verbose'] };
+        return { value: key, label: datatree[source_dataset][key]['verbose'] };
     });
 
     return (
