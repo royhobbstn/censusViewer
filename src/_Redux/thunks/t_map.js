@@ -111,7 +111,7 @@ function fetchRemoteData(geoids, attr, source_dataset) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "geoids": geoids, "expression": getExpressionFromAttr(attr), "moe_expression": getMoeExpressionFromAttr(attr), dataset: source_dataset })
+            body: JSON.stringify({ "geoids": geoids, "expression": getExpressionFromAttr(source_dataset, attr), "moe_expression": getMoeExpressionFromAttr(source_dataset, attr), dataset: source_dataset })
         })
         .then(res => res.json())
         .then(res => {
@@ -128,14 +128,65 @@ function fetchRemoteData(geoids, attr, source_dataset) {
         });
 }
 
-function getExpressionFromAttr(attr) {
-    // TODO acs1115 hardcoded here
-    return datatree.acs1115[attr].expression;
+function getExpressionFromAttr(dataset, attr) {
+    const numerator_raw = datatree[dataset][attr].numerator;
+    const denominator_raw = datatree[dataset][attr].denominator;
+
+    const numerator = [];
+    numerator_raw.forEach((item, index) => {
+        numerator.push(item);
+        if (index !== numerator_raw.length - 1) { numerator.push("+"); }
+    });
+
+    const denominator = [];
+    denominator_raw.forEach((item, index) => {
+        denominator.push(item);
+        if (index !== denominator_raw.length - 1) { denominator.push("+"); }
+    });
+
+    return ["(", ...numerator, ")", "/", "(", ...denominator, ")"];
 }
 
-function getMoeExpressionFromAttr(attr) {
-    // TODO acs1115 hardcoded here
-    return datatree.acs1115[attr].moe_expression;
+function getMoeExpressionFromAttr(dataset, attr) {
+
+    const numerator_raw = datatree[dataset][attr].numerator;
+    const denominator_raw = datatree[dataset][attr].denominator;
+
+    const numerator = [];
+    numerator_raw.forEach((item, index) => {
+        numerator.push(item);
+        if (index !== numerator_raw.length - 1) { numerator.push("+"); }
+    });
+
+    const denominator = [];
+    denominator_raw.forEach((item, index) => {
+        denominator.push(item);
+        if (index !== denominator_raw.length - 1) { denominator.push("+"); }
+    });
+
+    const numerator_moe = ["sqrt", "("];
+    numerator_raw.forEach((item, index) => {
+        numerator_moe.push("(");
+        numerator_moe.push(item + '_moe');
+        numerator_moe.push("^");
+        numerator_moe.push("2");
+        numerator_moe.push(")");
+        if (index !== numerator_raw.length - 1) { numerator_moe.push("+"); }
+    });
+    numerator_moe.push(")");
+
+    const denominator_moe = ["sqrt", "("];
+    denominator_raw.forEach((item, index) => {
+        denominator_moe.push("(");
+        denominator_moe.push(item + '_moe');
+        denominator_moe.push("^");
+        denominator_moe.push("2");
+        denominator_moe.push(")");
+        if (index !== denominator_raw.length - 1) { denominator_moe.push("+"); }
+    });
+    denominator_moe.push(")");
+
+    return ["(", "sqrt", "(", "(", "(", ...numerator_moe, ")", "^", "2", ")", "-", "(", "(", "(", "(", ...numerator, ")", "/", "(", ...denominator, ")", ")", "^", "2", ")", "*", "(", "(", ...denominator_moe, ")", "^", "2", ")", ")", ")", ")", "/", "(", ...denominator, ")"];
 }
 
 function convertDataToStops(data) {
