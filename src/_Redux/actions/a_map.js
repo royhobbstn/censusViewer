@@ -4,9 +4,10 @@ export function busyLoadingStyleData() {
     };
 }
 
-export function finishedLoadingStyleData(stops) {
+export function finishedLoadingStyleData(keys, stops) {
     return {
         type: 'UPDATE_POLYGON_STYLE',
+        keys,
         stops
     };
 }

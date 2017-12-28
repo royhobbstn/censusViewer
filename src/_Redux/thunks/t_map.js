@@ -23,13 +23,14 @@ export function thunkChangeMouseover(geoid) {
         const source_dataset = state.map.source_dataset;
         const sumlev = getSumlevFromGeography(state.map.source_geography);
         const attr = state.map.selected_attr;
+        const key_store = state.map.key_store;
 
         const formatted_geoid = `${source_dataset}:${attr}:${sumlev}00US${geoid}`;
 
         const obj = {
-            mouseover_statistic: window.llstore[formatted_geoid],
-            mouseover_label: window.llstore[formatted_geoid + '_label'],
-            mouseover_moe: window.llstore[formatted_geoid + '_moe']
+            mouseover_statistic: key_store[formatted_geoid],
+            mouseover_label: key_store[formatted_geoid + '_label'],
+            mouseover_moe: key_store[formatted_geoid + '_moe']
         };
 
         dispatch(changeMouseover(obj));
@@ -55,6 +56,7 @@ export function thunkUpdateGeoids(geoids) {
         const source_dataset = state.map.source_dataset;
         const sumlev = getSumlevFromGeography(state.map.source_geography);
         const attr = state.map.selected_attr;
+        const key_store = state.map.key_store;
 
         // convert geoids queried from the screen to a unique key that can be stored in memory
         const formatted_ids = geoids.map(id => {
@@ -63,7 +65,7 @@ export function thunkUpdateGeoids(geoids) {
 
         // get the value of that unique key (pulling from memory)
         const value_store = formatted_ids.map(pr => {
-            return window.llstore[pr];
+            return key_store[pr];
         });
 
         const key_with_value = {};
@@ -81,16 +83,19 @@ export function thunkUpdateGeoids(geoids) {
             }
         });
 
-        fetchRemoteData(no_value, attr, source_dataset).then(data => {
+        fetchRemoteData(no_value, attr, source_dataset).then(keys => {
 
             // combine the values we already have locally, with those we just found via ajax
-            const results = Object.assign({}, key_with_value, data);
+            const results = Object.assign({}, key_with_value, keys);
 
             // convert the raw numbers to colors for styling
-            const all_data = convertDataToStops(results);
+            const stops = convertDataToStops(results);
 
             // prevent this dispatch when no new data of value
-            dispatch(finishedLoadingStyleData(all_data));
+            dispatch(finishedLoadingStyleData(keys, stops));
+
+            // TODO to be more reactive... dispatch keys and geoids on map
+            // have map component create polygon stops
 
 
         });
@@ -120,7 +125,6 @@ function fetchRemoteData(geoids, attr, source_dataset) {
             // cache value in memory and create data return object
             const fetched_data = {};
             Object.keys(res).forEach(key => {
-                window.llstore[`${source_dataset}:${attr}:${key}`] = res[key];
                 fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
             });
 

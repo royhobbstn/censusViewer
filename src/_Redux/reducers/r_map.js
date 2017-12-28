@@ -5,6 +5,7 @@ const default_stops = {};
 
 const default_state = {
   polygon_stops: default_stops,
+  key_store: {},
   source_geography: 'county',
   source_dataset: 'acs1115',
   selected_attr: 'bachlhghr',
@@ -21,6 +22,7 @@ const map = (
   switch (action.type) {
     case 'UPDATE_POLYGON_STYLE':
       return Object.assign({}, state, {
+        key_store: Object.assign({}, action.keys, state.key_store),
         polygon_stops: Object.assign({}, action.stops, state.polygon_stops),
         is_busy: false
       });
