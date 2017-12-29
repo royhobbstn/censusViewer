@@ -4,6 +4,9 @@
   "private": true,
   "homepage": "https://royhobbstn.github.io/censusViewer",
   "dependencies": {
+    "@std/esm": "^0.18.0",
+    "aws-sdk": "^2.175.0",
+    "expr-eval": "^1.2.1",
     "fast-deep-equal": "^1.0.0",
     "localforage": "^1.5.5",
     "lodash": "^4.17.4",
@@ -14,7 +17,8 @@
     "react-scripts": "1.0.17",
     "react-select": "^1.1.0",
     "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "simple-statistics": "^5.2.1"
   },
   "scripts": {
     "start": "react-scripts start",

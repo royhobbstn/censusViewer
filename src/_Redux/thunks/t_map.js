@@ -147,6 +147,9 @@ function getExpressionFromAttr(dataset, attr) {
         denominator.push(item);
         if (index !== denominator_raw.length - 1) { denominator.push("+"); }
     });
+    if (!denominator.length) {
+        denominator.push("1");
+    }
 
     return ["(", ...numerator, ")", "/", "(", ...denominator, ")"];
 }
@@ -167,6 +170,9 @@ function getMoeExpressionFromAttr(dataset, attr) {
         denominator.push(item);
         if (index !== denominator_raw.length - 1) { denominator.push("+"); }
     });
+    if (!denominator.length) {
+        denominator.push("1");
+    }
 
     const numerator_moe = ["sqrt", "("];
     numerator_raw.forEach((item, index) => {
@@ -188,6 +194,9 @@ function getMoeExpressionFromAttr(dataset, attr) {
         denominator_moe.push(")");
         if (index !== denominator_raw.length - 1) { denominator_moe.push("+"); }
     });
+    if (!denominator_raw.length) {
+        denominator_moe.push("1");
+    }
     denominator_moe.push(")");
 
     return ["(", "sqrt", "(", "(", "(", ...numerator_moe, ")", "^", "2", ")", "-", "(", "(", "(", "(", ...numerator, ")", "/", "(", ...denominator, ")", ")", "^", "2", ")", "*", "(", "(", ...denominator_moe, ")", "^", "2", ")", ")", ")", ")", "/", "(", ...denominator, ")"];
