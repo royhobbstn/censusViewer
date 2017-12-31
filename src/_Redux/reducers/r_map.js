@@ -8,11 +8,11 @@ const default_state = {
   key_store: {},
   source_geography: 'county',
   source_dataset: 'acs1115',
-  selected_attr: 'bachlhghr',
+  selected_attr: 'mhi',
   is_busy: false,
-  mouseover_statistic: '',
-  mouseover_moe: '',
-  mouseover_label: ''
+  mouseover_statistic: undefined,
+  mouseover_moe: undefined,
+  mouseover_label: undefined
 };
 
 const map = (
@@ -30,19 +30,28 @@ const map = (
       console.log('updating dataset');
       return Object.assign({}, state, {
         source_dataset: action.dataset,
-        polygon_stops: []
+        polygon_stops: [],
+        mouseover_statistic: undefined,
+        mouseover_moe: undefined,
+        mouseover_label: undefined
       });
     case 'UPDATE_GEOGRAPHY':
       console.log('updating geography');
       return Object.assign({}, state, {
         source_geography: action.geography,
-        polygon_stops: []
+        polygon_stops: [],
+        mouseover_statistic: undefined,
+        mouseover_moe: undefined,
+        mouseover_label: undefined
       });
     case 'UPDATE_THEME':
       console.log('updating theme');
       return Object.assign({}, state, {
         selected_attr: action.theme,
-        polygon_stops: []
+        polygon_stops: [],
+        mouseover_statistic: undefined,
+        mouseover_moe: undefined,
+        mouseover_label: undefined
       });
     case 'UPDATE_MOUSEOVER':
       return Object.assign({}, state, {

@@ -18,6 +18,8 @@
     "react-select": "^1.1.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
     "simple-statistics": "^5.2.1"
   },
   "scripts": {

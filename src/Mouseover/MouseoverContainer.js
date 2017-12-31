@@ -7,7 +7,9 @@ const mapStateToProps = state => {
     return {
         mouseover_statistic: state.map.mouseover_statistic,
         mouseover_moe: state.map.mouseover_moe,
-        mouseover_label: state.map.mouseover_label
+        mouseover_label: state.map.mouseover_label,
+        source_dataset: state.map.source_dataset,
+        selected_attr: state.map.selected_attr
     };
 };
 

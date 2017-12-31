@@ -36,7 +36,7 @@ class Map extends Component {
 
       window.map.addSource('tiles', {
         "type": "vector",
-        "tiles": [`https://s3-us-west-2.amazonaws.com/static-tiles/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
+        "tiles": [`https://d3ecnh0cifnjqw.cloudfront.net/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
 
       window.map.addLayer({
@@ -97,7 +97,7 @@ class Map extends Component {
       window.map.removeSource('tiles');
       window.map.addSource('tiles', {
         "type": "vector",
-        "tiles": [`https://s3-us-west-2.amazonaws.com/static-tiles/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
+        "tiles": [`https://d3ecnh0cifnjqw.cloudfront.net/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
       return false;
     }

@@ -106,6 +106,8 @@ export function thunkUpdateGeoids(geoids) {
 
 // call to lambda functions to retrieve data
 function fetchRemoteData(geoids, attr, source_dataset) {
+
+    // short circuit when no geoids to fetch remotely
     if (geoids.length === 0) {
         return Promise.resolve({});
     }
@@ -122,7 +124,6 @@ function fetchRemoteData(geoids, attr, source_dataset) {
         .then(res => {
             console.log('returned from ajax call');
 
-            // cache value in memory and create data return object
             const fetched_data = {};
             Object.keys(res).forEach(key => {
                 fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
@@ -155,9 +156,15 @@ function getExpressionFromAttr(dataset, attr) {
 }
 
 function getMoeExpressionFromAttr(dataset, attr) {
+    // TODO this needs to be validated
 
     const numerator_raw = datatree[dataset][attr].numerator;
     const denominator_raw = datatree[dataset][attr].denominator;
+
+    // escape hatch.  todo, re-examine moe calculation
+    if (numerator_raw.length === 1 && denominator_raw.length === 0) {
+        return [numerator_raw[0] + '_moe'];
+    }
 
     const numerator = [];
     numerator_raw.forEach((item, index) => {
@@ -198,6 +205,8 @@ function getMoeExpressionFromAttr(dataset, attr) {
         denominator_moe.push("1");
     }
     denominator_moe.push(")");
+
+    console.log(["(", "sqrt", "(", "(", "(", ...numerator_moe, ")", "^", "2", ")", "-", "(", "(", "(", "(", ...numerator, ")", "/", "(", ...denominator, ")", ")", "^", "2", ")", "*", "(", "(", ...denominator_moe, ")", "^", "2", ")", ")", ")", ")", "/", "(", ...denominator, ")"]);
 
     return ["(", "sqrt", "(", "(", "(", ...numerator_moe, ")", "^", "2", ")", "-", "(", "(", "(", "(", ...numerator, ")", "/", "(", ...denominator, ")", ")", "^", "2", ")", "*", "(", "(", ...denominator_moe, ")", "^", "2", ")", ")", ")", ")", "/", "(", ...denominator, ")"];
 }
