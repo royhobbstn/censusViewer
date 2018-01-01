@@ -1,56 +1,22 @@
-const fs = require('fs');
+// node version 9
+// node --experimental-modules calculate-breaks.mjs
 
-const Parser = require('expr-eval').Parser;
-const ss = require('simple-statistics');
+import { configuration } from '../src/_Config_JSON/configuration.mjs';
+import { datatree } from '../src/_Config_JSON/datatree.mjs';
+import table2seq from '../../s3-db-lambda-collate/reference/acs1115_table2seq.json';
 
-const AWS = require('aws-sdk');
+import fs from 'fs';
+import ee from 'expr-eval';
+import ss from 'simple-statistics';
+import AWS from 'aws-sdk';
+import rp from 'request-promise';
+
+const Parser = ee.Parser;
 const s3 = new AWS.S3();
-var rp = require('request-promise');
 
-const table2seq = require('../../s3-db-lambda-collate/reference/acs1115_table2seq.json');
 
 const dataset = 'acs1115';
-
 const SAMPLE_LIMIT = 200;
-
-const datatree = {
-    "acs1115": {
-        "mhi": {
-            "varcode": "mhi",
-            "verbose": "Median Household Income",
-            "section": "Income",
-            "table": "B19013",
-            "numerator": ["B19013001"],
-            "denominator": [],
-            "type": "currency",
-            "minval": "1",
-            "mininc": "1",
-            "usezeroasnull": "yes",
-            "favtable": "Median Household Income",
-            "favstyle": "jenks,7,mh1",
-            "bg": "yes"
-        },
-        "mhv": {
-            "varcode": "mhv",
-            "verbose": "Median Home Value",
-            "section": "Housing",
-            "table": "B25077",
-            "numerator": ["B25077001"],
-            "denominator": [],
-            "type": "currency",
-            "minval": "1",
-            "mininc": "1",
-            "usezeroasnull": "yes",
-            "favtable": "Median Home Value",
-            "favstyle": "jenks,7,mh2",
-            "bg": "yes"
-        }
-
-    }
-};
-
-
-
 const obj = {};
 
 
@@ -98,30 +64,27 @@ const each_key_promise = Object.keys(datatree[dataset]).map(key => {
                             const result = JSON.parse(data);
 
                             Object.keys(result).forEach(full_geoid => {
-                                const obj = {};
+                                const mobj = {};
                                 Object.keys(result[full_geoid]).forEach(field => {
 
                                     if (expr_fields.includes(field)) {
-                                        obj[field] = parseFloat(result[full_geoid][field]);
+                                        mobj[field] = parseFloat(result[full_geoid][field]);
                                     }
 
                                 });
-                                evaluated[full_geoid] = expr.evaluate(obj);
-                                stat_array.push(expr.evaluate(obj));
+                                evaluated[full_geoid] = expr.evaluate(mobj);
+                                stat_array.push(expr.evaluate(mobj));
 
                             });
 
                         });
 
-                        if (obj[dataset] === undefined) {
-                            obj[dataset] = {};
+
+                        if (obj[key] === undefined) {
+                            obj[key] = {};
                         }
 
-                        if (obj[dataset][key] === undefined) {
-                            obj[dataset][key] = {};
-                        }
-
-                        obj[dataset][key][sumlev] = calcBreaks(stat_array);
+                        obj[key][sumlev] = calcBreaks(stat_array);
                         resolve('done');
                     });
 
@@ -146,7 +109,7 @@ Promise.all(each_key_promise).then(data => {
 
     var output = 'export default ' + JSON.stringify(obj) + ';';
 
-    fs.writeFile('../src/_Config_JSON/computed_breaks.js', output, function(err) {
+    fs.writeFile(`../src/_Config_JSON/breaks_${dataset}.js`, output, function(err) {
         if (err) {
             throw err;
         }
@@ -231,15 +194,12 @@ function calcBreaks(data) {
 }
 
 
-// duplicate from Lambda Retrieve
 function getUrlFromDataset(dataset) {
     switch (dataset) {
         case 'acs1014':
-            return 'd2y228x0z69ksn.cloudfront.net';
         case 'acs1115':
-            return 'd1r5yvgf798u6b.cloudfront.net';
         case 'acs1216':
-            return 'd23tgl2ix1iyqu.cloudfront.net';
+            return configuration.datasets[dataset].cdn;
         default:
             console.error('unknown dataset');
             return 'maputopia.com';

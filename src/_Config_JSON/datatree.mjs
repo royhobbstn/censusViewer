@@ -1,4 +1,4 @@
-import { acs1115 } from './acs1115_tree.js';
+import { acs1115 } from './acs1115_tree.mjs';
 
 export const datatree = {
     "acs1014": acs1115,

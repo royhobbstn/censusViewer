@@ -1,14 +1,16 @@
 // reducer
 
+import { configuration } from '../../_Config_JSON/configuration.mjs';
+
 const default_stops = {};
 
 
 const default_state = {
   polygon_stops: default_stops,
   key_store: {},
-  source_geography: 'county',
-  source_dataset: 'acs1115',
-  selected_attr: 'mhi',
+  source_geography: configuration.startup.source_geography,
+  source_dataset: configuration.startup.source_dataset,
+  selected_attr: configuration.startup.selected_attr,
   is_busy: false,
   mouseover_statistic: undefined,
   mouseover_moe: undefined,

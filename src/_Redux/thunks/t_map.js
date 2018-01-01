@@ -2,7 +2,7 @@
 
 import { busyLoadingStyleData, finishedLoadingStyleData, changeMouseover } from '../actions/a_map.js';
 
-import { datatree } from '../../_Config_JSON/datatree.js';
+import { datatree } from '../../_Config_JSON/datatree.mjs';
 import localforage from "localforage";
 
 
@@ -68,7 +68,7 @@ export function thunkUpdateGeoids(geoids) {
             return key_store[pr];
         });
 
-        const key_with_value = {};
+        // const key_with_value = {};
         const no_value = [];
 
         // for each geoid, if it has a value, put it into a 'has value' object
@@ -79,17 +79,17 @@ export function thunkUpdateGeoids(geoids) {
                 no_value.push(geoid.split(':')[2].slice(7));
             }
             else {
-                key_with_value[geoid] = value_store[index];
+                // key_with_value[geoid] = value_store[index];
             }
         });
 
         fetchRemoteData(no_value, attr, source_dataset).then(keys => {
 
             // combine the values we already have locally, with those we just found via ajax
-            const results = Object.assign({}, key_with_value, keys);
+            // const results = Object.assign({}, key_with_value, keys);
 
             // convert the raw numbers to colors for styling
-            const stops = convertDataToStops(results);
+            const stops = convertDataToStops(keys);
 
             // prevent this dispatch when no new data of value
             dispatch(finishedLoadingStyleData(keys, stops));
@@ -130,6 +130,10 @@ function fetchRemoteData(geoids, attr, source_dataset) {
             });
 
             return fetched_data;
+        })
+        .catch(err => {
+            console.error(err);
+            return {};
         });
 }
 

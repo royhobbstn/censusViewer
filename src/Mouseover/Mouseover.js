@@ -1,5 +1,5 @@
 import React from 'react';
-import { datatree } from '../_Config_JSON/datatree.js';
+import { datatree } from '../_Config_JSON/datatree.mjs';
 
 const mouseover_style = { position: 'absolute', 'zIndex': 1000, bottom: '32px', borderRadius: '3px', padding: '5px', left: '9px', backgroundColor: 'white', minWidth: '160px' };
 
@@ -10,7 +10,6 @@ const Mouseover = ({
     source_dataset,
     selected_attr
 }) => {
-    console.log(mouseover_moe);
 
     // don't show mouseover if no values are ready
     if (mouseover_moe === undefined) {
@@ -33,8 +32,6 @@ export default Mouseover;
 function formatNumber(num, dataset, attr) {
 
     const configuration = datatree[dataset][attr];
-    console.log(configuration);
-
     const mininc = configuration.mininc;
 
     let big_mult = 0;

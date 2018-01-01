@@ -31,7 +31,7 @@ export const acs1115 = {
         "favstyle": "jenks,7,mh2",
         "bg": "yes"
     },
-
+/*
     "mfi": {
         "varcode": "mfi",
         "verbose": "Median Family Income",
@@ -1199,4 +1199,5 @@ export const acs1115 = {
         "favstyle": "jenks,7,cbhm",
         "bg": "yes"
     }
+    */
 };

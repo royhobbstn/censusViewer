@@ -2,7 +2,8 @@ import React from 'react';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
-import { datatree } from '../_Config_JSON/datatree.js';
+import { datatree } from '../_Config_JSON/datatree.mjs';
+import { configuration } from '../_Config_JSON/configuration.mjs';
 
 const dataset_style = { position: 'absolute', 'zIndex': 1000, top: '10px', left: '10px', backgroundColor: 'white', width: '160px' };
 
@@ -23,6 +24,10 @@ const ButtonSet = ({
         return { value: key, label: datatree[source_dataset][key]['verbose'] };
     });
 
+    const options = Object.keys(configuration.datasets).map(dataset => {
+        return { value: configuration.datasets[dataset].id, label: configuration.datasets[dataset].label };
+    });
+
     return (
         <div>
             <div className="button_set" style={dataset_style}>
@@ -31,11 +36,7 @@ const ButtonSet = ({
                     clearable={false}
                     value={source_dataset}
                     onChange={handleDatasetChange}
-                    options={[
-                        { value: 'acs1014', label: 'ACS 2010 - 2014' },
-                        { value: 'acs1115', label: 'ACS 2011 - 2015' },
-                        { value: 'acs1216', label: 'ACS 2012 - 2016' }
-                    ]}
+                    options={options}
                 />
             </div>
             <div className="geog_set" style={geography_style}>

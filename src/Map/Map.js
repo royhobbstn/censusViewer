@@ -5,8 +5,8 @@ import '../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 import key from './mapbox_api_key.js';
 import _ from 'lodash';
-import { datasetToYear } from '../_Modules/util.js';
 import equal from 'fast-deep-equal';
+import { configuration } from '../_Config_JSON/configuration.mjs';
 
 class Map extends Component {
   componentDidMount() {
@@ -16,9 +16,9 @@ class Map extends Component {
       container: 'map',
       style: 'mapbox://styles/mapbox/dark-v9',
       center: [-104.9, 39.75],
-      zoom: 9,
-      maxZoom: 12,
-      minZoom: 4,
+      zoom: 7,
+      maxZoom: 11,
+      minZoom: 3,
       preserveDrawingBuffer: true
     });
 
@@ -76,7 +76,6 @@ class Map extends Component {
       // worth it to debounce?
       window.map.on('mousemove', 'tiles-polygons', (e) => {
         window.map.getCanvas().style.cursor = 'pointer';
-        console.log(e.features[0].properties.GEOID);
         const geoid = e.features[0].properties.GEOID;
 
         this.props.updateMouseover(geoid);
@@ -97,7 +96,7 @@ class Map extends Component {
       window.map.removeSource('tiles');
       window.map.addSource('tiles', {
         "type": "vector",
-        "tiles": [`https://d3ecnh0cifnjqw.cloudfront.net/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
+        "tiles": [`https://${configuration.tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
       return false;
     }
@@ -142,3 +141,8 @@ class Map extends Component {
 
 
 export default Map;
+
+
+function datasetToYear(dataset) {
+  return configuration.datasets[dataset].year;
+}
