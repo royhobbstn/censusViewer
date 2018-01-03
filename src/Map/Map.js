@@ -7,6 +7,7 @@ import key from './mapbox_api_key.js';
 import _ from 'lodash';
 import equal from 'fast-deep-equal';
 import { configuration } from '../_Config_JSON/configuration.mjs';
+var sizeof = require('object-sizeof');
 
 class Map extends Component {
   componentDidMount() {
@@ -25,14 +26,17 @@ class Map extends Component {
     window.map.on('load', () => {
 
       const updateTiles = _.debounce(() => {
+        const t0 = performance.now();
         // get all geoids
         const features = window.map.queryRenderedFeatures({ layers: ['tiles-polygons'] });
         const geoids = features.map(d => {
           return d.properties.GEOID;
         });
+        const t1 = performance.now();
+        console.log("updateTiles: " + (t1 - t0) + " milliseconds.");
 
         this.props.updateGeoids(Array.from(new Set(geoids)));
-      }, 300);
+      }, 1);
 
       window.map.addSource('tiles', {
         "type": "vector",
@@ -90,7 +94,10 @@ class Map extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     // redraw layer on redux style change
 
+
+
     if (this.props.source_geography !== nextProps.source_geography || this.props.source_dataset !== nextProps.source_dataset) {
+      const t0 = performance.now();
       console.log('changing due to geography or dataset');
       // geography or year changed.  update source and redraw
       window.map.removeSource('tiles');
@@ -98,10 +105,21 @@ class Map extends Component {
         "type": "vector",
         "tiles": [`https://${configuration.tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
+
+      const t1 = performance.now();
+      console.log("changeSource: " + (t1 - t0) + " milliseconds.");
       return false;
     }
 
+
+
     if (!equal(this.props.polygon_stops, nextProps.polygon_stops)) {
+
+      console.log('polygon_stops: ' + (parseInt((sizeof(nextProps.polygon_stops) / 1024), 10)) + 'KB');
+
+      const t2 = performance.now();
+
+
       // visible area on the map changed
       console.log('re-rendering');
 
@@ -115,6 +133,7 @@ class Map extends Component {
         ["0", 'black']
       ];
 
+      console.log('start paint');
       // Update Shape Layer
       window.map.setPaintProperty('tiles-polygons', 'fill-color', {
         property: 'GEOID',
@@ -128,8 +147,13 @@ class Map extends Component {
         type: 'categorical',
         stops: drawn_stops
       });
+      console.log('end paint');
+
+      const t3 = performance.now();
+      console.log("reRendering: " + (t3 - t2) + " milliseconds.");
 
     }
+
 
     return false;
   }

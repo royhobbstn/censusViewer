@@ -7,7 +7,6 @@ const default_stops = {};
 
 const default_state = {
   polygon_stops: default_stops,
-  key_store: {},
   source_geography: configuration.startup.source_geography,
   source_dataset: configuration.startup.source_dataset,
   selected_attr: configuration.startup.selected_attr,
@@ -24,15 +23,14 @@ const map = (
   switch (action.type) {
     case 'UPDATE_POLYGON_STYLE':
       return Object.assign({}, state, {
-        key_store: Object.assign({}, action.keys, state.key_store),
-        polygon_stops: Object.assign({}, action.stops, state.polygon_stops),
+        polygon_stops: Object.assign({}, action.stops),
         is_busy: false
       });
     case 'UPDATE_DATASET':
       console.log('updating dataset');
       return Object.assign({}, state, {
         source_dataset: action.dataset,
-        polygon_stops: [],
+        polygon_stops: {},
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined
@@ -41,7 +39,7 @@ const map = (
       console.log('updating geography');
       return Object.assign({}, state, {
         source_geography: action.geography,
-        polygon_stops: [],
+        polygon_stops: {},
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined
@@ -50,7 +48,7 @@ const map = (
       console.log('updating theme');
       return Object.assign({}, state, {
         selected_attr: action.theme,
-        polygon_stops: [],
+        polygon_stops: {},
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined

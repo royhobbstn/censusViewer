@@ -46,7 +46,7 @@ export const configuration = {
             label: 'Place'
         }
     },
-    tiles: 'd1imwzsub6e1pc.cloudfront.net',
+    tiles: 's3-us-west-2.amazonaws.com/vtiles-static',
     startup: {
         source_geography: 'county',
         source_dataset: 'acs1115',

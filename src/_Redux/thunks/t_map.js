@@ -11,7 +11,7 @@ localforage.config({
     name: 'CensusWebmap'
 });
 
-window.llstore = {};
+window.key_store = {};
 
 export function thunkChangeMouseover(geoid) {
     return (dispatch, getState) => {
@@ -23,14 +23,13 @@ export function thunkChangeMouseover(geoid) {
         const source_dataset = state.map.source_dataset;
         const sumlev = getSumlevFromGeography(state.map.source_geography);
         const attr = state.map.selected_attr;
-        const key_store = state.map.key_store;
 
         const formatted_geoid = `${source_dataset}:${attr}:${sumlev}00US${geoid}`;
 
         const obj = {
-            mouseover_statistic: key_store[formatted_geoid],
-            mouseover_label: key_store[formatted_geoid + '_label'],
-            mouseover_moe: key_store[formatted_geoid + '_moe']
+            mouseover_statistic: window.key_store[formatted_geoid],
+            mouseover_label: window.key_store[formatted_geoid + '_label'],
+            mouseover_moe: window.key_store[formatted_geoid + '_moe']
         };
 
         dispatch(changeMouseover(obj));
@@ -56,7 +55,6 @@ export function thunkUpdateGeoids(geoids) {
         const source_dataset = state.map.source_dataset;
         const sumlev = getSumlevFromGeography(state.map.source_geography);
         const attr = state.map.selected_attr;
-        const key_store = state.map.key_store;
 
         // convert geoids queried from the screen to a unique key that can be stored in memory
         const formatted_ids = geoids.map(id => {
@@ -65,10 +63,10 @@ export function thunkUpdateGeoids(geoids) {
 
         // get the value of that unique key (pulling from memory)
         const value_store = formatted_ids.map(pr => {
-            return key_store[pr];
+            return window.key_store[pr];
         });
 
-        // const key_with_value = {};
+        const key_with_value = {};
         const no_value = [];
 
         // for each geoid, if it has a value, put it into a 'has value' object
@@ -79,23 +77,22 @@ export function thunkUpdateGeoids(geoids) {
                 no_value.push(geoid.split(':')[2].slice(7));
             }
             else {
-                // key_with_value[geoid] = value_store[index];
+                key_with_value[geoid] = value_store[index];
             }
         });
 
         fetchRemoteData(no_value, attr, source_dataset).then(keys => {
 
             // combine the values we already have locally, with those we just found via ajax
-            // const results = Object.assign({}, key_with_value, keys);
+            const results = Object.assign({}, key_with_value, keys);
 
             // convert the raw numbers to colors for styling
-            const stops = convertDataToStops(keys);
+            const stops = convertDataToStops(results);
+
+            console.log(Object.keys(stops).length);
 
             // prevent this dispatch when no new data of value
-            dispatch(finishedLoadingStyleData(keys, stops));
-
-            // TODO to be more reactive... dispatch keys and geoids on map
-            // have map component create polygon stops
+            dispatch(finishedLoadingStyleData(stops));
 
 
         });
@@ -126,9 +123,13 @@ function fetchRemoteData(geoids, attr, source_dataset) {
 
             const fetched_data = {};
             Object.keys(res).forEach(key => {
-                fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
+                window.key_store[`${source_dataset}:${attr}:${key}`] = res[key];
+                if (!key.includes('_moe') && !key.includes('_label')) {
+                    fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
+                }
             });
-
+            console.log(Object.keys(fetched_data).length);
+            console.log(fetched_data);
             return fetched_data;
         })
         .catch(err => {
