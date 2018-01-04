@@ -40,7 +40,7 @@ class Map extends Component {
 
       window.map.addSource('tiles', {
         "type": "vector",
-        "tiles": [`https://d3ecnh0cifnjqw.cloudfront.net/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
+        "tiles": [`https://${configuration.tiles}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
 
       window.map.addLayer({
