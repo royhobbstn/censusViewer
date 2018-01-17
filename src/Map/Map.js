@@ -32,11 +32,12 @@ class Map extends Component {
         const geoids = features.map(d => {
           return d.properties.GEOID;
         });
+        console.log(geoids);
         const t1 = performance.now();
         console.log("updateTiles: " + (t1 - t0) + " milliseconds.");
 
         this.props.updateGeoids(Array.from(new Set(geoids)));
-      }, 1);
+      }, 100);
 
       window.map.addSource('tiles', {
         "type": "vector",
@@ -54,17 +55,17 @@ class Map extends Component {
         }
       }, "admin-2-boundaries-dispute");
 
-      window.map.addLayer({
-        'id': 'tiles-lines',
-        'type': 'line',
-        'source': 'tiles',
-        'source-layer': 'main',
-        'paint': {
-          'line-color': 'grey',
-          'line-width': 1,
-          'line-offset': 0.5
-        }
-      }, "admin-2-boundaries-dispute");
+      // window.map.addLayer({
+      //   'id': 'tiles-lines',
+      //   'type': 'line',
+      //   'source': 'tiles',
+      //   'source-layer': 'main',
+      //   'paint': {
+      //     'line-color': 'grey',
+      //     'line-width': 1,
+      //     'line-offset': 0.5
+      //   }
+      // }, "admin-2-boundaries-dispute");
 
       window.map.on('moveend', (e) => {
         updateTiles();
@@ -81,8 +82,9 @@ class Map extends Component {
       window.map.on('mousemove', 'tiles-polygons', (e) => {
         window.map.getCanvas().style.cursor = 'pointer';
         const geoid = e.features[0].properties.GEOID;
+        const name = e.features[0].properties.NAME;
 
-        this.props.updateMouseover(geoid);
+        this.props.updateMouseover(geoid, name);
       });
 
 
@@ -141,12 +143,12 @@ class Map extends Component {
         stops: drawn_stops
       });
 
-      // Update Outline Layer
-      window.map.setPaintProperty('tiles-lines', 'line-color', {
-        property: 'GEOID',
-        type: 'categorical',
-        stops: drawn_stops
-      });
+      // // Update Outline Layer
+      // window.map.setPaintProperty('tiles-lines', 'line-color', {
+      //   property: 'GEOID',
+      //   type: 'categorical',
+      //   stops: drawn_stops
+      // });
       console.log('end paint');
 
       const t3 = performance.now();

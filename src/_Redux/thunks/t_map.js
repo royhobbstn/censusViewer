@@ -13,7 +13,7 @@ localforage.config({
 
 window.key_store = {};
 
-export function thunkChangeMouseover(geoid) {
+export function thunkChangeMouseover(geoid, name) {
     return (dispatch, getState) => {
         // acs1115:mhi:05000US08005:63265
         // acs1115:mhi:05000US08005_label:"Arapahoe County, Colorado"
@@ -28,7 +28,7 @@ export function thunkChangeMouseover(geoid) {
 
         const obj = {
             mouseover_statistic: window.key_store[formatted_geoid],
-            mouseover_label: window.key_store[formatted_geoid + '_label'],
+            mouseover_label: name,
             mouseover_moe: window.key_store[formatted_geoid + '_moe']
         };
 
@@ -109,13 +109,15 @@ function fetchRemoteData(geoids, attr, source_dataset) {
         return Promise.resolve({});
     }
 
+    const file_list = Array.from(new Set(getKeyFromGeoid(geoids)));
+
     return fetch('https://kb7eqof39c.execute-api.us-west-2.amazonaws.com/dev/collate-s3-data', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "geoids": geoids, "expression": getExpressionFromAttr(source_dataset, attr), "moe_expression": getMoeExpressionFromAttr(source_dataset, attr), dataset: source_dataset })
+            body: JSON.stringify({ "file_list": file_list, "expression": getExpressionFromAttr(source_dataset, attr), "moe_expression": getMoeExpressionFromAttr(source_dataset, attr), dataset: source_dataset })
         })
         .then(res => res.json())
         .then(res => {
@@ -260,4 +262,34 @@ function getSumlevFromGeography(geography) {
         default:
             return '000';
     }
+}
+
+function getKeyFromGeoid(geoids) {
+    return geoids.map(d => {
+        // state = 2 characters (state[2])
+        // county = 5 characters (state[2]|county[3])
+        // place - 7 characters (state[2]|place[5])
+        // tract = 11 characters (state[2]|county[3]|tract[6])
+        // bg = 12 characters (state[2]|county[3]|tract[6]|bg[1])
+
+        // return proper s3 file
+        const len = d.length;
+        const state = d.slice(0, 2);
+        switch (len) {
+            case 2:
+                return `/040/${state}`;
+            case 5:
+                return `/050/${state}`;
+            case 7:
+                return `/160/${state}`;
+            case 11:
+                return `/140/${state}`;
+            case 12:
+                return `/150/${state}`;
+            default:
+                console.error(`unexpected geoid: ${d}`);
+                return '';
+        }
+
+    });
 }

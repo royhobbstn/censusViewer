@@ -18,8 +18,8 @@ const mapDispatchToProps = dispatch => {
     updateGeoids: geoids => {
       dispatch(thunkUpdateGeoids(geoids));
     },
-    updateMouseover: geoid => {
-      dispatch(thunkChangeMouseover(geoid));
+    updateMouseover: (geoid, name) => {
+      dispatch(thunkChangeMouseover(geoid, name));
     }
   };
 };
