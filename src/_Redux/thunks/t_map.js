@@ -52,6 +52,7 @@ export function thunkUpdateGeoids(geoids) {
 
         dispatch(busyLoadingStyleData(true));
 
+        const polygon_stops = state.map.polygon_stops;
         const source_dataset = state.map.source_dataset;
         const sumlev = getSumlevFromGeography(state.map.source_geography);
         const attr = state.map.selected_attr;
@@ -66,30 +67,23 @@ export function thunkUpdateGeoids(geoids) {
             return window.key_store[pr];
         });
 
-        const key_with_value = {};
         const no_value = [];
 
-        // for each geoid, if it has a value, put it into a 'has value' object
-        // if it doesn't have a value, it will need to be looked up via ajax
+        // for each geoid, if it doesn't have a value, it will need to be looked up via ajax
         // so put it into an array of geoids to find later
         formatted_ids.forEach((geoid, index) => {
             if (value_store[index] === undefined) {
                 no_value.push(geoid.split(':')[2].slice(7));
             }
-            else {
-                key_with_value[geoid] = value_store[index];
-            }
         });
+
+        console.log(no_value);
+
 
         fetchRemoteData(no_value, attr, source_dataset).then(keys => {
 
-            // combine the values we already have locally, with those we just found via ajax
-            const results = Object.assign({}, key_with_value, keys);
-
             // convert the raw numbers to colors for styling
-            const stops = convertDataToStops(results);
-
-            console.log(Object.keys(stops).length);
+            const stops = convertDataToStops(keys);
 
             // prevent this dispatch when no new data of value
             dispatch(finishedLoadingStyleData(stops));
@@ -126,12 +120,10 @@ function fetchRemoteData(geoids, attr, source_dataset) {
             const fetched_data = {};
             Object.keys(res).forEach(key => {
                 window.key_store[`${source_dataset}:${attr}:${key}`] = res[key];
-                if (!key.includes('_moe') && !key.includes('_label')) {
+                if (!key.includes('_moe')) {
                     fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
                 }
             });
-            console.log(Object.keys(fetched_data).length);
-            console.log(fetched_data);
             return fetched_data;
         })
         .catch(err => {

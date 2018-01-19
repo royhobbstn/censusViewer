@@ -32,7 +32,6 @@ class Map extends Component {
         const geoids = features.map(d => {
           return d.properties.GEOID;
         });
-        console.log(geoids);
         const t1 = performance.now();
         console.log("updateTiles: " + (t1 - t0) + " milliseconds.");
 

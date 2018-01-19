@@ -46,11 +46,11 @@ const ButtonSet = ({
                     value={source_geography}
                     onChange={handleGeographyChange}
                     options={[
-                        /*{ value: 'state', label: 'State' },
-                        { value: 'place', label: 'Place' },*/
+                        { value: 'state', label: 'State' },
+                        { value: 'place', label: 'Place' },
                         { value: 'county', label: 'County' },
                         { value: 'tract', label: 'Tract' },
-                        /*{ value: 'bg', label: 'Block Group' },*/
+                        { value: 'bg', label: 'Block Group' }
                     ]}
                 />
             </div>

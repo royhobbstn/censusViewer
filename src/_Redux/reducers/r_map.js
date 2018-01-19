@@ -23,7 +23,7 @@ const map = (
   switch (action.type) {
     case 'UPDATE_POLYGON_STYLE':
       return Object.assign({}, state, {
-        polygon_stops: Object.assign({}, action.stops),
+        polygon_stops: Object.assign({}, state.polygon_stops, action.stops),
         is_busy: false
       });
     case 'UPDATE_DATASET':

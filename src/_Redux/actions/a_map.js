@@ -5,7 +5,6 @@ export function busyLoadingStyleData() {
 }
 
 export function finishedLoadingStyleData(stops) {
-    console.log(stops);
     return {
         type: 'UPDATE_POLYGON_STYLE',
         stops
