@@ -1,4 +1,4 @@
-/* global fetch*/
+/* global fetch TextDecoder*/
 
 import { busyLoadingStyleData, finishedLoadingStyleData, changeMouseover } from '../actions/a_map.js';
 
@@ -52,7 +52,6 @@ export function thunkUpdateGeoids(geoids) {
 
         dispatch(busyLoadingStyleData(true));
 
-        const polygon_stops = state.map.polygon_stops;
         const source_dataset = state.map.source_dataset;
         const sumlev = getSumlevFromGeography(state.map.source_geography);
         const attr = state.map.selected_attr;
@@ -76,9 +75,6 @@ export function thunkUpdateGeoids(geoids) {
                 no_value.push(geoid.split(':')[2].slice(7));
             }
         });
-
-        console.log(no_value);
-
 
         fetchRemoteData(no_value, attr, source_dataset).then(keys => {
 
@@ -105,7 +101,7 @@ function fetchRemoteData(geoids, attr, source_dataset) {
 
     const file_list = Array.from(new Set(getKeyFromGeoid(geoids)));
 
-    return fetch('https://kb7eqof39c.execute-api.us-west-2.amazonaws.com/dev/collate-s3-data', {
+    return fetch('https://kb7eqof39c.execute-api.us-west-2.amazonaws.com/dev/fast-collate', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
@@ -113,23 +109,80 @@ function fetchRemoteData(geoids, attr, source_dataset) {
             },
             body: JSON.stringify({ "file_list": file_list, "expression": getExpressionFromAttr(source_dataset, attr), "moe_expression": getMoeExpressionFromAttr(source_dataset, attr), dataset: source_dataset })
         })
-        .then(res => res.json())
-        .then(res => {
-            console.log('returned from ajax call');
+        .then(processChunkedResponse)
+        .then(onChunkedResponseComplete)
+        .catch(onChunkedResponseError);
 
-            const fetched_data = {};
-            Object.keys(res).forEach(key => {
-                window.key_store[`${source_dataset}:${attr}:${key}`] = res[key];
-                if (!key.includes('_moe')) {
-                    fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
-                }
-            });
-            return fetched_data;
-        })
-        .catch(err => {
-            console.error(err);
-            return {};
+    function onChunkedResponseComplete(res) {
+        console.log('all done!', res);
+
+        console.log('returned from ajax call');
+        const fetched_data = {};
+        Object.keys(res).forEach(key => {
+            window.key_store[`${source_dataset}:${attr}:${key}`] = res[key];
+            if (!key.includes('_moe')) {
+                fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
+            }
         });
+        console.log(fetched_data);
+        return fetched_data;
+    }
+
+    function onChunkedResponseError(err) {
+        console.error(err);
+    }
+
+    function processChunkedResponse(response) {
+        var json = {};
+        var reader = response.body.getReader();
+        var decoder = new TextDecoder();
+
+        return readChunk();
+
+        function readChunk() {
+            return reader.read().then(appendChunks);
+        }
+
+        function appendChunks(result) {
+            var chunk = decoder.decode(result.value || new Uint8Array, { stream: !result.done });
+            console.log('got chunk of', chunk.length, 'bytes');
+            console.log(typeof chunk);
+            console.log(chunk);
+            if (chunk) {
+                chunk = JSON.parse("[" + chunk.split("}{").join("},{") + "]");
+                json = Object.assign(...chunk);
+            }
+
+            console.log(json);
+            console.log('object so far is', Object.keys(json).length, 'entries\n');
+            if (result.done) {
+                console.log('returning');
+                return json;
+            }
+            else {
+                console.log('recursing');
+                return readChunk();
+            }
+        }
+    }
+
+    // .then(res => res.json())
+    // .then(res => {
+    //     console.log('returned from ajax call');
+
+    //     const fetched_data = {};
+    //     Object.keys(res).forEach(key => {
+    //         window.key_store[`${source_dataset}:${attr}:${key}`] = res[key];
+    //         if (!key.includes('_moe')) {
+    //             fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
+    //         }
+    //     });
+    //     return fetched_data;
+    // })
+    // .catch(err => {
+    //     console.error(err);
+    //     return {};
+    // });
 }
 
 function getExpressionFromAttr(dataset, attr) {

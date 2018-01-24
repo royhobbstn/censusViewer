@@ -49,7 +49,7 @@ export const configuration = {
     tiles: 's3-us-west-2.amazonaws.com/geo-tilesets',
     startup: {
         source_geography: 'county',
-        source_dataset: 'acs1216',
+        source_dataset: 'acs1115',
         selected_attr: 'mhi',
     }
 
