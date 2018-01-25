@@ -4,7 +4,13 @@ export function busyLoadingStyleData() {
     };
 }
 
-export function finishedLoadingStyleData(stops) {
+export function notBusyLoadingStyleData() {
+    return {
+        type: 'NOT_BUSY_LOADING_STYLE'
+    };
+}
+
+export function updateStyleData(stops) {
     return {
         type: 'UPDATE_POLYGON_STYLE',
         stops

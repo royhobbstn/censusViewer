@@ -1,6 +1,6 @@
 /* global fetch TextDecoder*/
 
-import { busyLoadingStyleData, finishedLoadingStyleData, changeMouseover } from '../actions/a_map.js';
+import { busyLoadingStyleData, notBusyLoadingStyleData, updateStyleData, changeMouseover } from '../actions/a_map.js';
 
 import { datatree } from '../../_Config_JSON/datatree.mjs';
 import localforage from "localforage";
@@ -76,114 +76,103 @@ export function thunkUpdateGeoids(geoids) {
             }
         });
 
-        fetchRemoteData(no_value, attr, source_dataset).then(keys => {
+        fetchRemoteData(no_value, attr, source_dataset)
+            .then(res => {
+                console.log('complete:', res);
+                dispatch(notBusyLoadingStyleData());
+            })
+            .catch(err => {
+                console.error('err:', err);
+                dispatch(notBusyLoadingStyleData());
+            });
 
-            // convert the raw numbers to colors for styling
-            const stops = convertDataToStops(keys);
-
-            // prevent this dispatch when no new data of value
-            dispatch(finishedLoadingStyleData(stops));
 
 
-        });
+        // call to lambda functions to retrieve data
+        function fetchRemoteData(geoids, attr, source_dataset) {
+
+            console.log(geoids);
+
+            // short circuit when no geoids to fetch remotely
+            if (geoids.length === 0) {
+                return Promise.resolve({});
+            }
+
+            const file_list = Array.from(new Set(getKeyFromGeoid(geoids)));
+
+            return fetch('https://kb7eqof39c.execute-api.us-west-2.amazonaws.com/dev/fast-collate', {
+                    method: 'post',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ "file_list": file_list, "expression": getExpressionFromAttr(source_dataset, attr), "moe_expression": getMoeExpressionFromAttr(source_dataset, attr), dataset: source_dataset })
+                })
+                .then(processChunkedResponse);
+
+
+
+            function processChunkedResponse(response) {
+
+                var reader = response.body.getReader();
+                var decoder = new TextDecoder();
+                let leftover = '';
+
+                return readChunk();
+
+                function readChunk() {
+                    return reader.read().then(appendChunks);
+                }
+
+                function appendChunks(result) {
+                    var chunk = leftover + decoder.decode(result.value || new Uint8Array(), { stream: !result.done });
+
+                    const end_bracket = chunk.lastIndexOf('}');
+
+                    leftover = chunk.slice(end_bracket + 1);
+                    chunk = chunk.slice(0, end_bracket + 1);
+
+                    if (chunk) {
+                        const parsed = JSON.parse("[" + chunk.split("}{").join("},{") + "]");
+                        const res = Object.assign({}, ...parsed);
+                        const fetched_data = {};
+                        Object.keys(res).forEach(key => {
+                            window.key_store[`${source_dataset}:${attr}:${key}`] = res[key];
+                            if (!key.includes('_moe')) {
+                                fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
+                            }
+                        });
+
+                        console.log(fetched_data);
+
+                        // convert the raw numbers to colors for styling
+                        const stops = convertDataToStops(fetched_data);
+
+                        // prevent this dispatch when no new data of value
+                        dispatch(updateStyleData(stops));
+                    }
+
+                    if (result.done) {
+                        console.log('returning');
+                        return;
+                    }
+                    else {
+                        console.log('recursing');
+                        return readChunk();
+                    }
+
+
+
+                }
+            }
+
+        }
+
 
 
     };
 }
 
-// call to lambda functions to retrieve data
-function fetchRemoteData(geoids, attr, source_dataset) {
-
-    // short circuit when no geoids to fetch remotely
-    if (geoids.length === 0) {
-        return Promise.resolve({});
-    }
-
-    const file_list = Array.from(new Set(getKeyFromGeoid(geoids)));
-
-    return fetch('https://kb7eqof39c.execute-api.us-west-2.amazonaws.com/dev/fast-collate', {
-            method: 'post',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ "file_list": file_list, "expression": getExpressionFromAttr(source_dataset, attr), "moe_expression": getMoeExpressionFromAttr(source_dataset, attr), dataset: source_dataset })
-        })
-        .then(processChunkedResponse)
-        .then(onChunkedResponseComplete)
-        .catch(onChunkedResponseError);
-
-    function onChunkedResponseComplete(res) {
-        console.log('all done!', res);
-
-        console.log('returned from ajax call');
-        const fetched_data = {};
-        Object.keys(res).forEach(key => {
-            window.key_store[`${source_dataset}:${attr}:${key}`] = res[key];
-            if (!key.includes('_moe')) {
-                fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
-            }
-        });
-        console.log(fetched_data);
-        return fetched_data;
-    }
-
-    function onChunkedResponseError(err) {
-        console.error(err);
-    }
-
-    function processChunkedResponse(response) {
-        var json = {};
-        var reader = response.body.getReader();
-        var decoder = new TextDecoder();
-
-        return readChunk();
-
-        function readChunk() {
-            return reader.read().then(appendChunks);
-        }
-
-        function appendChunks(result) {
-            var chunk = decoder.decode(result.value || new Uint8Array, { stream: !result.done });
-            console.log('got chunk of', chunk.length, 'bytes');
-            console.log(typeof chunk);
-            console.log(chunk);
-            if (chunk) {
-                chunk = JSON.parse("[" + chunk.split("}{").join("},{") + "]");
-                json = Object.assign(...chunk);
-            }
-
-            console.log(json);
-            console.log('object so far is', Object.keys(json).length, 'entries\n');
-            if (result.done) {
-                console.log('returning');
-                return json;
-            }
-            else {
-                console.log('recursing');
-                return readChunk();
-            }
-        }
-    }
-
-    // .then(res => res.json())
-    // .then(res => {
-    //     console.log('returned from ajax call');
-
-    //     const fetched_data = {};
-    //     Object.keys(res).forEach(key => {
-    //         window.key_store[`${source_dataset}:${attr}:${key}`] = res[key];
-    //         if (!key.includes('_moe')) {
-    //             fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
-    //         }
-    //     });
-    //     return fetched_data;
-    // })
-    // .catch(err => {
-    //     console.error(err);
-    //     return {};
-    // });
-}
 
 function getExpressionFromAttr(dataset, attr) {
     const numerator_raw = datatree[dataset][attr].numerator;
