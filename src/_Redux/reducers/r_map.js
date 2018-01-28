@@ -13,7 +13,8 @@ const default_state = {
   is_busy: false,
   mouseover_statistic: undefined,
   mouseover_moe: undefined,
-  mouseover_label: undefined
+  mouseover_label: undefined,
+  file_list: []
 };
 
 const map = (
@@ -62,6 +63,13 @@ const map = (
       return Object.assign({}, state, { is_busy: true });
     case 'NOT_BUSY_LOADING_STYLE':
       return Object.assign({}, state, { is_busy: false });
+    case 'ADD_TO_IN_PROGRESS':
+      return Object.assign({}, state, { file_list: [...state.file_list, ...action.arr] });
+    case 'REMOVE_FROM_IN_PROGRESS':
+      const new_file_list = state.file_list.filter(file => {
+        return !action.arr.includes(file);
+      });
+      return Object.assign({}, state, { file_list: new_file_list });
     default:
       return state;
   }

@@ -1,6 +1,6 @@
 /* global fetch TextDecoder*/
 
-import { busyLoadingStyleData, notBusyLoadingStyleData, updateStyleData, changeMouseover } from '../actions/a_map.js';
+import { busyLoadingStyleData, notBusyLoadingStyleData, updateStyleData, changeMouseover, addToInProgressList, removeFromInProgressList } from '../actions/a_map.js';
 
 import { datatree } from '../../_Config_JSON/datatree.mjs';
 import localforage from "localforage";
@@ -42,19 +42,13 @@ export function thunkUpdateGeoids(geoids) {
     return (dispatch, getState) => {
 
         const state = getState();
-        const is_busy = state.map.is_busy;
-
-        if (is_busy) {
-            console.log('map is busy');
-            return;
-        }
-
 
         dispatch(busyLoadingStyleData(true));
 
         const source_dataset = state.map.source_dataset;
         const sumlev = getSumlevFromGeography(state.map.source_geography);
         const attr = state.map.selected_attr;
+        const in_progress_file_list = state.map.file_list;
 
         // convert geoids queried from the screen to a unique key that can be stored in memory
         const formatted_ids = geoids.map(id => {
@@ -76,31 +70,53 @@ export function thunkUpdateGeoids(geoids) {
             }
         });
 
-        fetchRemoteData(no_value, attr, source_dataset)
+        console.log('in progress file list');
+        console.log(in_progress_file_list);
+
+        const file_list = Array.from(new Set(getKeyFromGeoid(no_value)));
+        console.log('file_list');
+        console.log(file_list);
+
+        // redux in progress file_list : create
+
+        const to_send_file_list = file_list.filter(file => {
+            return !in_progress_file_list.includes(file);
+        });
+        console.log('to send file list');
+        console.log(to_send_file_list);
+
+
+
+        // remove currently in progress file_list values from above
+        // dispatch event to lock those file_list values
+        dispatch(addToInProgressList(to_send_file_list));
+
+        fetchRemoteData(to_send_file_list, attr, source_dataset)
             .then(res => {
                 console.log('complete:', res);
                 dispatch(notBusyLoadingStyleData());
+                // dispatch event to free up in progress geoids
+                dispatch(removeFromInProgressList(to_send_file_list));
             })
             .catch(err => {
                 console.error('err:', err);
                 dispatch(notBusyLoadingStyleData());
+                // dispatch event to free up in progress geoids
+                dispatch(removeFromInProgressList(to_send_file_list));
             });
 
 
 
         // call to lambda functions to retrieve data
-        function fetchRemoteData(geoids, attr, source_dataset) {
+        function fetchRemoteData(file_list, attr, source_dataset) {
 
-            console.log(geoids);
+            console.log(file_list);
 
             // short circuit when no geoids to fetch remotely
-            if (geoids.length === 0) {
+            if (file_list.length === 0) {
                 return Promise.resolve({});
             }
 
-            // const leftover = {};
-
-            const file_list = Array.from(new Set(getKeyFromGeoid(geoids)));
 
             return fetch('https://kb7eqof39c.execute-api.us-west-2.amazonaws.com/dev/fast-collate', {
                     method: 'post',

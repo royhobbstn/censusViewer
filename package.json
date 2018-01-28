@@ -20,7 +20,8 @@
     "redux-thunk": "^2.2.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
-    "simple-statistics": "^5.2.1"
+    "simple-statistics": "^5.2.1",
+    "workerize-loader": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

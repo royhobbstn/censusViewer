@@ -25,3 +25,17 @@ export function changeMouseover({ mouseover_statistic, mouseover_moe, mouseover_
         mouseover_label
     };
 }
+
+export function addToInProgressList(arr) {
+    return {
+        type: 'ADD_TO_IN_PROGRESS',
+        arr
+    };
+}
+
+export function removeFromInProgressList(arr) {
+    return {
+        type: 'REMOVE_FROM_IN_PROGRESS',
+        arr
+    };
+}
