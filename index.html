@@ -1,1 +1,33 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name="theme-color" content="#000000"><link rel="manifest" href="/censusViewer/manifest.json"><link rel="shortcut icon" href="/censusViewer/favicon.ico"><title>React App</title><link href="/censusViewer/static/css/main.7a6d26f4.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script type="text/javascript" src="/censusViewer/static/js/main.f6438226.js"></script></body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name="theme-color" content="#000000"><link rel="manifest" href="/censusViewer/manifest.json"><link rel="shortcut icon" href="/censusViewer/favicon.ico"><script src="/censusViewer/long.js"></script><script src="/censusViewer/bytebuffer.js"></script><script src="/censusViewer/protobuf.js"></script><script src="/censusViewer/axios.min.js"></script><title>React App</title><link href="/censusViewer/static/css/main.4b2427b5.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><button onclick="sendMessage()">send message to server</button><script type="text/javascript">"use strict";
+      /* global dcodeIO axios*/
+      
+      let ProtoBuf = dcodeIO.ProtoBuf;
+      let Message = ProtoBuf
+        .loadProtoFile('/censusViewer/message.proto', (err, builder)=>{
+          if(err) {
+            return console.log(err);
+          }
+          Message = builder.build('Dictionary');
+          loadMessage();
+        });
+        
+      let loadMessage = ()=> {
+        axios.post('https://d0ahqlmxvi.execute-api.us-west-2.amazonaws.com/dev/pbf', 
+        {"path":"e059/050/08","expression":["B19013001"],"dataset":"acs1115"},
+        { responseType: 'arraybuffer'}
+        )
+          .then(function (response) {
+            console.log('Response from the server: ', response);
+            let msg = Message.decode(response.data);
+            console.log('Decoded message', msg);
+            console.log(typeof msg);
+            console.log(msg);
+            // console.log(msg.pairs);
+            msg.pairs.forEach(pair=> {
+              // console.log(pair);
+            });
+          })
+          .catch(function (response) {
+            console.log(response);
+          });
+      };</script><div id="root"></div><script type="text/javascript" src="/censusViewer/static/js/main.c6607a7a.js"></script></body></html>
