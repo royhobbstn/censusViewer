@@ -16,7 +16,6 @@ window.key_store = {};
 export function thunkChangeMouseover(geoid, name) {
     return (dispatch, getState) => {
         // acs1115:mhi:05000US08005:63265
-        // acs1115:mhi:05000US08005_label:"Arapahoe County, Colorado"
         // acs1115:mhi:05000US08005_moe:942
 
         const state = getState();
@@ -70,22 +69,11 @@ export function thunkUpdateGeoids(geoids) {
             }
         });
 
-        console.log('in progress file list');
-        console.log(in_progress_file_list);
-
         const file_list = Array.from(new Set(getKeyFromGeoid(no_value)));
-        console.log('file_list');
-        console.log(file_list);
-
-        // redux in progress file_list : create
 
         const to_send_file_list = file_list.filter(file => {
             return !in_progress_file_list.includes(file);
         });
-        console.log('to send file list');
-        console.log(to_send_file_list);
-
-
 
         // remove currently in progress file_list values from above
         // dispatch event to lock those file_list values
@@ -109,8 +97,6 @@ export function thunkUpdateGeoids(geoids) {
 
         // call to lambda functions to retrieve data
         function fetchRemoteData(file_list, attr, source_dataset) {
-
-            console.log(file_list);
 
             // short circuit when no geoids to fetch remotely
             if (file_list.length === 0) {
