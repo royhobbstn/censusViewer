@@ -10,6 +10,13 @@
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    
+    <script src="%PUBLIC_URL%/long.js" ></script>
+    <script src="%PUBLIC_URL%/bytebuffer.js" ></script>
+    <script src="%PUBLIC_URL%/protobuf.js" ></script>
+    <script src="%PUBLIC_URL%/axios.min.js" ></script>
+
+
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -25,6 +32,44 @@
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
+    <button onClick="sendMessage()">send message to server</button>
+    <script type="text/javascript">
+    
+      "use strict";
+      /* global dcodeIO axios*/
+      
+      let ProtoBuf = dcodeIO.ProtoBuf;
+      let Message = ProtoBuf
+        .loadProtoFile('%PUBLIC_URL%/message.proto', (err, builder)=>{
+          if(err) {
+            return console.log(err);
+          }
+          Message = builder.build('Dictionary');
+          loadMessage();
+        });
+        
+      let loadMessage = ()=> {
+        axios.post('https://d0ahqlmxvi.execute-api.us-west-2.amazonaws.com/dev/pbf', 
+        {"path":"e059/050/08","expression":["B19013001"],"dataset":"acs1115"},
+        { responseType: 'arraybuffer'}
+        )
+          .then(function (response) {
+            console.log('Response from the server: ', response);
+            let msg = Message.decode(response.data);
+            console.log('Decoded message', msg);
+            console.log(typeof msg);
+            console.log(msg);
+            console.log(msg.pairs);
+            msg.pairs.forEach(pair=> {
+              console.log(pair);
+            });
+          })
+          .catch(function (response) {
+            console.log(response);
+          });
+      };
+
+    </script>
     <div id="root"></div>
     <!--
       This HTML file is a template.

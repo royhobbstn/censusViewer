@@ -98,6 +98,8 @@ export function thunkUpdateGeoids(geoids) {
                 return Promise.resolve({});
             }
 
+            // const leftover = {};
+
             const file_list = Array.from(new Set(getKeyFromGeoid(geoids)));
 
             return fetch('https://kb7eqof39c.execute-api.us-west-2.amazonaws.com/dev/fast-collate', {
@@ -113,6 +115,7 @@ export function thunkUpdateGeoids(geoids) {
 
 
             function processChunkedResponse(response) {
+
 
                 var reader = response.body.getReader();
                 var decoder = new TextDecoder();
@@ -132,8 +135,20 @@ export function thunkUpdateGeoids(geoids) {
                     leftover = chunk.slice(end_bracket + 1);
                     chunk = chunk.slice(0, end_bracket + 1);
 
+                    let parsed;
                     if (chunk) {
-                        const parsed = JSON.parse("[" + chunk.split("}{").join("},{") + "]");
+                        try {
+                            parsed = chunk.split("}{");
+                            parsed = parsed.join("},{");
+                            parsed = JSON.parse("[" + parsed + "]");
+                        }
+                        catch (e) {
+                            console.log(e);
+                            console.log(parsed);
+                            console.log(end_bracket);
+                            console.log(leftover);
+                            return;
+                        }
                         const res = Object.assign({}, ...parsed);
                         const fetched_data = {};
                         Object.keys(res).forEach(key => {
@@ -154,6 +169,7 @@ export function thunkUpdateGeoids(geoids) {
 
                     if (result.done) {
                         console.log('returning');
+                        leftover = '';
                         return;
                     }
                     else {
@@ -309,6 +325,8 @@ function getKeyFromGeoid(geoids) {
         // return proper s3 file
         const len = d.length;
         const state = d.slice(0, 2);
+        const statecounty = d.slice(0, 5);
+
         switch (len) {
             case 2:
                 return `/040/${state}`;
@@ -317,9 +335,9 @@ function getKeyFromGeoid(geoids) {
             case 7:
                 return `/160/${state}`;
             case 11:
-                return `/140/${state}`;
+                return `/140/${statecounty}`;
             case 12:
-                return `/150/${state}`;
+                return `/150/${statecounty}`;
             default:
                 console.error(`unexpected geoid: ${d}`);
                 return '';
