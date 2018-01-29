@@ -32,7 +32,7 @@ class Map extends Component {
         });
 
         this.props.updateGeoids(Array.from(new Set(geoids)));
-      }, 500);
+      }, 250);
 
       window.map.addSource('tiles', {
         "type": "vector",

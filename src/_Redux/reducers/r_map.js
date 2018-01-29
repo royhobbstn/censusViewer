@@ -10,7 +10,6 @@ const default_state = {
   source_geography: configuration.startup.source_geography,
   source_dataset: configuration.startup.source_dataset,
   selected_attr: configuration.startup.selected_attr,
-  is_busy: false,
   mouseover_statistic: undefined,
   mouseover_moe: undefined,
   mouseover_label: undefined,
@@ -59,10 +58,6 @@ const map = (
         mouseover_moe: action.mouseover_moe,
         mouseover_label: action.mouseover_label
       });
-    case 'BUSY_LOADING_STYLE':
-      return Object.assign({}, state, { is_busy: true });
-    case 'NOT_BUSY_LOADING_STYLE':
-      return Object.assign({}, state, { is_busy: false });
     case 'ADD_TO_IN_PROGRESS':
       return Object.assign({}, state, { file_list: [...state.file_list, ...action.arr] });
     case 'REMOVE_FROM_IN_PROGRESS':

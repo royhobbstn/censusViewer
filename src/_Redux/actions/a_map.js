@@ -1,15 +1,3 @@
-export function busyLoadingStyleData() {
-    return {
-        type: 'BUSY_LOADING_STYLE'
-    };
-}
-
-export function notBusyLoadingStyleData() {
-    return {
-        type: 'NOT_BUSY_LOADING_STYLE'
-    };
-}
-
 export function updateStyleData(stops) {
     return {
         type: 'UPDATE_POLYGON_STYLE',

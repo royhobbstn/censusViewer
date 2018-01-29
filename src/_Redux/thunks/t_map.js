@@ -1,6 +1,6 @@
 /* global fetch TextDecoder*/
 
-import { busyLoadingStyleData, notBusyLoadingStyleData, updateStyleData, changeMouseover, addToInProgressList, removeFromInProgressList } from '../actions/a_map.js';
+import { updateStyleData, changeMouseover, addToInProgressList, removeFromInProgressList } from '../actions/a_map.js';
 
 import { datatree } from '../../_Config_JSON/datatree.mjs';
 import localforage from "localforage";
@@ -42,8 +42,6 @@ export function thunkUpdateGeoids(geoids) {
 
         const state = getState();
 
-        dispatch(busyLoadingStyleData(true));
-
         const source_dataset = state.map.source_dataset;
         const sumlev = getSumlevFromGeography(state.map.source_geography);
         const attr = state.map.selected_attr;
@@ -69,29 +67,37 @@ export function thunkUpdateGeoids(geoids) {
             }
         });
 
+        // get list of files to send requests to
         const file_list = Array.from(new Set(getKeyFromGeoid(no_value)));
 
+        // don't send if already in progress
         const to_send_file_list = file_list.filter(file => {
             return !in_progress_file_list.includes(file);
         });
 
-        // remove currently in progress file_list values from above
-        // dispatch event to lock those file_list values
-        dispatch(addToInProgressList(to_send_file_list));
+        // split total amongst 5 requests
+        const quantile = to_send_file_list.length / 5;
 
-        fetchRemoteData(to_send_file_list, attr, source_dataset)
-            .then(res => {
-                console.log('complete:', res);
-                dispatch(notBusyLoadingStyleData());
-                // dispatch event to free up in progress geoids
-                dispatch(removeFromInProgressList(to_send_file_list));
-            })
-            .catch(err => {
-                console.error('err:', err);
-                dispatch(notBusyLoadingStyleData());
-                // dispatch event to free up in progress geoids
-                dispatch(removeFromInProgressList(to_send_file_list));
-            });
+        const quantile_array = [0, quantile, quantile * 2, quantile * 3, quantile * 4];
+
+        quantile_array.forEach(num => {
+            fetchLimitScope(to_send_file_list.slice(num, num + quantile), attr, source_dataset);
+        });
+
+
+        function fetchLimitScope(sliced_list, attr, source_dataset) {
+            fetchRemoteData(sliced_list, attr, source_dataset)
+                .then(res => {
+                    console.log('complete:', res);
+                    // dispatch event to free up in progress geoids
+                    dispatch(removeFromInProgressList(sliced_list));
+                })
+                .catch(err => {
+                    console.error('err:', err);
+                    // dispatch event to free up in progress geoids
+                    dispatch(removeFromInProgressList(sliced_list));
+                });
+        }
 
 
 
