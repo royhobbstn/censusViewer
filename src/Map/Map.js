@@ -32,7 +32,7 @@ class Map extends Component {
         });
 
         this.props.updateGeoids(Array.from(new Set(geoids)));
-      }, 250);
+      }, 500);
 
       window.map.addSource('tiles', {
         "type": "vector",
@@ -73,13 +73,13 @@ class Map extends Component {
         }
       });
 
-      window.map.on('mousemove', 'tiles-polygons', _.debounce((e) => {
-        window.map.getCanvas().style.cursor = 'pointer';
-        const geoid = e.features[0].properties.GEOID;
-        const name = e.features[0].properties.NAME;
+      // window.map.on('mousemove', 'tiles-polygons', _.debounce((e) => {
+      //   window.map.getCanvas().style.cursor = 'pointer';
+      //   const geoid = e.features[0].properties.GEOID;
+      //   const name = e.features[0].properties.NAME;
 
-        this.props.updateMouseover(geoid, name);
-      }, 32));
+      //   this.props.updateMouseover(geoid, name);
+      // }, 32));
 
 
     });

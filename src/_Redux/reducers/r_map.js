@@ -32,7 +32,8 @@ const map = (
         polygon_stops: {},
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
-        mouseover_label: undefined
+        mouseover_label: undefined,
+        file_list: []
       });
     case 'UPDATE_GEOGRAPHY':
       console.log('updating geography');
@@ -41,7 +42,8 @@ const map = (
         polygon_stops: {},
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
-        mouseover_label: undefined
+        mouseover_label: undefined,
+        file_list: []
       });
     case 'UPDATE_THEME':
       console.log('updating theme');
@@ -50,7 +52,8 @@ const map = (
         polygon_stops: {},
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
-        mouseover_label: undefined
+        mouseover_label: undefined,
+        file_list: []
       });
     case 'UPDATE_MOUSEOVER':
       return Object.assign({}, state, {

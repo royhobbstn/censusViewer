@@ -5,6 +5,23 @@ import { updateStyleData, changeMouseover, addToInProgressList, removeFromInProg
 import { datatree } from '../../_Config_JSON/datatree.mjs';
 import localforage from "localforage";
 
+import workerize from 'workerize';
+
+const worker = workerize(`
+                export function num() {
+                    return 5;
+                };
+				export function get(url) {
+					return fetch(location.origin+'/'+url).then(asJson);
+				}
+				function asJson(res) {
+					return res.json();
+				}
+			`, { type: 'module' });
+
+worker.num().then(pkg => {
+    console.log('Got package name: ', pkg);
+});
 
 localforage.config({
     driver: localforage.INDEXEDDB,
@@ -74,6 +91,8 @@ export function thunkUpdateGeoids(geoids) {
         const to_send_file_list = file_list.filter(file => {
             return !in_progress_file_list.includes(file);
         });
+
+        dispatch(addToInProgressList(to_send_file_list));
 
         // split total amongst 5 requests
         const quantile = to_send_file_list.length / 5;

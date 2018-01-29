@@ -21,7 +21,7 @@
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
     "simple-statistics": "^5.2.1",
-    "workerize-loader": "^1.0.1"
+    "workerize": "^0.1.6"
   },
   "scripts": {
     "start": "react-scripts start",
