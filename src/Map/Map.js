@@ -31,6 +31,7 @@ class Map extends Component {
           return d.properties.GEOID;
         });
 
+        console.log(features);
         this.props.updateGeoids(Array.from(new Set(geoids)));
       }, 500);
 

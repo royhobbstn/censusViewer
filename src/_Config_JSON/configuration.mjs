@@ -46,10 +46,10 @@ export const configuration = {
             label: 'Place'
         }
     },
-    tiles: 's3-us-west-2.amazonaws.com/geo-tilesets',
+    tiles: 's3-us-west-2.amazonaws.com/small-tiles',
     startup: {
         source_geography: 'county',
-        source_dataset: 'acs1115',
+        source_dataset: 'acs1216',
         selected_attr: 'mhi',
     }
 

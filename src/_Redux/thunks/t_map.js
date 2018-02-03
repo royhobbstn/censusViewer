@@ -4,24 +4,23 @@ import { updateStyleData, changeMouseover, addToInProgressList, removeFromInProg
 
 import { datatree } from '../../_Config_JSON/datatree.mjs';
 import localforage from "localforage";
+// import workerize from 'workerize';
 
-import workerize from 'workerize';
+// const worker = workerize(`
+//                 export function num() {
+//                     return 5;
+//                 };
+// 				export function get(url) {
+// 					return fetch(location.origin+'/'+url).then(asJson);
+// 				}
+// 				function asJson(res) {
+// 					return res.json();
+// 				}
+// 			`, { type: 'module' });
 
-const worker = workerize(`
-                export function num() {
-                    return 5;
-                };
-				export function get(url) {
-					return fetch(location.origin+'/'+url).then(asJson);
-				}
-				function asJson(res) {
-					return res.json();
-				}
-			`, { type: 'module' });
-
-worker.num().then(pkg => {
-    console.log('Got package name: ', pkg);
-});
+// worker.num().then(pkg => {
+//     console.log('Got package name: ', pkg);
+// });
 
 localforage.config({
     driver: localforage.INDEXEDDB,
@@ -128,6 +127,7 @@ export function thunkUpdateGeoids(geoids) {
                 return Promise.resolve({});
             }
 
+            console.log('about to fetch');
 
             return fetch('https://kb7eqof39c.execute-api.us-west-2.amazonaws.com/dev/fast-collate', {
                     method: 'post',
