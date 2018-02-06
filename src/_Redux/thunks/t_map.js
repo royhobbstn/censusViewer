@@ -129,92 +129,43 @@ export function thunkUpdateGeoids(geoids) {
 
             console.log('about to fetch');
 
-            return fetch('https://kb7eqof39c.execute-api.us-west-2.amazonaws.com/dev/fast-collate', {
-                    method: 'post',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ "file_list": file_list, "expression": getExpressionFromAttr(source_dataset, attr), "moe_expression": getMoeExpressionFromAttr(source_dataset, attr), dataset: source_dataset })
-                })
-                .then(processChunkedResponse);
+            const files = ''; // encodeURIComponent(JSON.stringify(file_list)); // TODO
+            const expression = ''; // encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
+            const moe_expression = ''; // encodeURIComponent(JSON.stringify(getMoeExpressionFromAttr(source_dataset, attr)));
 
+            const url = `https://kb7eqof39c.execute-api.us-west-2.amazonaws.com/dev/collate?file_list=${files}&expression=${expression}&moe_expression=${moe_expression}&dataset=${source_dataset}`;
 
+            return fetch(url)
+                .then(res => res.json)
+                .then(fetched_data => {
+                    console.log(fetched_data);
 
-            function processChunkedResponse(response) {
-
-
-                var reader = response.body.getReader();
-                var decoder = new TextDecoder();
-                let leftover = '';
-
-                return readChunk();
-
-                function readChunk() {
-                    return reader.read().then(appendChunks);
-                }
-
-                function appendChunks(result) {
-                    var chunk = leftover + decoder.decode(result.value || new Uint8Array(), { stream: !result.done });
-
-                    const end_bracket = chunk.lastIndexOf('}');
-
-                    leftover = chunk.slice(end_bracket + 1);
-                    chunk = chunk.slice(0, end_bracket + 1);
-
-                    let parsed;
-                    if (chunk) {
-                        try {
-                            parsed = chunk.split("}{");
-                            parsed = parsed.join("},{");
-                            parsed = JSON.parse("[" + parsed + "]");
+                    Object.keys(fetched_data).forEach(key => {
+                        window.key_store[`${source_dataset}:${attr}:${key}`] = fetched_data[key];
+                        if (!key.includes('_moe')) {
+                            fetched_data[`${source_dataset}:${attr}:${key}`] = fetched_data[key];
                         }
-                        catch (e) {
-                            console.log(e);
-                            console.log(parsed);
-                            console.log(end_bracket);
-                            console.log(leftover);
-                            return;
-                        }
-                        const res = Object.assign({}, ...parsed);
-                        const fetched_data = {};
-                        Object.keys(res).forEach(key => {
-                            window.key_store[`${source_dataset}:${attr}:${key}`] = res[key];
-                            if (!key.includes('_moe')) {
-                                fetched_data[`${source_dataset}:${attr}:${key}`] = res[key];
-                            }
-                        });
+                    });
 
-                        console.log(fetched_data);
+                    console.log(fetched_data);
 
-                        // convert the raw numbers to colors for styling
-                        const stops = convertDataToStops(fetched_data);
+                    // convert the raw numbers to colors for styling
+                    const stops = convertDataToStops(fetched_data);
 
-                        // prevent this dispatch when no new data of value
-                        dispatch(updateStyleData(stops));
-                    }
+                    // prevent this dispatch when no new data of value
+                    dispatch(updateStyleData(stops));
 
-                    if (result.done) {
-                        console.log('returning');
-                        leftover = '';
-                        return;
-                    }
-                    else {
-                        console.log('recursing');
-                        return readChunk();
-                    }
+                });
 
-
-
-                }
-            }
 
         }
 
-
-
     };
+
+
+
 }
+
 
 
 function getExpressionFromAttr(dataset, attr) {
