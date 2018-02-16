@@ -122,6 +122,9 @@ export function thunkUpdateGeoids(geoids) {
         // call to lambda functions to retrieve data
         function fetchRemoteData(file_list, attr, source_dataset) {
 
+            // TODO
+            return;
+            
             // short circuit when no geoids to fetch remotely
             if (file_list.length === 0) {
                 return Promise.resolve({});

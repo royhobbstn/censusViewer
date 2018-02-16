@@ -48,8 +48,8 @@ export const configuration = {
     },
     tiles: 's3-us-west-2.amazonaws.com/small-tiles',
     startup: {
-        source_geography: 'county',
-        source_dataset: 'acs1216',
+        source_geography: 'bg',
+        source_dataset: 'acs1115',
         selected_attr: 'mhi',
     }
 

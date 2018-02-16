@@ -25,20 +25,45 @@ class Map extends Component {
     window.map.on('load', () => {
 
       const updateTiles = _.throttle(() => {
-        // get all geoids
-        const features = window.map.queryRenderedFeatures({ layers: ['tiles-polygons'] });
-        const geoids = features.map(d => {
-          return d.properties.GEOID;
+        
+        // get all clusters
+        const features = window.map.querySourceFeatures('clusters', {
+            sourceLayer: 'main'
         });
 
-        console.log(features);
-        this.props.updateGeoids(Array.from(new Set(geoids)));
+        const clusters = new Set();
+        
+        features.forEach(feature=> {
+          clusters.add(feature.properties.c);
+        });
+        
+        console.log(clusters);
+        
+        // TODO
+        return;
+
+        this.props.updateGeoids(Array.from(clusters));
       }, 500);
 
       window.map.addSource('tiles', {
         "type": "vector",
         "tiles": [`https://${configuration.tiles}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
+      
+      window.map.addSource('clusters', {
+        "type": "vector",
+        "tiles": [`https://${configuration.tiles}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
+      });
+      
+      
+      window.map.addLayer({
+        'id': 'cluster-polygons',
+        'type': 'fill',
+        'source': 'clusters',
+        'source-layer': 'main',
+        'filter': ["==", "$type", "LineString"]  // nonsense filter which ensures nothing is visible
+      });
+
 
       window.map.addLayer({
         'id': 'tiles-polygons',
@@ -118,6 +143,12 @@ class Map extends Component {
         "tiles": [`https://${configuration.tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
 
+      window.map.removeSource('clusters');
+      window.map.addSource('clusters', {
+        "type": "vector",
+        "tiles": [`https://${configuration.tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
+      });
+      
       return false;
     }
 
