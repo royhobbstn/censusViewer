@@ -19,7 +19,7 @@ class Map extends Component {
       zoom: 7,
       maxZoom: 11,
       minZoom: 3,
-      // preserveDrawingBuffer: true
+      preserveDrawingBuffer: true
     });
 
     window.map.on('load', () => {
@@ -38,11 +38,8 @@ class Map extends Component {
         });
         
         console.log(clusters);
-        
-        // TODO
-        return;
 
-        this.props.updateGeoids(Array.from(clusters));
+        this.props.updateClusters(Array.from(clusters));
       }, 500);
 
       window.map.addSource('tiles', {

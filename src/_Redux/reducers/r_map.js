@@ -13,7 +13,8 @@ const default_state = {
   mouseover_statistic: undefined,
   mouseover_moe: undefined,
   mouseover_label: undefined,
-  file_list: []
+  in_progress_cluster_list: [],
+  cluster_done_list: []
 };
 
 const map = (
@@ -33,7 +34,7 @@ const map = (
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined,
-        file_list: []
+        in_progress_cluster_list: []
       });
     case 'UPDATE_GEOGRAPHY':
       console.log('updating geography');
@@ -43,7 +44,7 @@ const map = (
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined,
-        file_list: []
+        in_progress_cluster_list: []
       });
     case 'UPDATE_THEME':
       console.log('updating theme');
@@ -53,7 +54,7 @@ const map = (
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined,
-        file_list: []
+        in_progress_cluster_list: []
       });
     case 'UPDATE_MOUSEOVER':
       return Object.assign({}, state, {
@@ -62,12 +63,14 @@ const map = (
         mouseover_label: action.mouseover_label
       });
     case 'ADD_TO_IN_PROGRESS':
-      return Object.assign({}, state, { file_list: [...state.file_list, ...action.arr] });
+      return Object.assign({}, state, { in_progress_cluster_list: [...state.in_progress_cluster_list, ...action.arr] });
     case 'REMOVE_FROM_IN_PROGRESS':
-      const new_file_list = state.file_list.filter(file => {
-        return !action.arr.includes(file);
+      const new_in_progress_cluster_list = state.in_progress_cluster_list.filter(cluster => {
+        return !action.arr.includes(cluster);
       });
-      return Object.assign({}, state, { file_list: new_file_list });
+      return Object.assign({}, state, { in_progress_cluster_list: new_in_progress_cluster_list });
+    case 'ADD_TO_CLUSTERS_DONE':
+      return Object.assign({}, state, { cluster_done_list: [...state.cluster_done_list, ...action.arr] });
     default:
       return state;
   }
