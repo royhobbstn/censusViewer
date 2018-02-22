@@ -25,19 +25,17 @@ class Map extends Component {
     window.map.on('load', () => {
 
       const updateTiles = _.throttle(() => {
-        
+
         // get all clusters
         const features = window.map.querySourceFeatures('clusters', {
-            sourceLayer: 'main'
+          sourceLayer: 'main'
         });
 
         const clusters = new Set();
-        
-        features.forEach(feature=> {
+
+        features.forEach(feature => {
           clusters.add(feature.properties.c);
         });
-        
-        console.log(clusters);
 
         this.props.updateClusters(Array.from(clusters));
       }, 500);
@@ -46,19 +44,19 @@ class Map extends Component {
         "type": "vector",
         "tiles": [`https://${configuration.tiles}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
-      
+
       window.map.addSource('clusters', {
         "type": "vector",
-        "tiles": [`https://${configuration.tiles}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
+        "tiles": [`https://${configuration.cluster_tiles}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
       });
-      
-      
+
+
       window.map.addLayer({
         'id': 'cluster-polygons',
         'type': 'fill',
         'source': 'clusters',
         'source-layer': 'main',
-        'filter': ["==", "$type", "LineString"]  // nonsense filter which ensures nothing is visible
+        'filter': ["==", "$type", "LineString"] // nonsense filter which ensures nothing is visible
       });
 
 
@@ -68,22 +66,9 @@ class Map extends Component {
         'source': 'tiles',
         'source-layer': 'main',
         'paint': {
-          'fill-color': 'black',
           'fill-opacity': 0.75
         }
-      }, "admin-2-boundaries-dispute");
-
-      // window.map.addLayer({
-      //   'id': 'tiles-lines',
-      //   'type': 'line',
-      //   'source': 'tiles',
-      //   'source-layer': 'main',
-      //   'paint': {
-      //     'line-color': 'grey',
-      //     'line-width': 1,
-      //     'line-offset': 0.5
-      //   }
-      // }, "admin-2-boundaries-dispute");
+      } /*, "admin-2-boundaries-dispute"*/ );
 
       window.map.on('moveend', (e) => {
         updateTiles();
@@ -111,8 +96,6 @@ class Map extends Component {
 
   renderMap = _.throttle((drawn_stops) => {
 
-    console.log('render!!!');
-
     // Update Shape Layer
     window.map.setPaintProperty('tiles-polygons', 'fill-color', {
       property: 'GEOID',
@@ -120,12 +103,6 @@ class Map extends Component {
       stops: drawn_stops
     });
 
-    // // Update Outline Layer
-    // window.map.setPaintProperty('tiles-lines', 'line-color', {
-    //   property: 'GEOID',
-    //   type: 'categorical',
-    //   stops: drawn_stops
-    // });
   }, 1000);
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -143,9 +120,9 @@ class Map extends Component {
       window.map.removeSource('clusters');
       window.map.addSource('clusters', {
         "type": "vector",
-        "tiles": [`https://${configuration.tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
+        "tiles": [`https://${configuration.cluster_tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
       });
-      
+
       return false;
     }
 

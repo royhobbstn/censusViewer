@@ -64,9 +64,6 @@ export function thunkUpdateClusters(clusters) {
     const in_progress_cluster_list = state.map.in_progress_cluster_list;
     const cluster_done_list = state.map.cluster_done_list;
 
-    console.log('in progress: ', in_progress_cluster_list);
-    console.log('clusters done: ', cluster_done_list);
-
     // clusters_to_get = clusters - in_progress_cluster_list - cluster_done_list
     const clusters_to_get = clusters.filter(cluster => {
 
@@ -81,13 +78,10 @@ export function thunkUpdateClusters(clusters) {
       return;
     }
 
-    console.log('time to get these new clusters:', clusters_to_get);
-
     dispatch(addToInProgressList(clusters_to_get));
 
     fetchRemoteData(clusters_to_get, attr, source_dataset)
       .then(res => {
-        console.log('complete:', res);
         // dispatch event to free up in progress clusters
         dispatch(removeFromInProgressList(clusters_to_get));
       })
@@ -101,8 +95,6 @@ export function thunkUpdateClusters(clusters) {
     // call to lambda functions to retrieve data
     function fetchRemoteData(clusters_to_get, attr, source_dataset) {
 
-      console.log('about to fetch');
-
       const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
       const clusters_to_get_encoded = encodeURIComponent(JSON.stringify(clusters_to_get));
 
@@ -111,9 +103,6 @@ export function thunkUpdateClusters(clusters) {
       return fetch(url)
         .then(res => res.json())
         .then(fetched_data => {
-          console.log(fetched_data);
-
-
 
           // convert the raw numbers to colors for styling
           const stops = convertDataToStops(fetched_data);

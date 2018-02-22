@@ -47,6 +47,7 @@ export const configuration = {
         }
     },
     tiles: 's3-us-west-2.amazonaws.com/small-tiles',
+    cluster-tiles: 's3-us-west-2.amazonaws.com/cluster-tiles',
     startup: {
         source_geography: 'bg',
         source_dataset: 'acs1115',

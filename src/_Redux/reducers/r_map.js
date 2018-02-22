@@ -34,7 +34,8 @@ const map = (
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined,
-        in_progress_cluster_list: []
+        in_progress_cluster_list: [],
+        cluster_done_list: []
       });
     case 'UPDATE_GEOGRAPHY':
       console.log('updating geography');
@@ -44,7 +45,8 @@ const map = (
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined,
-        in_progress_cluster_list: []
+        in_progress_cluster_list: [],
+        cluster_done_list: []
       });
     case 'UPDATE_THEME':
       console.log('updating theme');
@@ -54,7 +56,8 @@ const map = (
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined,
-        in_progress_cluster_list: []
+        in_progress_cluster_list: [],
+        cluster_done_list: []
       });
     case 'UPDATE_MOUSEOVER':
       return Object.assign({}, state, {
