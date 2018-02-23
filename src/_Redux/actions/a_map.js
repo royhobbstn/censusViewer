@@ -1,7 +1,8 @@
-export function updateStyleData(stops) {
+export function updateStyleData(stops, clusters) {
   return {
     type: 'UPDATE_POLYGON_STYLE',
-    stops
+    stops,
+    clusters
   };
 }
 

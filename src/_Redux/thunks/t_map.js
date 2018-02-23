@@ -80,47 +80,35 @@ export function thunkUpdateClusters(clusters) {
 
     dispatch(addToInProgressList(clusters_to_get));
 
-    fetchRemoteData(clusters_to_get, attr, source_dataset)
-      .then(res => {
-        // dispatch event to free up in progress clusters
-        dispatch(removeFromInProgressList(clusters_to_get));
+    const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
+    const clusters_to_get_encoded = encodeURIComponent(JSON.stringify(clusters_to_get));
+
+    const url = `https://d0ahqlmxvi.execute-api.us-west-2.amazonaws.com/dev/retrieve?expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&clusters=${clusters_to_get_encoded}`;
+
+    return fetch(url)
+      .then(res => res.json())
+      .then(fetched_data => {
+
+        // convert the raw numbers to colors for styling
+        const stops = convertDataToStops(fetched_data);
+
+        // updates style, removes from clusters-in-progress, adds to clusters-done
+        dispatch(updateStyleData(stops, clusters_to_get));
+
       })
       .catch(err => {
         console.error('err:', err);
-        // dispatch event to free up in progress clusters
+        // removes from clusters-in-progress
         dispatch(removeFromInProgressList(clusters_to_get));
       });
 
 
-    // call to lambda functions to retrieve data
-    function fetchRemoteData(clusters_to_get, attr, source_dataset) {
-
-      const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
-      const clusters_to_get_encoded = encodeURIComponent(JSON.stringify(clusters_to_get));
-
-      const url = `https://d0ahqlmxvi.execute-api.us-west-2.amazonaws.com/dev/retrieve?expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&clusters=${clusters_to_get_encoded}`;
-
-      return fetch(url)
-        .then(res => res.json())
-        .then(fetched_data => {
-
-          // convert the raw numbers to colors for styling
-          const stops = convertDataToStops(fetched_data);
-
-          // prevent this dispatch when no new data of value
-          dispatch(updateStyleData(stops));
-          dispatch(clustersNowDone(clusters_to_get)); // TODO combine with above dispatch
-
-        });
-
-
-    }
-
   };
 
-
-
 }
+
+
+
 
 
 

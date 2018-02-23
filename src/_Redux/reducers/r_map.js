@@ -2,11 +2,9 @@
 
 import { configuration } from '../../_Config_JSON/configuration.mjs';
 
-const default_stops = {};
-
 
 const default_state = {
-  polygon_stops: default_stops,
+  polygon_stops: {},
   source_geography: configuration.startup.source_geography,
   source_dataset: configuration.startup.source_dataset,
   selected_attr: configuration.startup.selected_attr,
@@ -23,8 +21,14 @@ const map = (
 ) => {
   switch (action.type) {
     case 'UPDATE_POLYGON_STYLE':
+      const updated_in_progress_cluster_list = state.in_progress_cluster_list.filter(cluster => {
+        return !action.clusters.includes(cluster);
+      });
+      const updated_cluster_done_list = [...state.cluster_done_list, ...action.clusters];
       return Object.assign({}, state, {
-        polygon_stops: Object.assign({}, state.polygon_stops, action.stops)
+        polygon_stops: Object.assign({}, state.polygon_stops, action.stops),
+        in_progress_cluster_list: updated_in_progress_cluster_list,
+        cluster_done_list: updated_cluster_done_list
       });
     case 'UPDATE_DATASET':
       console.log('updating dataset');
