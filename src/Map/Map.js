@@ -24,7 +24,7 @@ class Map extends Component {
 
     window.map.on('load', () => {
 
-      const updateTiles = _.throttle(() => {
+      const updateTiles = _.debounce(() => {
 
         // get all clusters
         const features = window.map.querySourceFeatures('clusters', {
@@ -111,17 +111,30 @@ class Map extends Component {
     if (this.props.source_geography !== nextProps.source_geography || this.props.source_dataset !== nextProps.source_dataset) {
 
       // geography or year changed.  update source and redraw
+
       window.map.removeSource('tiles');
+
       window.map.addSource('tiles', {
         "type": "vector",
         "tiles": [`https://${configuration.tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
 
+      console.log('----');
+      console.log(window.map.querySourceFeatures('clusters', {
+        sourceLayer: 'main'
+      }));
       window.map.removeSource('clusters');
+      console.log(window.map.querySourceFeatures('clusters', {
+        sourceLayer: 'main'
+      }));
+
       window.map.addSource('clusters', {
         "type": "vector",
         "tiles": [`https://${configuration.cluster_tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
       });
+      console.log(window.map.querySourceFeatures('clusters', {
+        sourceLayer: 'main'
+      }));
 
       return false;
     }
