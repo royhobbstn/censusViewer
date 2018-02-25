@@ -34,8 +34,6 @@ export function thunkChangeMouseover(geoid, name) {
     // acs1115:mhi:05000US08005:63265
     // acs1115:mhi:05000US08005_moe:942
 
-    console.log(name);
-
     const state = getState();
     const source_dataset = state.map.source_dataset;
     const sumlev = getSumlevFromGeography(state.map.source_geography);
@@ -86,7 +84,7 @@ export function thunkUpdateClusters(clusters) {
 
     const url = `https://d0ahqlmxvi.execute-api.us-west-2.amazonaws.com/dev/retrieve?expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&clusters=${clusters_to_get_encoded}`;
 
-    return fetch(url)
+    return fetch(url, { compress: true })
       .then(res => res.json())
       .then(fetched_data => {
 

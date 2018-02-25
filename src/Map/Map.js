@@ -156,8 +156,6 @@ function datasetToYear(dataset) {
 
 function getLabel(geoid, name) {
 
-  console.log(geoid);
-
   switch (geoid.length) {
     case 12:
       // block group: 081230025011
@@ -169,8 +167,10 @@ function getLabel(geoid, name) {
       // place
       return `${name}, ${state_lookup[geoid.slice(0,2)]}`;
     case 5:
+      // county
       return `${name} County, ${state_lookup[geoid.slice(0,2)]}`;
     case 2:
+      // state
       return name;
     default:
       return '';
