@@ -34,6 +34,8 @@ export function thunkChangeMouseover(geoid, name) {
     // acs1115:mhi:05000US08005:63265
     // acs1115:mhi:05000US08005_moe:942
 
+    console.log(name);
+
     const state = getState();
     const source_dataset = state.map.source_dataset;
     const sumlev = getSumlevFromGeography(state.map.source_geography);
@@ -44,7 +46,6 @@ export function thunkChangeMouseover(geoid, name) {
     const obj = {
       mouseover_statistic: window.key_store[formatted_geoid],
       mouseover_label: name,
-      mouseover_moe: window.key_store[formatted_geoid + '_moe']
     };
 
     dispatch(changeMouseover(obj));
@@ -89,6 +90,9 @@ export function thunkUpdateClusters(clusters) {
       .then(res => res.json())
       .then(fetched_data => {
 
+        // add data to global window.keystore
+        addDataToKeyStore(fetched_data, state);
+
         // convert the raw numbers to colors for styling
         const stops = convertDataToStops(fetched_data);
 
@@ -108,7 +112,18 @@ export function thunkUpdateClusters(clusters) {
 }
 
 
+function addDataToKeyStore(fetched_data, state) {
 
+  const source_dataset = state.map.source_dataset;
+  const sumlev = getSumlevFromGeography(state.map.source_geography);
+  const attr = state.map.selected_attr;
+
+  Object.keys(fetched_data).forEach(geoid => {
+    const formatted_geoid = `${source_dataset}:${attr}:${sumlev}00US${geoid}`;
+    window.key_store[formatted_geoid] = fetched_data[geoid];
+  });
+
+}
 
 
 

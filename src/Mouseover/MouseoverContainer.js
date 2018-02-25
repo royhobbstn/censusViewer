@@ -4,17 +4,16 @@ import { connect } from 'react-redux';
 import Mouseover from './Mouseover.js';
 
 const mapStateToProps = state => {
-    return {
-        mouseover_statistic: state.map.mouseover_statistic,
-        mouseover_moe: state.map.mouseover_moe,
-        mouseover_label: state.map.mouseover_label,
-        source_dataset: state.map.source_dataset,
-        selected_attr: state.map.selected_attr
-    };
+  return {
+    mouseover_statistic: state.map.mouseover_statistic,
+    mouseover_label: state.map.mouseover_label,
+    source_dataset: state.map.source_dataset,
+    selected_attr: state.map.selected_attr
+  };
 };
 
 const mapDispatchToProps = dispatch => {
-    return {};
+  return {};
 };
 
 const MouseoverContainer = connect(mapStateToProps, mapDispatchToProps)(Mouseover);

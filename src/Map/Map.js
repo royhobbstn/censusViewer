@@ -7,7 +7,7 @@ import key from './mapbox_api_key.js';
 import _ from 'lodash';
 import equal from 'fast-deep-equal';
 import { configuration } from '../_Config_JSON/configuration.mjs';
-
+import { state_lookup } from '../_Config_JSON/state_lookup.js';
 class Map extends Component {
   componentDidMount() {
 
@@ -82,8 +82,10 @@ class Map extends Component {
         window.map.getCanvas().style.cursor = 'pointer';
         const geoid = e.features[0].properties.GEOID;
         const name = e.features[0].properties.NAME;
-
-        this.props.updateMouseover(geoid, name);
+        const label = getLabel(geoid, name);
+        if (geoid && label) {
+          this.props.updateMouseover(geoid, label);
+        }
       }, 32));
 
     });
@@ -150,4 +152,28 @@ export default Map;
 
 function datasetToYear(dataset) {
   return configuration.datasets[dataset].year;
+}
+
+function getLabel(geoid, name) {
+
+  console.log(geoid);
+
+  switch (geoid.length) {
+    case 12:
+      // block group: 081230025011
+      return `BG ${geoid.slice(-1)}, Tract ${geoid.slice(-7,-1)}, ${state_lookup[geoid.slice(0,2)]}`;
+    case 11:
+      // tract: 08005007703
+      return `Tract ${geoid.slice(-6)}, ${state_lookup[geoid.slice(0,2)]}`;
+    case 7:
+      // place
+      return `${name}, ${state_lookup[geoid.slice(0,2)]}`;
+    case 5:
+      return `${name} County, ${state_lookup[geoid.slice(0,2)]}`;
+    case 2:
+      return name;
+    default:
+      return '';
+  }
+
 }

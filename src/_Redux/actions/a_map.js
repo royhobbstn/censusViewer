@@ -6,11 +6,10 @@ export function updateStyleData(stops, clusters) {
   };
 }
 
-export function changeMouseover({ mouseover_statistic, mouseover_moe, mouseover_label }) {
+export function changeMouseover({ mouseover_statistic, mouseover_label }) {
   return {
     type: 'UPDATE_MOUSEOVER',
     mouseover_statistic,
-    mouseover_moe,
     mouseover_label
   };
 }

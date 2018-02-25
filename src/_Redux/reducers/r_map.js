@@ -9,7 +9,6 @@ const default_state = {
   source_dataset: configuration.startup.source_dataset,
   selected_attr: configuration.startup.selected_attr,
   mouseover_statistic: undefined,
-  mouseover_moe: undefined,
   mouseover_label: undefined,
   in_progress_cluster_list: [],
   cluster_done_list: []
@@ -66,7 +65,6 @@ const map = (
     case 'UPDATE_MOUSEOVER':
       return Object.assign({}, state, {
         mouseover_statistic: action.mouseover_statistic,
-        mouseover_moe: action.mouseover_moe,
         mouseover_label: action.mouseover_label
       });
     case 'ADD_TO_IN_PROGRESS':
