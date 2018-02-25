@@ -25,7 +25,6 @@ class Map extends Component {
     window.map.on('load', () => {
 
       const updateTiles = _.debounce(() => {
-
         // get all clusters
         const features = window.map.querySourceFeatures('clusters', {
           sourceLayer: 'main'
@@ -50,7 +49,6 @@ class Map extends Component {
         "tiles": [`https://${configuration.cluster_tiles}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
       });
 
-
       window.map.addLayer({
         'id': 'cluster-polygons',
         'type': 'fill',
@@ -58,7 +56,6 @@ class Map extends Component {
         'source-layer': 'main',
         'filter': ["==", "$type", "LineString"] // nonsense filter which ensures nothing is visible
       });
-
 
       window.map.addLayer({
         'id': 'tiles-polygons',
@@ -89,25 +86,17 @@ class Map extends Component {
         this.props.updateMouseover(geoid, name);
       }, 32));
 
-
     });
 
   }
 
   renderMap = _.throttle((drawn_stops) => {
 
-    // Update Shape Layer
-    console.time('render');
     window.map.setPaintProperty('tiles-polygons', 'fill-color', {
       property: 'GEOID',
       type: 'categorical',
       stops: drawn_stops
     });
-    console.timeEnd('render');
-
-    // console.time('render');
-    // window.map.setPaintProperty('tiles-polygons', 'fill-color', drawn_stops);
-    // console.timeEnd('render');
 
   }, 1000);
 
@@ -133,11 +122,7 @@ class Map extends Component {
       return false;
     }
 
-
-
     if (!equal(this.props.polygon_stops, nextProps.polygon_stops)) {
-
-      console.time('end');
       // convert object keys:values to stops array
       const stops = Object.keys(nextProps.polygon_stops).map(key => {
         return [key, nextProps.polygon_stops[key]];
@@ -146,21 +131,9 @@ class Map extends Component {
       const drawn_stops = (stops.length) ? stops : [
         ["0", 'black']
       ];
-      console.timeEnd('end');
+
       this.renderMap(drawn_stops);
-
-      // console.time('start');
-      // // convert object keys:values to stops array
-      // const stops = Object.keys(nextProps.polygon_stops).map(key => {
-      //   return [key, nextProps.polygon_stops[key]];
-      // });
-      // const drawn_stops = ["match", ["get", "GEOID"],
-      //   ...[].concat(...stops), "rgba(0,0,0,0)"
-      // ];
-      // console.timeEnd('start');
-      // this.renderMap(drawn_stops);
     }
-
 
 
     return false;
