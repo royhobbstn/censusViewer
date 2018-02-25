@@ -17,7 +17,7 @@ class Map extends Component {
       style: 'mapbox://styles/mapbox/dark-v9',
       center: [-104.9, 39.75],
       zoom: 7,
-      maxZoom: 11,
+      maxZoom: 13,
       minZoom: 3,
       preserveDrawingBuffer: true
     });
@@ -68,7 +68,7 @@ class Map extends Component {
         'paint': {
           'fill-opacity': 0.75
         }
-      } /*, "admin-2-boundaries-dispute"*/ );
+      }, "admin-2-boundaries-dispute");
 
       window.map.on('moveend', (e) => {
         updateTiles();
@@ -81,13 +81,13 @@ class Map extends Component {
         }
       });
 
-      // window.map.on('mousemove', 'tiles-polygons', _.debounce((e) => {
-      //   window.map.getCanvas().style.cursor = 'pointer';
-      //   const geoid = e.features[0].properties.GEOID;
-      //   const name = e.features[0].properties.NAME;
+      window.map.on('mousemove', 'tiles-polygons', _.throttle((e) => {
+        window.map.getCanvas().style.cursor = 'pointer';
+        const geoid = e.features[0].properties.GEOID;
+        const name = e.features[0].properties.NAME;
 
-      //   this.props.updateMouseover(geoid, name);
-      // }, 32));
+        this.props.updateMouseover(geoid, name);
+      }, 32));
 
 
     });
@@ -97,11 +97,17 @@ class Map extends Component {
   renderMap = _.throttle((drawn_stops) => {
 
     // Update Shape Layer
+    console.time('render');
     window.map.setPaintProperty('tiles-polygons', 'fill-color', {
       property: 'GEOID',
       type: 'categorical',
       stops: drawn_stops
     });
+    console.timeEnd('render');
+
+    // console.time('render');
+    // window.map.setPaintProperty('tiles-polygons', 'fill-color', drawn_stops);
+    // console.timeEnd('render');
 
   }, 1000);
 
@@ -109,9 +115,7 @@ class Map extends Component {
     // redraw layer on redux style change
 
     if (this.props.source_geography !== nextProps.source_geography || this.props.source_dataset !== nextProps.source_dataset) {
-
       // geography or year changed.  update source and redraw
-
       window.map.removeSource('tiles');
 
       window.map.addSource('tiles', {
@@ -119,22 +123,12 @@ class Map extends Component {
         "tiles": [`https://${configuration.tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
 
-      console.log('----');
-      console.log(window.map.querySourceFeatures('clusters', {
-        sourceLayer: 'main'
-      }));
       window.map.removeSource('clusters');
-      console.log(window.map.querySourceFeatures('clusters', {
-        sourceLayer: 'main'
-      }));
 
       window.map.addSource('clusters', {
         "type": "vector",
         "tiles": [`https://${configuration.cluster_tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
       });
-      console.log(window.map.querySourceFeatures('clusters', {
-        sourceLayer: 'main'
-      }));
 
       return false;
     }
@@ -143,17 +137,28 @@ class Map extends Component {
 
     if (!equal(this.props.polygon_stops, nextProps.polygon_stops)) {
 
+      console.time('end');
       // convert object keys:values to stops array
       const stops = Object.keys(nextProps.polygon_stops).map(key => {
         return [key, nextProps.polygon_stops[key]];
       });
-
       // to avoid 'must have stops' errors
       const drawn_stops = (stops.length) ? stops : [
         ["0", 'black']
       ];
-
+      console.timeEnd('end');
       this.renderMap(drawn_stops);
+
+      // console.time('start');
+      // // convert object keys:values to stops array
+      // const stops = Object.keys(nextProps.polygon_stops).map(key => {
+      //   return [key, nextProps.polygon_stops[key]];
+      // });
+      // const drawn_stops = ["match", ["get", "GEOID"],
+      //   ...[].concat(...stops), "rgba(0,0,0,0)"
+      // ];
+      // console.timeEnd('start');
+      // this.renderMap(drawn_stops);
     }
 
 
