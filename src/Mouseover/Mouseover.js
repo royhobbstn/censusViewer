@@ -1,11 +1,12 @@
 import React from 'react';
-import { datatree } from '../_Config_JSON/datatree.mjs';
+import { datatree } from '../_Config_JSON/datatree.js';
 
 const mouseover_style = { position: 'absolute', 'zIndex': 1000, bottom: '32px', borderRadius: '3px', padding: '5px', left: '9px', backgroundColor: 'white', minWidth: '160px' };
 
 const Mouseover = ({
   mouseover_statistic,
   mouseover_label,
+  mouseover_moe,
   source_dataset,
   selected_attr
 }) => {
@@ -15,11 +16,13 @@ const Mouseover = ({
     return (<span style={{display: 'none'}}></span>);
   }
   else {
+    const moe_span = (mouseover_moe === undefined) ? '' : <span>&plusmn;&nbsp;{formatNumber(mouseover_moe, source_dataset, selected_attr)}</span>;
+
     return (
       <div style={mouseover_style}>
         <span>{mouseover_label}</span><br />
         <span>{formatNumber(mouseover_statistic, source_dataset, selected_attr)}&nbsp;</span>
-        <span>&plusmn;&nbsp;{formatNumber(5, /*mouseover_moe,*/ source_dataset, selected_attr)}</span>
+        {moe_span}
         </div>
     );
   }

@@ -1,7 +1,11 @@
 // node version 9
 // node --experimental-modules calculate-breaks.mjs
 
-import { configuration } from '../src/_Config_JSON/configuration.mjs';
+
+
+// TODO kinda need to know how many clusters so can survey all the data
+
+
 import { datatree } from '../src/_Config_JSON/datatree.mjs';
 import table2seq from '../../s3-db-lambda-collate/reference/acs1115_table2seq.json';
 

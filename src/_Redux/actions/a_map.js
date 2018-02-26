@@ -6,11 +6,20 @@ export function updateStyleData(stops, clusters) {
   };
 }
 
-export function changeMouseover({ mouseover_statistic, mouseover_label }) {
+export function updateMoeData(stops, clusters) {
+  return {
+    type: 'UPDATE_MOE_DATA',
+    stops,
+    clusters
+  };
+}
+
+export function changeMouseover({ mouseover_statistic, mouseover_label, mouseover_moe }) {
   return {
     type: 'UPDATE_MOUSEOVER',
     mouseover_statistic,
-    mouseover_label
+    mouseover_label,
+    mouseover_moe
   };
 }
 
@@ -21,6 +30,14 @@ export function addToInProgressList(arr) {
   };
 }
 
+export function addToMoeInProgressList(arr) {
+  return {
+    type: 'ADD_TO_MOE_IN_PROGRESS',
+    arr
+  };
+}
+
+
 export function removeFromInProgressList(arr) {
   return {
     type: 'REMOVE_FROM_IN_PROGRESS',
@@ -28,9 +45,9 @@ export function removeFromInProgressList(arr) {
   };
 }
 
-export function clustersNowDone(arr) {
+export function removeFromMoeInProgressList(arr) {
   return {
-    type: 'ADD_TO_CLUSTERS_DONE',
+    type: 'REMOVE_FROM_MOE_IN_PROGRESS',
     arr
   };
 }

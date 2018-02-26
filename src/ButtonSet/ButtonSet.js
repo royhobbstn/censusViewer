@@ -2,8 +2,8 @@ import React from 'react';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
-import { datatree } from '../_Config_JSON/datatree.mjs';
-import { configuration } from '../_Config_JSON/configuration.mjs';
+import { datatree } from '../_Config_JSON/datatree.js';
+import { configuration } from '../_Config_JSON/configuration.js';
 
 const dataset_style = { position: 'absolute', 'zIndex': 1000, top: '10px', left: '10px', backgroundColor: 'white', width: '160px' };
 
@@ -12,24 +12,24 @@ const geography_style = { position: 'absolute', 'zIndex': 1000, top: '10px', lef
 const theme_style = { position: 'absolute', 'zIndex': 1000, top: '10px', left: '390px', backgroundColor: 'white', width: '240px' };
 
 const ButtonSet = ({
-    handleDatasetChange,
-    handleGeographyChange,
-    handleThemeChange,
-    source_dataset,
-    source_geography,
-    selected_attr
+  handleDatasetChange,
+  handleGeographyChange,
+  handleThemeChange,
+  source_dataset,
+  source_geography,
+  selected_attr
 }) => {
 
-    const themes = Object.keys(datatree[source_dataset]).map(key => {
-        return { value: key, label: datatree[source_dataset][key]['verbose'] };
-    });
+  const themes = Object.keys(datatree[source_dataset]).map(key => {
+    return { value: key, label: datatree[source_dataset][key]['verbose'] };
+  });
 
-    const options = Object.keys(configuration.datasets).map(dataset => {
-        return { value: configuration.datasets[dataset].id, label: configuration.datasets[dataset].label };
-    });
+  const options = Object.keys(configuration.datasets).map(dataset => {
+    return { value: configuration.datasets[dataset].id, label: configuration.datasets[dataset].label };
+  });
 
-    return (
-        <div>
+  return (
+    <div>
             <div className="button_set" style={dataset_style}>
                 <Select
                     name="dataset-select"
@@ -64,7 +64,7 @@ const ButtonSet = ({
                 />
             </div>
         </div>
-    );
+  );
 };
 
 export default ButtonSet;

@@ -6,8 +6,10 @@ import mapboxgl from 'mapbox-gl';
 import key from './mapbox_api_key.js';
 import _ from 'lodash';
 import equal from 'fast-deep-equal';
-import { configuration } from '../_Config_JSON/configuration.mjs';
+import { configuration } from '../_Config_JSON/configuration.js';
 import { state_lookup } from '../_Config_JSON/state_lookup.js';
+
+
 class Map extends Component {
   componentDidMount() {
 
@@ -126,9 +128,13 @@ class Map extends Component {
 
     if (!equal(this.props.polygon_stops, nextProps.polygon_stops)) {
       // convert object keys:values to stops array
-      const stops = Object.keys(nextProps.polygon_stops).map(key => {
-        return [key, nextProps.polygon_stops[key]];
+
+      const values = convertDataToStops(nextProps.polygon_stops);
+
+      const stops = Object.keys(values).map(key => {
+        return [key, values[key]];
       });
+
       // to avoid 'must have stops' errors
       const drawn_stops = (stops.length) ? stops : [
         ["0", 'black']
@@ -136,7 +142,6 @@ class Map extends Component {
 
       this.renderMap(drawn_stops);
     }
-
 
     return false;
   }
@@ -176,4 +181,35 @@ function getLabel(geoid, name) {
       return '';
   }
 
+}
+
+
+
+function convertDataToStops(data) {
+  //
+  const p_stops = {};
+  Object.keys(data).forEach(key => {
+    p_stops[key] = getStopColor(data[key]);
+  });
+  return p_stops;
+}
+
+function getStopColor(value) {
+  //
+  if (!value) {
+    return 'black';
+  }
+
+  if (value > 100000) {
+    return 'green';
+  }
+  else if (value > 60000) {
+    return 'yellow';
+  }
+  else if (value > 40000) {
+    return 'orange';
+  }
+  else {
+    return 'red';
+  }
 }
