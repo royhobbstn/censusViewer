@@ -8,6 +8,7 @@ import _ from 'lodash';
 import equal from 'fast-deep-equal';
 import { configuration } from '../_Config_JSON/configuration.js';
 import { state_lookup } from '../_Config_JSON/state_lookup.js';
+import { style } from '../_Config_JSON/style.js';
 
 
 class Map extends Component {
@@ -16,12 +17,12 @@ class Map extends Component {
     mapboxgl.accessToken = key.key;
     window.map = new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/mapbox/dark-v9',
+      style,
       center: [-104.9, 39.75],
       zoom: 7,
       maxZoom: 13,
-      minZoom: 3,
-      preserveDrawingBuffer: true
+      minZoom: 3
+      //maxBounds: [[-73.9876, 40.7661], [-73.9397, 40.8002]] west south east north
     });
 
     window.map.on('load', () => {
@@ -65,9 +66,9 @@ class Map extends Component {
         'source': 'tiles',
         'source-layer': 'main',
         'paint': {
-          'fill-opacity': 0.75
+          'fill-opacity': 0.4
         }
-      }, "admin-2-boundaries-dispute");
+      }, "boundary_lines");
 
       window.map.on('moveend', (e) => {
         updateTiles();
@@ -131,14 +132,18 @@ class Map extends Component {
 
       const values = convertDataToStops(nextProps.polygon_stops);
 
-      const stops = Object.keys(values).map(key => {
+      const unique_geoids = Object.keys(values);
+
+      const stops = unique_geoids.map(key => {
         return [key, values[key]];
       });
 
       // to avoid 'must have stops' errors
       const drawn_stops = (stops.length) ? stops : [
-        ["0", 'black']
+        ["0", 'blue']
       ];
+
+      // window.map.setFilter('tiles-polygons', ['in', 'GEOID', ...unique_geoids]);
 
       this.renderMap(drawn_stops);
     }
@@ -196,20 +201,23 @@ function convertDataToStops(data) {
 
 function getStopColor(value) {
   //
-  if (!value) {
-    return 'black';
+  if (value === undefined) {
+    return "black";
   }
 
-  if (value > 100000) {
-    return 'green';
+  if (value > 90000) {
+    return '#016c59';
   }
-  else if (value > 60000) {
-    return 'yellow';
+  else if (value > 65000) {
+    return '#1c9099';
   }
-  else if (value > 40000) {
-    return 'orange';
+  else if (value > 45000) {
+    return '#67a9cf';
+  }
+  else if (value > 30000) {
+    return '#bdc9e1';
   }
   else {
-    return 'red';
+    return '#f6eff7';
   }
 }
