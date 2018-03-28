@@ -8,7 +8,7 @@ import _ from 'lodash';
 import equal from 'fast-deep-equal';
 import { configuration } from '../_Config_JSON/configuration.js';
 import { state_lookup } from '../_Config_JSON/state_lookup.js';
-import { style } from '../_Config_JSON/style.js';
+// import { style } from '../_Config_JSON/style.js';
 
 
 class Map extends Component {
@@ -17,7 +17,7 @@ class Map extends Component {
     mapboxgl.accessToken = key.key;
     window.map = new mapboxgl.Map({
       container: 'map',
-      style,
+      style: 'mapbox://styles/mapbox/dark-v9',
       center: [-104.9, 39.75],
       zoom: 7,
       maxZoom: 13,
@@ -66,9 +66,9 @@ class Map extends Component {
         'source': 'tiles',
         'source-layer': 'main',
         'paint': {
-          'fill-opacity': 0.4
+          'fill-opacity': 0.35
         }
-      }, "boundary_lines");
+      }, "admin-2-boundaries-dispute");
 
       window.map.on('moveend', (e) => {
         updateTiles();
