@@ -57,6 +57,8 @@ export function thunkUpdateClusters(clusters) {
     }).slice(0, 40); // only process 40 clusters at a time.
 
     if (clusters_to_get.length > 0) {
+      console.log(clusters_to_get);
+
       dispatch(addToInProgressList(clusters_to_get));
 
       const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
@@ -64,19 +66,19 @@ export function thunkUpdateClusters(clusters) {
 
       const url = `https://d0ahqlmxvi.execute-api.us-west-2.amazonaws.com/dev/retrieve?expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&clusters=${clusters_to_get_encoded}`;
 
-      return fetch(url)
-        .then(res => res.json())
-        .then(fetched_data => {
+      // return fetch(url)
+      //   .then(res => res.json())
+      //   .then(fetched_data => {
 
-          // updates style, removes from clusters-in-progress, adds to clusters-done
-          dispatch(updateStyleData(fetched_data, clusters_to_get));
+      //     // updates style, removes from clusters-in-progress, adds to clusters-done
+      //     dispatch(updateStyleData(fetched_data, clusters_to_get));
 
-        })
-        .catch(err => {
-          console.error('err:', err);
-          // removes from clusters-in-progress
-          dispatch(removeFromInProgressList(clusters_to_get));
-        });
+      //   })
+      //   .catch(err => {
+      //     console.error('err:', err);
+      //     // removes from clusters-in-progress
+      //     dispatch(removeFromInProgressList(clusters_to_get));
+      //   });
     }
 
     if (moe_clusters_to_get.length > 0) {
