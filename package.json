@@ -10,7 +10,7 @@
     "fast-deep-equal": "^1.0.0",
     "localforage": "^1.5.5",
     "lodash": "^4.17.4",
-    "mapbox-gl": "^0.42.2",
+    "mapbox-gl": "^0.44.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",

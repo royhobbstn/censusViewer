@@ -33,14 +33,19 @@ class Map extends Component {
           sourceLayer: 'main'
         });
 
+        const zoomlev = window.map.getZoom();
         const clusters = new Set();
 
         features.forEach(feature => {
-          clusters.add(feature.properties.c);
+          const cluster = feature.properties.cluster;
+          const feature_zoom = parseInt(cluster.split('_')[0], 10);
+          if (feature_zoom <= zoomlev) {
+            clusters.add(cluster);
+          }
         });
 
         this.props.updateClusters(Array.from(clusters));
-      }, 500);
+      }, 30);
 
       window.map.addSource('tiles', {
         "type": "vector",
@@ -58,7 +63,7 @@ class Map extends Component {
         'source': 'clusters',
         'source-layer': 'main',
         'filter': ["==", "$type", "LineString"] // nonsense filter which ensures nothing is visible
-      });
+      }, "admin-2-boundaries-dispute");
 
       window.map.addLayer({
         'id': 'tiles-polygons',
@@ -79,6 +84,12 @@ class Map extends Component {
         if (e.isSourceLoaded) {
           updateTiles();
         }
+      });
+
+      window.map.on('zoomstart', (e) => {
+        console.log('zoomstart');
+
+        const zoomlev = window.map.getZoom();
       });
 
       window.map.on('mousemove', 'tiles-polygons', _.throttle((e) => {
@@ -110,6 +121,9 @@ class Map extends Component {
 
     if (this.props.source_geography !== nextProps.source_geography || this.props.source_dataset !== nextProps.source_dataset) {
       // geography or year changed.  update source and redraw
+
+      window.map.removeLayer('tiles-polygons');
+
       window.map.removeSource('tiles');
 
       window.map.addSource('tiles', {
@@ -117,12 +131,33 @@ class Map extends Component {
         "tiles": [`https://${configuration.tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
 
+      window.map.addLayer({
+        'id': 'tiles-polygons',
+        'type': 'fill',
+        'source': 'tiles',
+        'source-layer': 'main',
+        'paint': {
+          'fill-opacity': 0.35
+        }
+      }, "admin-2-boundaries-dispute");
+
+
+      window.map.removeLayer('cluster-polygons');
+
       window.map.removeSource('clusters');
 
       window.map.addSource('clusters', {
         "type": "vector",
         "tiles": [`https://${configuration.cluster_tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
       });
+
+      window.map.addLayer({
+        'id': 'cluster-polygons',
+        'type': 'fill',
+        'source': 'clusters',
+        'source-layer': 'main',
+        'filter': ["==", "$type", "LineString"] // nonsense filter which ensures nothing is visible
+      }, "admin-2-boundaries-dispute");
 
       return false;
     }

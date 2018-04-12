@@ -47,14 +47,14 @@ export function thunkUpdateClusters(clusters) {
       const in_progress = in_progress_cluster_list.includes(cluster);
       const already_done = cluster_done_list.includes(cluster);
       return !(in_progress || already_done);
-    }).slice(0, 40); // only process 40 clusters at a time.
+    });
 
     // same logic for MOE
     const moe_clusters_to_get = clusters.filter(cluster => {
       const in_progress = in_progress_moe_cluster_list.includes(cluster);
       const already_done = moe_cluster_done_list.includes(cluster);
       return !(in_progress || already_done);
-    }).slice(0, 40); // only process 40 clusters at a time.
+    });
 
     if (clusters_to_get.length > 0) {
       console.log(clusters_to_get);
@@ -64,21 +64,21 @@ export function thunkUpdateClusters(clusters) {
       const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
       const clusters_to_get_encoded = encodeURIComponent(JSON.stringify(clusters_to_get));
 
-      const url = `https://d0ahqlmxvi.execute-api.us-west-2.amazonaws.com/dev/retrieve?expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&clusters=${clusters_to_get_encoded}`;
+      const url = `https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&clusters=${clusters_to_get_encoded}`;
 
-      // return fetch(url)
-      //   .then(res => res.json())
-      //   .then(fetched_data => {
+      return fetch(url)
+        .then(res => res.json())
+        .then(fetched_data => {
 
-      //     // updates style, removes from clusters-in-progress, adds to clusters-done
-      //     dispatch(updateStyleData(fetched_data, clusters_to_get));
+          // updates style, removes from clusters-in-progress, adds to clusters-done
+          dispatch(updateStyleData(fetched_data, clusters_to_get));
 
-      //   })
-      //   .catch(err => {
-      //     console.error('err:', err);
-      //     // removes from clusters-in-progress
-      //     dispatch(removeFromInProgressList(clusters_to_get));
-      //   });
+        })
+        .catch(err => {
+          console.error('err:', err);
+          // removes from clusters-in-progress
+          dispatch(removeFromInProgressList(clusters_to_get));
+        });
     }
 
     if (moe_clusters_to_get.length > 0) {
@@ -87,7 +87,7 @@ export function thunkUpdateClusters(clusters) {
       const moe_expression = encodeURIComponent(JSON.stringify(getMoeExpressionFromAttr(source_dataset, attr)));
       const moe_clusters_to_get_encoded = encodeURIComponent(JSON.stringify(moe_clusters_to_get));
 
-      const url = `https://d0ahqlmxvi.execute-api.us-west-2.amazonaws.com/dev/retrieve?expression=${moe_expression}&dataset=${source_dataset}&sumlev=${sumlev}&clusters=${moe_clusters_to_get_encoded}`;
+      const url = `https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?expression=${moe_expression}&dataset=${source_dataset}&sumlev=${sumlev}&clusters=${moe_clusters_to_get_encoded}&moe=true`;
 
       return fetch(url)
         .then(res => res.json())

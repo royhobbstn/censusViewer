@@ -43,11 +43,11 @@ export const configuration = {
       label: 'Place'
     }
   },
-  tiles: 's3-us-west-2.amazonaws.com/geography-tiles',
+  tiles: 's3-us-west-2.amazonaws.com/v2-geography-tiles',
   cluster_tiles: 's3-us-west-2.amazonaws.com/v2-cluster-tiles',
   startup: {
     source_geography: 'tract',
-    source_dataset: 'acs1115',
+    source_dataset: 'acs1216',
     selected_attr: 'mhi',
   }
 
