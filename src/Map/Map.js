@@ -49,12 +49,12 @@ class Map extends Component {
 
       window.map.addSource('tiles', {
         "type": "vector",
-        "tiles": [`https://${configuration.tiles}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
+        "tiles": [`https://${configuration.tiles[0]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[1]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[2]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
 
       window.map.addSource('clusters', {
         "type": "vector",
-        "tiles": [`https://${configuration.cluster_tiles}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
+        "tiles": [`https://${configuration.cluster_tiles[0]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[1]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[2]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
       });
 
       window.map.addLayer({
@@ -102,6 +102,8 @@ class Map extends Component {
         }
       }, 32));
 
+      window.map.on('error', event => console.log(event));
+
     });
 
   }
@@ -128,7 +130,7 @@ class Map extends Component {
 
       window.map.addSource('tiles', {
         "type": "vector",
-        "tiles": [`https://${configuration.tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
+        "tiles": [`https://${configuration.tiles[0]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[1]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[2]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
 
       window.map.addLayer({
@@ -148,7 +150,7 @@ class Map extends Component {
 
       window.map.addSource('clusters', {
         "type": "vector",
-        "tiles": [`https://${configuration.cluster_tiles}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
+        "tiles": [`https://${configuration.cluster_tiles[0]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[1]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[2]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
       });
 
       window.map.addLayer({
