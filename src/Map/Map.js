@@ -49,11 +49,15 @@ class Map extends Component {
 
       window.map.addSource('tiles', {
         "type": "vector",
+        "minzoom": 3,
+        "maxzoom": 9,
         "tiles": [`https://${configuration.tiles[0]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[1]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[2]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
 
       window.map.addSource('clusters', {
         "type": "vector",
+        "minzoom": 3,
+        "maxzoom": 9,
         "tiles": [`https://${configuration.cluster_tiles[0]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[1]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[2]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
       });
 
@@ -62,7 +66,7 @@ class Map extends Component {
         'type': 'fill',
         'source': 'clusters',
         'source-layer': 'main',
-        'filter': ["==", "$type", "LineString"] // nonsense filter which ensures nothing is visible
+        //'filter': ["==", "$type", "LineString"] // nonsense filter which ensures nothing is visible
       }, "admin-2-boundaries-dispute");
 
       window.map.addLayer({
@@ -87,12 +91,77 @@ class Map extends Component {
       });
 
       window.map.on('zoomstart', (e) => {
-        console.log('zoomstart');
 
-        const zoomlev = window.map.getZoom();
+
+        console.log('');
+        console.log('');
+
+        const screenX = e.originalEvent.x;
+        const screenY = e.originalEvent.y;
+
+        console.log(window.map.unproject([screenX, screenY]));
+        console.log('zoom', window.map.getZoom());
+        console.log('getBounds', JSON.stringify(window.map.getBounds()));
+        console.log('');
+
+        const pole = window.map.unproject([screenX, screenY]);
+        const current_zoom = window.map.getZoom();
+        const current_bounds = window.map.getBounds();
+        const current_sw = current_bounds._sw;
+        const current_ne = current_bounds._ne;
+        const lat_span = Math.abs(current_sw.lat - current_ne.lat);
+        const lng_span = Math.abs(current_sw.lng - current_ne.lng);
+        console.log(lat_span, lng_span);
+
+        const pct_along_lat = (pole.lat - current_sw.lat) / lat_span;
+        const pct_along_lng = (pole.lng - current_sw.lng) / lng_span;
+        //console.log(pct_along_lat, pct_along_lng); // from SW
+
+        // x  y
+        // -7 = current_width * 128
+        // -6 = current_width * 64
+        // -5 = current_width * 32  2^5
+        // -4 = current_width * 16  2^4
+        // -3 = current_width * 8   2^3
+        // -2 = current_width * 4   2^2
+        // -1 = current_width * 2   2^1
+        // 0 = current_width * 1    2^0
+        // 1 = current_width * 0.5   2^-1
+        // 2 = current_width * 0.25  2^-2
+        // 3 = current_width * 0.125  2^-3
+        // 4 = current_width * 0.0625  2^-4
+
+
+        console.log(lat_span);
+
+        [3, 4, 5, 6, 7, 8, 9].forEach(new_zoom => {
+          const zoom_difference = current_zoom - new_zoom;
+
+          const new_lat_span = lat_span * Math.pow(2, zoom_difference);
+          const new_lng_span = lng_span * Math.pow(2, zoom_difference);
+          console.log('new_lat_lng_span: ', new_zoom, zoom_difference.toFixed(2), new_lat_span, new_lng_span);
+          const new_sw_lat = pole.lat - (pct_along_lat * new_lat_span);
+          const new_ne_lat = pole.lat + ((1 - pct_along_lat) * new_lat_span);
+          const new_sw_lng = pole.lng - (pct_along_lng * new_lng_span);
+          const new_ne_lng = pole.lng + ((1 - pct_along_lng) * new_lng_span);
+          console.log('sw:', new_sw_lat, new_sw_lng);
+          console.log('ne:', new_ne_lat, new_ne_lng);
+
+          const features = window.map.queryRenderedFeatures([
+            [new_sw_lng, new_sw_lat],
+            [new_ne_lng, new_ne_lat]
+          ], { layers: ['cluster-polygons'] });
+
+          console.log(features);
+        });
+
+
       });
 
       window.map.on('mousemove', 'tiles-polygons', _.throttle((e) => {
+
+
+
         window.map.getCanvas().style.cursor = 'pointer';
         const geoid = e.features[0].properties.GEOID;
         const name = e.features[0].properties.NAME;
@@ -100,7 +169,7 @@ class Map extends Component {
         if (geoid && label) {
           this.props.updateMouseover(geoid, label);
         }
-      }, 32));
+      }, 132));
 
       window.map.on('error', event => console.log(event));
 
@@ -130,6 +199,8 @@ class Map extends Component {
 
       window.map.addSource('tiles', {
         "type": "vector",
+        "minzoom": 3,
+        "maxzoom": 9,
         "tiles": [`https://${configuration.tiles[0]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[1]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[2]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
 
@@ -150,6 +221,8 @@ class Map extends Component {
 
       window.map.addSource('clusters', {
         "type": "vector",
+        "minzoom": 3,
+        "maxzoom": 9,
         "tiles": [`https://${configuration.cluster_tiles[0]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[1]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[2]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
       });
 
@@ -158,7 +231,7 @@ class Map extends Component {
         'type': 'fill',
         'source': 'clusters',
         'source-layer': 'main',
-        'filter': ["==", "$type", "LineString"] // nonsense filter which ensures nothing is visible
+        //'filter': ["==", "$type", "LineString"] // nonsense filter which ensures nothing is visible
       }, "admin-2-boundaries-dispute");
 
       return false;
