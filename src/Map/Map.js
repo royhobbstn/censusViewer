@@ -27,47 +27,12 @@ class Map extends Component {
 
     window.map.on('load', () => {
 
-      const updateTiles = _.debounce(() => {
-        // get all clusters
-        const features = window.map.querySourceFeatures('clusters', {
-          sourceLayer: 'main'
-        });
-
-        const zoomlev = window.map.getZoom();
-        const clusters = new Set();
-
-        features.forEach(feature => {
-          const cluster = feature.properties.cluster;
-          const feature_zoom = parseInt(cluster.split('_')[0], 10);
-          if (feature_zoom <= zoomlev) {
-            clusters.add(cluster);
-          }
-        });
-
-        this.props.updateClusters(Array.from(clusters));
-      }, 30);
-
       window.map.addSource('tiles', {
         "type": "vector",
         "minzoom": 3,
         "maxzoom": 9,
         "tiles": [`https://${configuration.tiles[0]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[1]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[2]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/{z}/{x}/{y}.pbf`]
       });
-
-      window.map.addSource('clusters', {
-        "type": "vector",
-        "minzoom": 3,
-        "maxzoom": 9,
-        "tiles": [`https://${configuration.cluster_tiles[0]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[1]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[2]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
-      });
-
-      window.map.addLayer({
-        'id': 'cluster-polygons',
-        'type': 'fill',
-        'source': 'clusters',
-        'source-layer': 'main',
-        //'filter': ["==", "$type", "LineString"] // nonsense filter which ensures nothing is visible
-      }, "admin-2-boundaries-dispute");
 
       window.map.addLayer({
         'id': 'tiles-polygons',
@@ -80,42 +45,26 @@ class Map extends Component {
       }, "admin-2-boundaries-dispute");
 
       window.map.on('moveend', (e) => {
-        updateTiles();
+        // ? updateTiles();
       });
 
       // when map data source is changed
       window.map.on('sourcedata', (e) => {
         if (e.isSourceLoaded) {
-          updateTiles();
+          // TODO updateTiles();
         }
       });
 
       window.map.on('zoomstart', (e) => {
 
-
-        console.log('');
-        console.log('');
-
         const screenX = e.originalEvent.x;
         const screenY = e.originalEvent.y;
-
-        console.log(window.map.unproject([screenX, screenY]));
-        console.log('zoom', window.map.getZoom());
-        console.log('getBounds', JSON.stringify(window.map.getBounds()));
-        console.log('');
 
         const pole = window.map.unproject([screenX, screenY]);
         const current_zoom = window.map.getZoom();
         const current_bounds = window.map.getBounds();
-        const current_sw = current_bounds._sw;
-        const current_ne = current_bounds._ne;
-        const lat_span = Math.abs(current_sw.lat - current_ne.lat);
-        const lng_span = Math.abs(current_sw.lng - current_ne.lng);
-        console.log(lat_span, lng_span);
 
-        const pct_along_lat = (pole.lat - current_sw.lat) / lat_span;
-        const pct_along_lng = (pole.lng - current_sw.lng) / lng_span;
-        //console.log(pct_along_lat, pct_along_lng); // from SW
+        this.props.updateClusters(pole, current_zoom, current_bounds);
 
         // x  y
         // -7 = current_width * 128
@@ -130,31 +79,6 @@ class Map extends Component {
         // 2 = current_width * 0.25  2^-2
         // 3 = current_width * 0.125  2^-3
         // 4 = current_width * 0.0625  2^-4
-
-
-        console.log(lat_span);
-
-        [3, 4, 5, 6, 7, 8, 9].forEach(new_zoom => {
-          const zoom_difference = current_zoom - new_zoom;
-
-          const new_lat_span = lat_span * Math.pow(2, zoom_difference);
-          const new_lng_span = lng_span * Math.pow(2, zoom_difference);
-          console.log('new_lat_lng_span: ', new_zoom, zoom_difference.toFixed(2), new_lat_span, new_lng_span);
-          const new_sw_lat = pole.lat - (pct_along_lat * new_lat_span);
-          const new_ne_lat = pole.lat + ((1 - pct_along_lat) * new_lat_span);
-          const new_sw_lng = pole.lng - (pct_along_lng * new_lng_span);
-          const new_ne_lng = pole.lng + ((1 - pct_along_lng) * new_lng_span);
-          console.log('sw:', new_sw_lat, new_sw_lng);
-          console.log('ne:', new_ne_lat, new_ne_lng);
-
-          const features = window.map.queryRenderedFeatures([
-            [new_sw_lng, new_sw_lat],
-            [new_ne_lng, new_ne_lat]
-          ], { layers: ['cluster-polygons'] });
-
-          console.log(features);
-        });
-
 
       });
 
@@ -212,26 +136,6 @@ class Map extends Component {
         'paint': {
           'fill-opacity': 0.35
         }
-      }, "admin-2-boundaries-dispute");
-
-
-      window.map.removeLayer('cluster-polygons');
-
-      window.map.removeSource('clusters');
-
-      window.map.addSource('clusters', {
-        "type": "vector",
-        "minzoom": 3,
-        "maxzoom": 9,
-        "tiles": [`https://${configuration.cluster_tiles[0]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[1]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`, `https://${configuration.cluster_tiles[2]}/${nextProps.source_geography}_${datasetToYear(nextProps.source_dataset)}_cl/{z}/{x}/{y}.pbf`]
-      });
-
-      window.map.addLayer({
-        'id': 'cluster-polygons',
-        'type': 'fill',
-        'source': 'clusters',
-        'source-layer': 'main',
-        //'filter': ["==", "$type", "LineString"] // nonsense filter which ensures nothing is visible
       }, "admin-2-boundaries-dispute");
 
       return false;

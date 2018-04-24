@@ -15,8 +15,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    updateClusters: clusters => {
-      dispatch(thunkUpdateClusters(clusters));
+    updateClusters: (pole, current_zoom, current_bounds) => {
+      dispatch(thunkUpdateClusters(pole, current_zoom, current_bounds));
     },
     updateMouseover: (geoid, name) => {
       dispatch(thunkChangeMouseover(geoid, name));

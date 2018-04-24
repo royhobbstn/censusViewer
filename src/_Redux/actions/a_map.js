@@ -22,32 +22,3 @@ export function changeMouseover({ mouseover_statistic, mouseover_label, mouseove
     mouseover_moe
   };
 }
-
-export function addToInProgressList(arr) {
-  return {
-    type: 'ADD_TO_IN_PROGRESS',
-    arr
-  };
-}
-
-export function addToMoeInProgressList(arr) {
-  return {
-    type: 'ADD_TO_MOE_IN_PROGRESS',
-    arr
-  };
-}
-
-
-export function removeFromInProgressList(arr) {
-  return {
-    type: 'REMOVE_FROM_IN_PROGRESS',
-    arr
-  };
-}
-
-export function removeFromMoeInProgressList(arr) {
-  return {
-    type: 'REMOVE_FROM_MOE_IN_PROGRESS',
-    arr
-  };
-}

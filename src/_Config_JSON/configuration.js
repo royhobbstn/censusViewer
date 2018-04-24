@@ -44,7 +44,6 @@ export const configuration = {
     }
   },
   tiles: ['d3q67u30tir1mv.cloudfront.net', 'd1rz82ekhmlc7r.cloudfront.net', 'd31llbwjzirnw2.cloudfront.net'],
-  cluster_tiles: ['d2b9kzwya39zmk.cloudfront.net', 'd2pm6efgokwake.cloudfront.net', 'd1lj4b0hcz5kw8.cloudfront.net'],
   startup: {
     source_geography: 'tract',
     source_dataset: 'acs1216',
