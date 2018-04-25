@@ -55,7 +55,7 @@ class Map extends Component {
         }
       });
 
-      window.map.on('zoomstart', (e) => {
+      window.map.on('zoomstart', _.throttle((e) => {
 
         const screenX = e.originalEvent.x;
         const screenY = e.originalEvent.y;
@@ -80,11 +80,9 @@ class Map extends Component {
         // 3 = current_width * 0.125  2^-3
         // 4 = current_width * 0.0625  2^-4
 
-      });
+      }, 2000));
 
       window.map.on('mousemove', 'tiles-polygons', _.throttle((e) => {
-
-
 
         window.map.getCanvas().style.cursor = 'pointer';
         const geoid = e.features[0].properties.GEOID;
