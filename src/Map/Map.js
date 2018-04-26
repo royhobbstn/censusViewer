@@ -27,6 +27,21 @@ class Map extends Component {
 
     window.map.on('load', () => {
 
+
+      const findNew = (e) => {
+
+        const screenX = e ? e.originalEvent.x : false;
+        const screenY = e ? e.originalEvent.y : false;
+
+        const pole = e ? window.map.unproject([screenX, screenY]) : window.map.getCenter();
+        const current_zoom = window.map.getZoom();
+        const current_bounds = window.map.getBounds();
+
+        this.props.updateClusters(pole, current_zoom, current_bounds);
+      };
+
+      findNew();
+
       window.map.addSource('tiles', {
         "type": "vector",
         "minzoom": 3,
@@ -44,46 +59,26 @@ class Map extends Component {
         }
       }, "admin-2-boundaries-dispute");
 
-      window.map.on('moveend', (e) => {
-        // ? updateTiles();
-      });
+      window.map.on('moveend', _.throttle((e) => {
+        if (e.originalEvent) {
+          findNew(e);
+        }
+      }), 1000);
 
       // when map data source is changed
       window.map.on('sourcedata', (e) => {
         if (e.isSourceLoaded) {
-          // TODO updateTiles();
+          findNew();
         }
       });
 
       window.map.on('zoomstart', _.throttle((e) => {
-
-        const screenX = e.originalEvent.x;
-        const screenY = e.originalEvent.y;
-
-        const pole = window.map.unproject([screenX, screenY]);
-        const current_zoom = window.map.getZoom();
-        const current_bounds = window.map.getBounds();
-
-        this.props.updateClusters(pole, current_zoom, current_bounds);
-
-        // x  y
-        // -7 = current_width * 128
-        // -6 = current_width * 64
-        // -5 = current_width * 32  2^5
-        // -4 = current_width * 16  2^4
-        // -3 = current_width * 8   2^3
-        // -2 = current_width * 4   2^2
-        // -1 = current_width * 2   2^1
-        // 0 = current_width * 1    2^0
-        // 1 = current_width * 0.5   2^-1
-        // 2 = current_width * 0.25  2^-2
-        // 3 = current_width * 0.125  2^-3
-        // 4 = current_width * 0.0625  2^-4
-
-      }, 2000));
+        if (e.originalEvent) {
+          findNew(e);
+        }
+      }, 1000));
 
       window.map.on('mousemove', 'tiles-polygons', _.throttle((e) => {
-
         window.map.getCanvas().style.cursor = 'pointer';
         const geoid = e.features[0].properties.GEOID;
         const name = e.features[0].properties.NAME;
@@ -91,7 +86,7 @@ class Map extends Component {
         if (geoid && label) {
           this.props.updateMouseover(geoid, label);
         }
-      }, 132));
+      }, 13200));
 
       window.map.on('error', event => console.log(event));
 
@@ -107,7 +102,7 @@ class Map extends Component {
       stops: drawn_stops
     });
 
-  }, 1000);
+  }, 200);
 
   shouldComponentUpdate(nextProps, nextState) {
     // redraw layer on redux style change
@@ -141,6 +136,8 @@ class Map extends Component {
 
     if (!equal(this.props.polygon_stops, nextProps.polygon_stops)) {
       // convert object keys:values to stops array
+      console.log('redrawing');
+
 
       const values = convertDataToStops(nextProps.polygon_stops);
 

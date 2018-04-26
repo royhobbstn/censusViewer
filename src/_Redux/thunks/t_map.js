@@ -1,6 +1,6 @@
 /* global fetch */
 
-import { updateStyleData, updateMoeData, changeMouseover } from '../actions/a_map.js';
+import { updateStyleData, updateMoeData, changeMouseover, busyData, busyMoe, unbusyData, unbusyMoe } from '../actions/a_map.js';
 import LZ from 'lz-string';
 import { datatree } from '../../_Config_JSON/datatree.js';
 import localforage from "localforage";
@@ -32,6 +32,7 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
   return (dispatch, getState) => {
     const state = getState();
 
+
     const source_dataset = state.map.source_dataset;
     const sumlev = getSumlevFromGeography(state.map.source_geography);
     const attr = state.map.selected_attr;
@@ -45,44 +46,73 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
     const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
     const bounds = encodeURIComponent(JSON.stringify(current_bounds));
 
-    // const root = 'http://34.208.116.122:8081/retrieve?';
-    const root = 'https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?';
+    const root = 'http://34.212.125.156:8081/retrieve?';
+    // const root = 'https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?';
 
     const url = `${root}expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${cluster_done_list}`;
 
-    fetch(url)
-      .then(res => res.json())
-      .then(fetched_data => {
-        console.log(fetched_data);
+    let time;
 
-        // updates style, removes from clusters-in-progress, adds to clusters-done
-        if (Object.keys(fetched_data.data).length) {
-          dispatch(updateStyleData(fetched_data.data, fetched_data.clusters));
-        }
+    if (!state.map.busy_data) {
+      dispatch(busyData());
 
-      })
-      .catch(err => {
-        console.error('err:', err);
-      });
+      fetch(url)
+        .then(res => {
+          time = window.performance.now();
+          return res.json();
+        })
+        .then(fetched_data => {
+          console.log('parseMain', window.performance.now() - time);
+
+          // updates style, removes from clusters-in-progress, adds to clusters-done
+          if (Object.keys(fetched_data.data).length) {
+            dispatch(updateStyleData(fetched_data.data, fetched_data.clusters));
+          }
+          else {
+            dispatch(unbusyData());
+          }
+
+        })
+        .catch(err => {
+          console.error('err:', err);
+        });
+
+    }
+
 
 
     const moe_expression = encodeURIComponent(JSON.stringify(getMoeExpressionFromAttr(source_dataset, attr)));
 
     const moe_url = `${root}expression=${moe_expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${moe_cluster_done_list}&moe=true`;
 
-    fetch(moe_url)
-      .then(res => res.json())
-      .then(fetched_data => {
+    let moe_time;
 
-        // updates style, removes from clusters-in-progress, adds to clusters-done
-        if (Object.keys(fetched_data.data).length) {
-          dispatch(updateMoeData(fetched_data.data, fetched_data.clusters));
-        }
+    if (!state.map.busy_moe) {
+      dispatch(busyMoe());
 
-      })
-      .catch(err => {
-        console.error('err:', err);
-      });
+      fetch(moe_url)
+        .then(res => {
+          moe_time = window.performance.now();
+          return res.json();
+        })
+        .then(fetched_data => {
+          console.log('parseMoe', window.performance.now() - moe_time);
+
+          // updates style, removes from clusters-in-progress, adds to clusters-done
+          if (Object.keys(fetched_data.data).length) {
+            dispatch(updateMoeData(fetched_data.data, fetched_data.clusters));
+          }
+          else {
+            dispatch(unbusyMoe());
+          }
+
+        })
+        .catch(err => {
+          console.error('err:', err);
+        });
+
+    }
+
 
 
   };

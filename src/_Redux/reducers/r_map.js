@@ -4,6 +4,8 @@ import { configuration } from '../../_Config_JSON/configuration.js';
 
 
 const default_state = {
+  busy_data: false,
+  busy_moe: false,
   polygon_stops: {},
   cluster_done_list: [],
   moe_stops: {},
@@ -21,17 +23,31 @@ const map = (
   action
 ) => {
   switch (action.type) {
+    case 'BUSY_DATA':
+      return Object.assign({}, state, { busy_data: true });
+    case 'BUSY_MOE':
+      return Object.assign({}, state, { busy_moe: true });
+    case 'UNBUSY_DATA':
+      return Object.assign({}, state, { busy_data: false });
+    case 'UNBUSY_MOE':
+      return Object.assign({}, state, { busy_moe: false });
     case 'UPDATE_POLYGON_STYLE':
+      console.log('reducer draw');
+      const t = window.performance.now();
       const updated_cluster_done_list = [...state.cluster_done_list, ...action.clusters];
-      return Object.assign({}, state, {
+      const u = Object.assign({}, state, {
         polygon_stops: Object.assign({}, state.polygon_stops, action.stops),
-        cluster_done_list: updated_cluster_done_list
+        cluster_done_list: updated_cluster_done_list,
+        busy_data: false
       });
+      console.log('reducerMain:', window.performance.now() - t);
+      return u;
     case 'UPDATE_MOE_DATA':
       const updated_moe_cluster_done_list = [...state.moe_cluster_done_list, ...action.clusters];
       return Object.assign({}, state, {
         moe_stops: Object.assign({}, state.moe_stops, action.stops),
-        moe_cluster_done_list: updated_moe_cluster_done_list
+        moe_cluster_done_list: updated_moe_cluster_done_list,
+        busy_moe: false
       });
     case 'UPDATE_DATASET':
       console.log('updating dataset');

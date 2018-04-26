@@ -22,3 +22,27 @@ export function changeMouseover({ mouseover_statistic, mouseover_label, mouseove
     mouseover_moe
   };
 }
+
+export function busyData() {
+  return {
+    type: 'BUSY_DATA'
+  };
+}
+
+export function busyMoe() {
+  return {
+    type: 'BUSY_MOE'
+  };
+}
+
+export function unbusyData() {
+  return {
+    type: 'UNBUSY_DATA'
+  };
+}
+
+export function unbusyMoe() {
+  return {
+    type: 'UNBUSY_MOE'
+  };
+}
