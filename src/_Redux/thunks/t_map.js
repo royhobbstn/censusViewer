@@ -4,6 +4,11 @@ import { updateStyleData, updateMoeData, changeMouseover, busyData, busyMoe, unb
 import LZ from 'lz-string';
 import { datatree } from '../../_Config_JSON/datatree.js';
 import localforage from "localforage";
+import worker_script from './worker';
+var myEstWorker = new Worker(worker_script);
+var myMoeWorker = new Worker(worker_script);
+
+
 
 // TODO
 localforage.config({
@@ -46,36 +51,31 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
     const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
     const bounds = encodeURIComponent(JSON.stringify(current_bounds));
 
-    const root = 'http://34.212.125.156:8081/retrieve?';
-    // const root = 'https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?';
+    // const root = 'http://34.211.152.253:8081/retrieve?';
+    const root = 'https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?';
 
     const url = `${root}expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${cluster_done_list}`;
 
-    let time;
 
     if (!state.map.busy_data) {
       dispatch(busyData());
 
-      fetch(url)
-        .then(res => {
-          time = window.performance.now();
-          return res.json();
-        })
-        .then(fetched_data => {
-          console.log('parseMain', window.performance.now() - time);
 
-          // updates style, removes from clusters-in-progress, adds to clusters-done
-          if (Object.keys(fetched_data.data).length) {
-            dispatch(updateStyleData(fetched_data.data, fetched_data.clusters));
-          }
-          else {
-            dispatch(unbusyData());
-          }
+      myEstWorker.onmessage = (m) => {
+        console.log("msg from worker: ", m.data);
 
-        })
-        .catch(err => {
-          console.error('err:', err);
-        });
+        if (!m || !m.data) {
+          dispatch(unbusyData());
+        }
+        else {
+          console.log(m);
+          console.log(m.data.data);
+          console.log(m.data.clusters);
+          dispatch(updateStyleData(m.data.data, m.data.clusters));
+        }
+      };
+
+      myEstWorker.postMessage(url);
 
     }
 
@@ -85,31 +85,26 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
 
     const moe_url = `${root}expression=${moe_expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${moe_cluster_done_list}&moe=true`;
 
-    let moe_time;
 
     if (!state.map.busy_moe) {
       dispatch(busyMoe());
 
-      fetch(moe_url)
-        .then(res => {
-          moe_time = window.performance.now();
-          return res.json();
-        })
-        .then(fetched_data => {
-          console.log('parseMoe', window.performance.now() - moe_time);
 
-          // updates style, removes from clusters-in-progress, adds to clusters-done
-          if (Object.keys(fetched_data.data).length) {
-            dispatch(updateMoeData(fetched_data.data, fetched_data.clusters));
-          }
-          else {
-            dispatch(unbusyMoe());
-          }
+      myMoeWorker.onmessage = (m) => {
+        console.log("msg from worker: ", m.data);
 
-        })
-        .catch(err => {
-          console.error('err:', err);
-        });
+        if (!m || !m.data) {
+          dispatch(unbusyMoe());
+        }
+        else {
+          console.log(m);
+          console.log(m.data.data);
+          console.log(m.data.clusters);
+          dispatch(updateMoeData(m.data.data, m.data.clusters));
+        }
+      };
+
+      myMoeWorker.postMessage(moe_url);
 
     }
 
