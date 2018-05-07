@@ -5,11 +5,14 @@ import Map from './Map';
 
 import { thunkUpdateClusters, thunkChangeMouseover } from '../_Redux/thunks/t_map.js';
 
+import { addToTilesAlreadyRequested } from '../_Redux/actions/a_map.js';
+
 const mapStateToProps = state => {
   return {
     polygon_stops: state.map.polygon_stops,
     source_geography: state.map.source_geography,
-    source_dataset: state.map.source_dataset
+    source_dataset: state.map.source_dataset,
+    tiles_already_requested: state.map.tiles_already_requested
   };
 };
 
@@ -20,6 +23,9 @@ const mapDispatchToProps = dispatch => {
     },
     updateMouseover: (geoid, name) => {
       dispatch(thunkChangeMouseover(geoid, name));
+    },
+    addToRequested: (urls) => {
+      dispatch(addToTilesAlreadyRequested(urls));
     }
   };
 };

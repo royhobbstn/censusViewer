@@ -15,7 +15,8 @@ const default_state = {
   selected_attr: configuration.startup.selected_attr,
   mouseover_statistic: undefined,
   mouseover_label: undefined,
-  mouseover_moe: undefined
+  mouseover_moe: undefined,
+  tiles_already_requested: []
 };
 
 const map = (
@@ -23,6 +24,8 @@ const map = (
   action
 ) => {
   switch (action.type) {
+    case 'ADD_TO_REQUESTED_TILES_LIST':
+      return Object.assign({}, state, { tiles_already_requested: [...state.tiles_already_requested, ...action.urls] });
     case 'BUSY_DATA':
       return Object.assign({}, state, { busy_data: true });
     case 'BUSY_MOE':

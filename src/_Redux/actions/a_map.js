@@ -46,3 +46,10 @@ export function unbusyMoe() {
     type: 'UNBUSY_MOE'
   };
 }
+
+export function addToTilesAlreadyRequested(urls) {
+  return {
+    type: 'ADD_TO_REQUESTED_TILES_LIST',
+    urls
+  };
+}

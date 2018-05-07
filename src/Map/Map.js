@@ -9,7 +9,8 @@ import equal from 'fast-deep-equal';
 import { configuration } from '../_Config_JSON/configuration.js';
 import { state_lookup } from '../_Config_JSON/state_lookup.js';
 // import { style } from '../_Config_JSON/style.js';
-
+import cache_worker from './cache_worker';
+var myCacheWorker = new Worker(cache_worker);
 
 class Map extends Component {
   componentDidMount() {
@@ -97,16 +98,53 @@ class Map extends Component {
 
         // long2tile, lat2tile
 
+        const tiles_to_get = [];
+
         Object.keys(bounds_obj).forEach(zoom => {
           const sw_lat = bounds_obj[zoom][0][1];
           const sw_lng = bounds_obj[zoom][0][0];
           const ne_lat = bounds_obj[zoom][1][1];
           const ne_lng = bounds_obj[zoom][1][0];
-          console.log(bounds_obj[zoom]);
+
+          let lat_tile_1 = lat2tile(sw_lat, zoom);
+          let lat_tile_2 = lat2tile(ne_lat, zoom);
+
+          if (lat_tile_1 > lat_tile_2) {
+            let temp = lat_tile_1;
+            lat_tile_1 = lat_tile_2;
+            lat_tile_2 = temp;
+          }
+
+          let long_tile_1 = long2tile(sw_lng, zoom);
+          let long_tile_2 = long2tile(ne_lng, zoom);
+
+          if (long_tile_1 > long_tile_2) {
+            let temp = long_tile_1;
+            long_tile_1 = long_tile_2;
+            long_tile_2 = temp;
+          }
+
           console.log({ zoom, swlat: lat2tile(sw_lat, zoom), swlng: long2tile(sw_lng, zoom) });
           console.log({ zoom, nelat: lat2tile(ne_lat, zoom), nelng: long2tile(ne_lng, zoom) });
           console.log();
+
+          for (let i = lat_tile_1; i <= lat_tile_2; i++) {
+            for (let j = long_tile_1; j < long_tile_2; j++) {
+              tiles_to_get.push(`https://${configuration.tiles[0]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/${zoom}/${j}/${i}.pbf`);
+            }
+          }
+
         });
+
+        const filtered_tiles_to_get = tiles_to_get.filter(tile_url => {
+          return !this.props.tiles_already_requested.includes(tile_url);
+        });
+
+        myCacheWorker.postMessage(tiles_to_get);
+
+        if (filtered_tiles_to_get.length) {
+          this.props.addToRequested(filtered_tiles_to_get);
+        }
 
         this.props.updateClusters(pole, current_zoom, current_bounds);
       };
@@ -150,6 +188,7 @@ class Map extends Component {
       }, 600));
 
       window.map.on('mousemove', 'tiles-polygons', _.throttle((e) => {
+
         window.map.getCanvas().style.cursor = 'pointer';
         const geoid = e.features[0].properties.GEOID;
         const name = e.features[0].properties.NAME;
