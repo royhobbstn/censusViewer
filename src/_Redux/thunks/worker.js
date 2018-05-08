@@ -6,8 +6,6 @@
 const workercode = () => {
 
   self.onmessage = function(e) {
-    console.log('Message received from main script');
-    console.log(e);
 
     fetch(e.data)
       .then(res => {

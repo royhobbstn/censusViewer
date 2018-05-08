@@ -6,29 +6,25 @@
 const workercode = () => {
 
   self.onmessage = function(e) {
-    console.log('cache_worker: Message received from main script');
-    console.log(e);
 
-    // TODO left off here
+    const requests = e.data.map(url => {
 
-    // fetch(e.data)
-    //   .then(res => {
-    //     return res.json();
-    //   })
-    //   .then(fetched_data => {
+      var headers = new Headers({ 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate, br' });
+      var options = {
+        method: 'GET',
+        headers: headers,
+        mode: 'cors',
+      };
 
-    //     if (Object.keys(fetched_data.data).length) {
-    //       self.postMessage(fetched_data);
-    //     }
-    //     else {
-    //       self.postMessage(false);
-    //     }
+      var request = new Request(url);
 
-    //   })
-    //   .catch(err => {
-    //     console.error('err:', err);
-    //   });
+      return fetch(request, options);
 
+    });
+
+    Promise.all(requests).then((cached) => {
+      console.log('request batch done: ' + cached.length);
+    });
 
   };
 };

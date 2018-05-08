@@ -62,15 +62,11 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
 
 
       myEstWorker.onmessage = (m) => {
-        console.log("msg from worker: ", m.data);
 
         if (!m || !m.data) {
           dispatch(unbusyData());
         }
         else {
-          console.log(m);
-          console.log(m.data.data);
-          console.log(m.data.clusters);
           dispatch(updateStyleData(m.data.data, m.data.clusters));
         }
       };
@@ -91,15 +87,11 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
 
 
       myMoeWorker.onmessage = (m) => {
-        console.log("msg from worker: ", m.data);
 
         if (!m || !m.data) {
           dispatch(unbusyMoe());
         }
         else {
-          console.log(m);
-          console.log(m.data.data);
-          console.log(m.data.clusters);
           dispatch(updateMoeData(m.data.data, m.data.clusters));
         }
       };

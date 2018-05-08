@@ -29,7 +29,7 @@ class Map extends Component {
     window.map.on('load', () => {
 
 
-      const findNew = (e) => {
+      const findNew = _.throttle((e) => {
 
         const screenX = e ? e.originalEvent.x : false;
         const screenY = e ? e.originalEvent.y : false;
@@ -37,14 +37,6 @@ class Map extends Component {
         const pole = e ? window.map.unproject([screenX, screenY]) : window.map.getCenter();
         const current_zoom = window.map.getZoom();
         const current_bounds = window.map.getBounds();
-
-        console.log(pole);
-        console.log(pole.lng);
-        console.log(pole.lat);
-        console.log(current_zoom);
-        console.log(long2tile(pole.lng, current_zoom));
-        console.log(lat2tile(pole.lat, current_zoom));
-
 
         const pole_lat = pole.lat;
         const pole_lng = pole.lng;
@@ -96,8 +88,6 @@ class Map extends Component {
 
         });
 
-        // long2tile, lat2tile
-
         const tiles_to_get = [];
 
         Object.keys(bounds_obj).forEach(zoom => {
@@ -124,10 +114,6 @@ class Map extends Component {
             long_tile_2 = temp;
           }
 
-          console.log({ zoom, swlat: lat2tile(sw_lat, zoom), swlng: long2tile(sw_lng, zoom) });
-          console.log({ zoom, nelat: lat2tile(ne_lat, zoom), nelng: long2tile(ne_lng, zoom) });
-          console.log();
-
           for (let i = lat_tile_1; i <= lat_tile_2; i++) {
             for (let j = long_tile_1; j < long_tile_2; j++) {
               tiles_to_get.push(`https://${configuration.tiles[0]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/${zoom}/${j}/${i}.pbf`);
@@ -136,18 +122,19 @@ class Map extends Component {
 
         });
 
+
         const filtered_tiles_to_get = tiles_to_get.filter(tile_url => {
           return !this.props.tiles_already_requested.includes(tile_url);
         });
 
-        myCacheWorker.postMessage(tiles_to_get);
 
         if (filtered_tiles_to_get.length) {
+          myCacheWorker.postMessage(filtered_tiles_to_get);
           this.props.addToRequested(filtered_tiles_to_get);
         }
 
         this.props.updateClusters(pole, current_zoom, current_bounds);
-      };
+      }, 500);
 
       findNew();
 
