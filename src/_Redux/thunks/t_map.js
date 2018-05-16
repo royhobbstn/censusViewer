@@ -35,8 +35,10 @@ export function thunkChangeMouseover(geoid, name) {
 
 export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
   return (dispatch, getState) => {
-    const state = getState();
 
+    const trt1 = window.performance.now();
+
+    const state = getState();
 
     const source_dataset = state.map.source_dataset;
     const sumlev = getSumlevFromGeography(state.map.source_geography);
@@ -75,11 +77,10 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
 
     }
 
-
-
     const moe_expression = encodeURIComponent(JSON.stringify(getMoeExpressionFromAttr(source_dataset, attr)));
 
     const moe_url = `${root}expression=${moe_expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${moe_cluster_done_list}&moe=true`;
+
 
 
     if (!state.map.busy_moe) {
@@ -100,7 +101,9 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
 
     }
 
-
+    const uc_delay = window.performance.now() - trt1;
+    window.update_clusters += uc_delay;
+    console.log('thunkUpdateClusters:', uc_delay);
 
   };
 }

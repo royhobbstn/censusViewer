@@ -25,7 +25,10 @@ const map = (
 ) => {
   switch (action.type) {
     case 'ADD_TO_REQUESTED_TILES_LIST':
-      return Object.assign({}, state, { tiles_already_requested: [...state.tiles_already_requested, ...action.urls] });
+      // const trt = window.performance.now();
+      const rt = Object.assign({}, state, { tiles_already_requested: [...state.tiles_already_requested, ...action.urls] });
+      // console.log('reducerAddTileList:', window.performance.now() - trt);
+      return rt;
     case 'BUSY_DATA':
       return Object.assign({}, state, { busy_data: true });
     case 'BUSY_MOE':
@@ -35,7 +38,6 @@ const map = (
     case 'UNBUSY_MOE':
       return Object.assign({}, state, { busy_moe: false });
     case 'UPDATE_POLYGON_STYLE':
-      console.log('reducer draw');
       const t = window.performance.now();
       const updated_cluster_done_list = [...state.cluster_done_list, ...action.clusters];
       const u = Object.assign({}, state, {
@@ -43,15 +45,22 @@ const map = (
         cluster_done_list: updated_cluster_done_list,
         busy_data: false
       });
-      console.log('reducerMain:', window.performance.now() - t);
+      const rs_delay = window.performance.now() - t;
+      window.reducer_style += rs_delay;
+      console.log('reducerStyleMain:', rs_delay);
       return u;
     case 'UPDATE_MOE_DATA':
+      const tmoe = window.performance.now();
       const updated_moe_cluster_done_list = [...state.moe_cluster_done_list, ...action.clusters];
-      return Object.assign({}, state, {
+      const umoe = Object.assign({}, state, {
         moe_stops: Object.assign({}, state.moe_stops, action.stops),
         moe_cluster_done_list: updated_moe_cluster_done_list,
         busy_moe: false
       });
+      const rm_delay = window.performance.now() - tmoe;
+      window.reducer_moe += rm_delay;
+      console.log('reducerMOEMain:', rm_delay);
+      return umoe;
     case 'UPDATE_DATASET':
       console.log('updating dataset');
       return Object.assign({}, state, {
@@ -83,11 +92,14 @@ const map = (
         cluster_done_list: []
       });
     case 'UPDATE_MOUSEOVER':
-      return Object.assign({}, state, {
+      // const tmov = window.performance.now();
+      const mov = Object.assign({}, state, {
         mouseover_statistic: action.mouseover_statistic,
         mouseover_label: action.mouseover_label,
         mouseover_moe: action.mouseover_moe
       });
+      // console.log('reducerMOEMain:', window.performance.now() - tmov);
+      return mov;
     default:
       return state;
   }

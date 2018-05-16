@@ -30,7 +30,7 @@ class Map extends Component {
 
 
       const findNew = _.throttle((e) => {
-
+        // const trt = window.performance.now();
         const screenX = e ? e.originalEvent.x : false;
         const screenY = e ? e.originalEvent.y : false;
 
@@ -117,6 +117,8 @@ class Map extends Component {
           for (let i = lat_tile_1; i <= lat_tile_2; i++) {
             for (let j = long_tile_1; j < long_tile_2; j++) {
               tiles_to_get.push(`https://${configuration.tiles[0]}/${this.props.source_geography}_${datasetToYear(this.props.source_dataset)}/${zoom}/${j}/${i}.pbf`);
+              // TODO? optimistic mapbox tile fetching turned off
+              // tiles_to_get.push(`https://a.tiles.mapbox.com/v4/mapbox.mapbox-terrain-v2,mapbox.mapbox-streets-v7/${zoom}/${j}/${i}.vector.pbf?access_token=${key.key}`);
             }
           }
 
@@ -127,6 +129,7 @@ class Map extends Component {
           return !this.props.tiles_already_requested.includes(tile_url);
         });
 
+        // console.log('findNew:', window.performance.now() - trt);
 
         if (filtered_tiles_to_get.length) {
           myCacheWorker.postMessage(filtered_tiles_to_get);
@@ -233,8 +236,7 @@ class Map extends Component {
 
     if (!equal(this.props.polygon_stops, nextProps.polygon_stops)) {
       // convert object keys:values to stops array
-      console.log('redrawing');
-
+      const trt = window.performance.now();
 
       const values = convertDataToStops(nextProps.polygon_stops);
 
@@ -249,9 +251,21 @@ class Map extends Component {
         ["0", 'blue']
       ];
 
-      window.map.setFilter('tiles-polygons', ['in', 'GEOID', ...unique_geoids]);
+      const rd_delay = window.performance.now() - trt;
+      window.redraw += rd_delay;
+      console.log('mapRedrawing:', rd_delay);
 
+      const trt2 = window.performance.now();
+      // window.map.setFilter('tiles-polygons', ['in', 'GEOID', ...unique_geoids]);
+      const rp_delay = window.performance.now() - trt2;
+      window.repaint += rp_delay;
+      console.log('mapRepaint:', rp_delay);
+
+      const trt3 = window.performance.now();
       this.renderMap(drawn_stops);
+      const rm_delay = window.performance.now() - trt3;
+      window.render_map += rm_delay;
+      console.log('renderMap:', rm_delay);
     }
 
     return false;
