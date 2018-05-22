@@ -194,7 +194,31 @@ class Map extends Component {
 
   }
 
-  renderMap = _.throttle((drawn_stops) => {
+  renderMap = _.throttle((polygon_stops) => {
+
+    const trt1 = window.performance.now();
+
+
+    const values = convertDataToStops(polygon_stops);
+
+    const unique_geoids = Object.keys(values);
+
+    const stops = unique_geoids.map(key => {
+      return [key, values[key]];
+    });
+
+    // to avoid 'must have stops' errors
+    const drawn_stops = (stops.length) ? stops : [
+      ["0", 'blue']
+    ];
+
+    // window.map.setFilter('tiles-polygons', ['in', 'GEOID', ...unique_geoids]);
+
+    const rd = window.performance.now() - trt1;
+    console.log('preRender:', rd);
+
+    const trt2 = window.performance.now();
+
 
     window.map.setPaintProperty('tiles-polygons', 'fill-color', {
       property: 'GEOID',
@@ -202,7 +226,10 @@ class Map extends Component {
       stops: drawn_stops
     });
 
-  }, 500);
+    const r2 = window.performance.now() - trt2;
+    console.log('render:', r2);
+
+  }, 100);
 
   shouldComponentUpdate(nextProps, nextState) {
     // redraw layer on redux style change
@@ -236,36 +263,9 @@ class Map extends Component {
 
     if (!equal(this.props.polygon_stops, nextProps.polygon_stops)) {
       // convert object keys:values to stops array
-      const trt = window.performance.now();
 
-      const values = convertDataToStops(nextProps.polygon_stops);
+      this.renderMap(nextProps.polygon_stops);
 
-      const unique_geoids = Object.keys(values);
-
-      const stops = unique_geoids.map(key => {
-        return [key, values[key]];
-      });
-
-      // to avoid 'must have stops' errors
-      const drawn_stops = (stops.length) ? stops : [
-        ["0", 'blue']
-      ];
-
-      const rd_delay = window.performance.now() - trt;
-      window.redraw += rd_delay;
-      console.log('mapRedrawing:', rd_delay);
-
-      const trt2 = window.performance.now();
-      // window.map.setFilter('tiles-polygons', ['in', 'GEOID', ...unique_geoids]);
-      const rp_delay = window.performance.now() - trt2;
-      window.repaint += rp_delay;
-      console.log('mapRepaint:', rp_delay);
-
-      const trt3 = window.performance.now();
-      this.renderMap(drawn_stops);
-      const rm_delay = window.performance.now() - trt3;
-      window.render_map += rm_delay;
-      console.log('renderMap:', rm_delay);
     }
 
     return false;
