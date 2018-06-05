@@ -5,26 +5,37 @@
 // worker.js
 const workercode = () => {
 
+  // TODO keep track of giant data object
+
+  let persistent_data = [];
+
   self.onmessage = function(e) {
 
-    fetch(e.data)
-      .then(res => {
-        return res.json();
-      })
-      .then(fetched_data => {
+    // todo clear giant data object
 
-        if (Object.keys(fetched_data.data).length) {
-          self.postMessage(fetched_data);
-        }
-        else {
-          self.postMessage(false);
-        }
+    // todo query giant data object for est or moe
 
-      })
-      .catch(err => {
-        console.error('err:', err);
-      });
+    // determine what kind of message (fetch data or mouseover-TODO)
+    if (e.data.type === 'fetch') {
+      fetch(e.data.url)
+        .then(res => {
+          return res.json();
+        })
+        .then(fetched_data => {
 
+          if (Object.keys(fetched_data.data).length) {
+            // todo send pre-computed stops and geoids
+            self.postMessage(fetched_data);
+          }
+          else {
+            self.postMessage(false);
+          }
+
+        })
+        .catch(err => {
+          console.error('err:', err);
+        });
+    }
 
   };
 };

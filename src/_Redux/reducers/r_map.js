@@ -4,6 +4,7 @@ import { configuration } from '../../_Config_JSON/configuration.js';
 
 
 const default_state = {
+  active_layer_names: [],
   busy_data: false,
   busy_moe: false,
   polygon_stops: {},
@@ -39,11 +40,10 @@ const map = (
       return Object.assign({}, state, { busy_moe: false });
     case 'UPDATE_POLYGON_STYLE':
       const t = window.performance.now();
-      const updated_cluster_done_list = [...state.cluster_done_list, ...action.clusters];
       const u = Object.assign({}, state, {
-        polygon_stops: Object.assign({}, state.polygon_stops, action.stops),
-        cluster_done_list: updated_cluster_done_list,
-        busy_data: false
+        cluster_done_list: [...state.cluster_done_list, ...action.clusters],
+        busy_data: false,
+        active_layer_names: [...state.active_layer_names, action.layer_name]
       });
       const rs_delay = window.performance.now() - t;
       window.reducer_style += rs_delay;

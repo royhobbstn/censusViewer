@@ -1,8 +1,8 @@
-export function updateStyleData(stops, clusters) {
+export function updateStyleData(clusters, layer_name) {
   return {
     type: 'UPDATE_POLYGON_STYLE',
-    stops,
-    clusters
+    clusters,
+    layer_name
   };
 }
 
