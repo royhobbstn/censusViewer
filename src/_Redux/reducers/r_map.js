@@ -25,6 +25,12 @@ const map = (
   action
 ) => {
   switch (action.type) {
+    case 'UPDATE_MOUSEOVER_STATISTIC':
+      return Object.assign({}, state, { mouseover_statistic: action.data });
+    case 'UPDATE_MOUSEOVER_LABEL':
+      return Object.assign({}, state, { mouseover_label: action.data });
+    case 'UPDATE_MOUSEOVER_MOE':
+      return Object.assign({}, state, { mouseover_moe: action.data });
     case 'ADD_TO_REQUESTED_TILES_LIST':
       // const trt = window.performance.now();
       const rt = Object.assign({}, state, { tiles_already_requested: [...state.tiles_already_requested, ...action.urls] });
@@ -39,28 +45,16 @@ const map = (
     case 'UNBUSY_MOE':
       return Object.assign({}, state, { busy_moe: false });
     case 'UPDATE_POLYGON_STYLE':
-      const t = window.performance.now();
-      const u = Object.assign({}, state, {
+      return Object.assign({}, state, {
         cluster_done_list: [...state.cluster_done_list, ...action.clusters],
         busy_data: false,
         active_layer_names: [...state.active_layer_names, action.layer_name]
       });
-      const rs_delay = window.performance.now() - t;
-      window.reducer_style += rs_delay;
-      console.log('reducerStyleMain:', rs_delay);
-      return u;
     case 'UPDATE_MOE_DATA':
-      const tmoe = window.performance.now();
-      const updated_moe_cluster_done_list = [...state.moe_cluster_done_list, ...action.clusters];
-      const umoe = Object.assign({}, state, {
-        moe_stops: Object.assign({}, state.moe_stops, action.stops),
-        moe_cluster_done_list: updated_moe_cluster_done_list,
+      return Object.assign({}, state, {
+        moe_cluster_done_list: [...state.moe_cluster_done_list, ...action.clusters],
         busy_moe: false
       });
-      const rm_delay = window.performance.now() - tmoe;
-      window.reducer_moe += rm_delay;
-      console.log('reducerMOEMain:', rm_delay);
-      return umoe;
     case 'UPDATE_DATASET':
       console.log('updating dataset');
       return Object.assign({}, state, {
@@ -91,15 +85,6 @@ const map = (
         mouseover_label: undefined,
         cluster_done_list: []
       });
-    case 'UPDATE_MOUSEOVER':
-      // const tmov = window.performance.now();
-      const mov = Object.assign({}, state, {
-        mouseover_statistic: action.mouseover_statistic,
-        mouseover_label: action.mouseover_label,
-        mouseover_moe: action.mouseover_moe
-      });
-      // console.log('reducerMOEMain:', window.performance.now() - tmov);
-      return mov;
     default:
       return state;
   }

@@ -5,18 +5,13 @@
 // worker.js
 const workercode = () => {
 
-  // TODO keep track of giant data object
-
-  let persistent_data = [];
+  let persistent_data = {};
 
   self.onmessage = function(e) {
 
-    // todo clear giant data object
-
-    // todo query giant data object for est or moe
-
-    // determine what kind of message (fetch data or mouseover-TODO)
+    // determine what kind of message (fetch data or lookup or clear)
     if (e.data.type === 'fetch') {
+      // get data from aws/serverless
       fetch(e.data.url)
         .then(res => {
           return res.json();
@@ -25,7 +20,8 @@ const workercode = () => {
 
           if (Object.keys(fetched_data.data).length) {
             // todo send pre-computed stops and geoids
-            self.postMessage(fetched_data);
+            self.postMessage({ type: 'fetch', data: fetched_data });
+            persistent_data = Object.assign({}, persistent_data, fetched_data.data);
           }
           else {
             self.postMessage(false);
@@ -36,7 +32,14 @@ const workercode = () => {
           console.error('err:', err);
         });
     }
-
+    else if (e.data.type === 'lookup') {
+      // query giant data object for est or moe
+      self.postMessage({ type: 'lookup', data: persistent_data[e.data.data] });
+    }
+    else if (e.data.type === 'clear') {
+      // clear data (for when changing geog / theme / dataset)
+      persistent_data = {};
+    }
   };
 };
 

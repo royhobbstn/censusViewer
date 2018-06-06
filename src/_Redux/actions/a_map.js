@@ -1,3 +1,12 @@
+//
+
+export function updateMoeData(clusters) {
+  return {
+    type: 'UPDATE_MOE_DATA',
+    clusters
+  };
+}
+
 export function updateStyleData(clusters, layer_name) {
   return {
     type: 'UPDATE_POLYGON_STYLE',
@@ -6,20 +15,24 @@ export function updateStyleData(clusters, layer_name) {
   };
 }
 
-export function updateMoeData(stops, clusters) {
+export function changeMouseoverStatistic(data) {
   return {
-    type: 'UPDATE_MOE_DATA',
-    stops,
-    clusters
+    type: 'UPDATE_MOUSEOVER_STATISTIC',
+    data
   };
 }
 
-export function changeMouseover({ mouseover_statistic, mouseover_label, mouseover_moe }) {
+export function changeMouseoverLabel(data) {
   return {
-    type: 'UPDATE_MOUSEOVER',
-    mouseover_statistic,
-    mouseover_label,
-    mouseover_moe
+    type: 'UPDATE_MOUSEOVER_LABEL',
+    data
+  };
+}
+
+export function changeMouseoverMoe(data) {
+  return {
+    type: 'UPDATE_MOUSEOVER_MOE',
+    data
   };
 }
 
