@@ -7,9 +7,7 @@ const default_state = {
   active_layer_names: [],
   busy_data: false,
   busy_moe: false,
-  polygon_stops: {},
   cluster_done_list: [],
-  moe_stops: {},
   moe_cluster_done_list: [],
   source_geography: configuration.startup.source_geography,
   source_dataset: configuration.startup.source_dataset,
@@ -32,10 +30,7 @@ const map = (
     case 'UPDATE_MOUSEOVER_MOE':
       return Object.assign({}, state, { mouseover_moe: action.data });
     case 'ADD_TO_REQUESTED_TILES_LIST':
-      // const trt = window.performance.now();
-      const rt = Object.assign({}, state, { tiles_already_requested: [...state.tiles_already_requested, ...action.urls] });
-      // console.log('reducerAddTileList:', window.performance.now() - trt);
-      return rt;
+      return Object.assign({}, state, { tiles_already_requested: [...state.tiles_already_requested, ...action.urls] });
     case 'BUSY_DATA':
       return Object.assign({}, state, { busy_data: true });
     case 'BUSY_MOE':
@@ -59,31 +54,28 @@ const map = (
       console.log('updating dataset');
       return Object.assign({}, state, {
         source_dataset: action.dataset,
-        polygon_stops: {},
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined,
-        cluster_done_list: []
+        cluster_done_list: [],
       });
     case 'UPDATE_GEOGRAPHY':
       console.log('updating geography');
       return Object.assign({}, state, {
         source_geography: action.geography,
-        polygon_stops: {},
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined,
-        cluster_done_list: []
+        cluster_done_list: [],
       });
     case 'UPDATE_THEME':
       console.log('updating theme');
       return Object.assign({}, state, {
         selected_attr: action.theme,
-        polygon_stops: {},
         mouseover_statistic: undefined,
         mouseover_moe: undefined,
         mouseover_label: undefined,
-        cluster_done_list: []
+        cluster_done_list: [],
       });
     default:
       return state;

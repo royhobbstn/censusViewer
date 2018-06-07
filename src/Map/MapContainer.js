@@ -3,16 +3,16 @@
 import { connect } from 'react-redux';
 import Map from './Map';
 
-import { thunkUpdateClusters, thunkChangeMouseover } from '../_Redux/thunks/t_map.js';
+import { thunkUpdateClusters, thunkChangeMouseover, thunkRemoveLayers } from '../_Redux/thunks/t_map.js';
 
 import { addToTilesAlreadyRequested } from '../_Redux/actions/a_map.js';
 
 const mapStateToProps = state => {
   return {
-    polygon_stops: state.map.polygon_stops,
     source_geography: state.map.source_geography,
     source_dataset: state.map.source_dataset,
-    tiles_already_requested: state.map.tiles_already_requested
+    tiles_already_requested: state.map.tiles_already_requested,
+    active_layer_names: state.map.active_layer_names
   };
 };
 
@@ -26,6 +26,9 @@ const mapDispatchToProps = dispatch => {
     },
     addToRequested: (urls) => {
       dispatch(addToTilesAlreadyRequested(urls));
+    },
+    clearActiveLayers: () => {
+      dispatch(thunkRemoveLayers());
     }
   };
 };

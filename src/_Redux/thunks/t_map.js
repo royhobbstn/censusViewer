@@ -5,6 +5,8 @@ import LZ from 'lz-string';
 import { datatree } from '../../_Config_JSON/datatree.js';
 import localforage from "localforage";
 import worker_script from './worker';
+import { configuration } from '../../_Config_JSON/configuration.js';
+
 var myEstWorker = new Worker(worker_script);
 var myMoeWorker = new Worker(worker_script);
 
@@ -25,6 +27,41 @@ export function thunkChangeMouseover(geoid, name) {
     myMoeWorker.postMessage({ type: 'lookup', data: geoid });
     dispatch(changeMouseoverLabel(name));
 
+  };
+}
+
+export function thunkRemoveLayers() {
+  return (dispatch, getState) => {
+
+    const state = getState();
+    const source_geography = state.map.source_geography;
+    const source_dataset = state.map.source_dataset;
+    const active_layer_names = state.map.active_layer_names;
+
+    window.map.removeLayer('tiles-polygons');
+
+    active_layer_names.forEach(layer => {
+      window.map.removeLayer(layer);
+    });
+
+    window.map.removeSource('tiles');
+
+    window.map.addSource('tiles', {
+      "type": "vector",
+      "minzoom": 3,
+      "maxzoom": 9,
+      "tiles": [`https://${configuration.tiles[0]}/${source_geography}_${datasetToYear(source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[1]}/${source_geography}_${datasetToYear(source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[2]}/${source_geography}_${datasetToYear(source_dataset)}/{z}/{x}/{y}.pbf`]
+    });
+
+    window.map.addLayer({
+      'id': 'tiles-polygons',
+      'type': 'fill',
+      'source': 'tiles',
+      'source-layer': 'main',
+      'paint': {
+        'fill-opacity': 0.35
+      }
+    }, "bridge_major_rail_hatching");
   };
 }
 
@@ -63,8 +100,6 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
 
           if (m.data.type === 'fetch') {
 
-            const la = window.performance.now();
-
             layer_add++;
 
             const values = convertDataToStops(m.data.data.data);
@@ -89,6 +124,7 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
               'source-layer': 'main',
               filter: ['in', 'GEOID', ...unique_geoids],
               'paint': {
+                'fill-antialias': false,
                 'fill-opacity': 0.35,
                 'fill-color': {
                   property: 'GEOID',
@@ -96,9 +132,7 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
                   stops: drawn_stops
                 }
               }
-            }, "admin-2-boundaries-dispute");
-
-            console.log('draw new layer:', window.performance.now() - la);
+            }, "bridge_major_rail_hatching");
 
             dispatch(updateStyleData(m.data.data.clusters, new_layer_name));
 
@@ -263,22 +297,26 @@ function convertDataToStops(data) {
 function getStopColor(value) {
   //
   if (value === undefined) {
-    return "black";
+    return null;
   }
 
   if (value > 90000) {
-    return '#016c59';
+    return '#0868ac';
   }
   else if (value > 65000) {
-    return '#1c9099';
+    return '#43a2ca';
   }
   else if (value > 45000) {
-    return '#67a9cf';
+    return '#7bccc4';
   }
   else if (value > 30000) {
-    return '#bdc9e1';
+    return '#bae4bc';
   }
   else {
-    return '#f6eff7';
+    return '#f0f9e8';
   }
+}
+
+export function datasetToYear(dataset) {
+  return configuration.datasets[dataset].year;
 }
