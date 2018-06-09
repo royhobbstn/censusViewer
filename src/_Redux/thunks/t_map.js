@@ -1,6 +1,6 @@
 /* global fetch */
 
-import { updateStyleData, updateMoeData, busyData, busyMoe, unbusyData, unbusyMoe, changeMouseoverStatistic, changeMouseoverLabel, changeMouseoverMoe } from '../actions/a_map.js';
+import { updateStyleData, updateMoeData, busyData, busyMoe, unbusyData, unbusyMoe, changeMouseoverStatistic, changeMouseoverLabel, changeMouseoverMoe, clearActiveLayerNames } from '../actions/a_map.js';
 import LZ from 'lz-string';
 import { datatree } from '../../_Config_JSON/datatree.js';
 import localforage from "localforage";
@@ -33,6 +33,8 @@ export function thunkChangeMouseover(geoid, name) {
 export function thunkRemoveLayers() {
   return (dispatch, getState) => {
 
+    console.log('thunkremovelayers');
+
     const state = getState();
     const source_geography = state.map.source_geography;
     const source_dataset = state.map.source_dataset;
@@ -43,6 +45,8 @@ export function thunkRemoveLayers() {
     active_layer_names.forEach(layer => {
       window.map.removeLayer(layer);
     });
+
+    dispatch(clearActiveLayerNames());
 
     window.map.removeSource('tiles');
 
@@ -83,6 +87,18 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
 
     const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
     const bounds = encodeURIComponent(JSON.stringify(current_bounds));
+
+    console.log('cluster done list');
+    console.log(state.map.cluster_done_list);
+
+    console.log('moe_cluster done list');
+    console.log(state.map.moe_cluster_done_list);
+
+    console.log('expression');
+    console.log(getExpressionFromAttr(source_dataset, attr));
+
+    console.log('bounds');
+    console.log(current_bounds);
 
     // const root = 'http://34.211.152.253:8081/retrieve?';
     const root = 'https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?';

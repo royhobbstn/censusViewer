@@ -66,3 +66,9 @@ export function addToTilesAlreadyRequested(urls) {
     urls
   };
 }
+
+export function clearActiveLayerNames() {
+  return {
+    type: 'CLEAR_ACTIVE_LAYER_NAMES'
+  };
+}

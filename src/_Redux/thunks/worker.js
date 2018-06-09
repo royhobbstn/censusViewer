@@ -12,6 +12,7 @@ const workercode = () => {
     // determine what kind of message (fetch data or lookup or clear)
     if (e.data.type === 'fetch') {
       // get data from aws/serverless
+
       fetch(e.data.url)
         .then(res => {
           return res.json();
