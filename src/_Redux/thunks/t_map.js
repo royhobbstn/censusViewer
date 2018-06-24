@@ -103,7 +103,7 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
     // const root = 'http://34.211.152.253:8081/retrieve?';
     const root = 'https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?';
 
-    const url = `${root}expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${cluster_done_list}`;
+    const url = `${root}theme=${attr}&expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${cluster_done_list}`;
 
 
     if (!myEstWorker.onmessage) {
@@ -169,7 +169,7 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
 
     const moe_expression = encodeURIComponent(JSON.stringify(getMoeExpressionFromAttr(source_dataset, attr)));
 
-    const moe_url = `${root}expression=${moe_expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${moe_cluster_done_list}&moe=true`;
+    const moe_url = `${root}theme=${attr}&expression=${moe_expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${moe_cluster_done_list}&moe=true`;
 
 
 

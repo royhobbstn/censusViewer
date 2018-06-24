@@ -12,7 +12,8 @@ const mapStateToProps = state => {
     source_geography: state.map.source_geography,
     source_dataset: state.map.source_dataset,
     tiles_already_requested: state.map.tiles_already_requested,
-    active_layer_names: state.map.active_layer_names
+    active_layer_names: state.map.active_layer_names,
+    selected_attr: state.map.selected_attr
   };
 };
 

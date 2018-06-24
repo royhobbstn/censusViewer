@@ -46,7 +46,7 @@ export const configuration = {
   tiles: ['d3q67u30tir1mv.cloudfront.net', 'd1rz82ekhmlc7r.cloudfront.net', 'd31llbwjzirnw2.cloudfront.net'],
   startup: {
     source_geography: 'tract',
-    source_dataset: 'acs1216',
+    source_dataset: 'acs1014',
     selected_attr: 'mhi',
   }
 
