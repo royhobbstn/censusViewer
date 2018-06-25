@@ -182,6 +182,7 @@ class Map extends Component {
         window.map.getCanvas().style.cursor = 'pointer';
         const geoid = e.features[0].properties.GEOID;
         const name = e.features[0].properties.NAME;
+        console.log(name);
         const label = getLabel(geoid, name);
         if (geoid && label) {
           this.props.updateMouseover(geoid, label);

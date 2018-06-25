@@ -41,13 +41,13 @@ const map = (
       return Object.assign({}, state, { busy_moe: false });
     case 'UPDATE_POLYGON_STYLE':
       return Object.assign({}, state, {
-        cluster_done_list: [...state.cluster_done_list, ...action.clusters],
+        cluster_done_list: Array.from(new Set([...state.cluster_done_list, ...action.clusters])),
         busy_data: false,
         active_layer_names: [...state.active_layer_names, action.layer_name]
       });
     case 'UPDATE_MOE_DATA':
       return Object.assign({}, state, {
-        moe_cluster_done_list: [...state.moe_cluster_done_list, ...action.clusters],
+        moe_cluster_done_list: Array.from(new Set([...state.moe_cluster_done_list, ...action.clusters])),
         busy_moe: false
       });
     case 'UPDATE_DATASET':
