@@ -3,22 +3,16 @@
 import { updateStyleData, updateMoeData, busyData, busyMoe, unbusyData, unbusyMoe, changeMouseoverStatistic, changeMouseoverLabel, changeMouseoverMoe, clearActiveLayerNames } from '../actions/a_map.js';
 import LZ from 'lz-string';
 import { datatree } from '../../_Config_JSON/datatree.js';
-import localforage from "localforage";
+
 import worker_script from './worker';
 import { configuration } from '../../_Config_JSON/configuration.js';
 
 var myEstWorker = new Worker(worker_script);
 var myMoeWorker = new Worker(worker_script);
 
+// give a unique increment id number to each new layer created
 let layer_add = 0;
 
-// TODO
-localforage.config({
-  driver: localforage.INDEXEDDB,
-  name: 'CensusWebmap'
-});
-
-window.key_store = {};
 
 export function thunkChangeMouseover(geoid, name) {
   return (dispatch, getState) => {
