@@ -14,13 +14,18 @@ var myMoeWorker = new Worker(worker_script);
 let layer_add = 0;
 
 
+export function thunkClearWorkers(geoid, name) {
+  return (dispatch, getState) => {
+    myEstWorker.postMessage({ type: 'clear', data: {} });
+    myMoeWorker.postMessage({ type: 'clear', data: {} });
+  };
+}
+
 export function thunkChangeMouseover(geoid, name) {
   return (dispatch, getState) => {
-
     myEstWorker.postMessage({ type: 'lookup', data: geoid });
     myMoeWorker.postMessage({ type: 'lookup', data: geoid });
     dispatch(changeMouseoverLabel(name));
-
   };
 }
 
@@ -82,17 +87,6 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
     const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
     const bounds = encodeURIComponent(JSON.stringify(current_bounds));
 
-    console.log('cluster done list');
-    console.log(state.map.cluster_done_list);
-
-    console.log('moe_cluster done list');
-    console.log(state.map.moe_cluster_done_list);
-
-    console.log('expression');
-    console.log(getExpressionFromAttr(source_dataset, attr));
-
-    console.log('bounds');
-    console.log(current_bounds);
 
     // const root = 'http://34.211.152.253:8081/retrieve?';
     const root = 'https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?';

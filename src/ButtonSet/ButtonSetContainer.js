@@ -3,6 +3,7 @@
 import { connect } from 'react-redux';
 import ButtonSet from './ButtonSet.js';
 
+import { thunkClearWorkers } from '../_Redux/thunks/t_map.js';
 import { updateDataset, updateGeography, updateTheme } from '../_Redux/actions/a_buttonset.js';
 
 const mapStateToProps = state => {
@@ -16,6 +17,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     handleDatasetChange: selectedOption => {
+      dispatch(thunkClearWorkers());
       dispatch(updateDataset(selectedOption.value));
     },
     handleGeographyChange: selectedOption => {
