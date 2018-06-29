@@ -11,121 +11,137 @@ const dataset = 'acs1115';
 const datatree = require(`../src/_Config_JSON/${dataset}_tree.json`);
 
 
+const data_store = {};
 
-Object.keys(datatree).slice(0, 1).map(key => {
+const keys = [];
 
-  // [].forEach(sumlev => {
-
-
-  // })
-
-  const expression = getExpressionFromAttr(datatree, key);
-
-  const sumlev = '050';
-  const url = getUrlFromDataset(dataset);
-
-
-  const fields = Array.from(new Set(getFieldsFromExpression(expression)));
-
-  const parser = new Parser();
-  const expr = parser.parse(expression.join(""));
-
-
-  const datas = [];
-  const fields_key = [];
-
-
-  fields.forEach(field => {
-    fields_key.push(field);
-    datas.push(rp({
-      method: 'get',
-      uri: `https://${url}/${field}/${sumlev}.json`,
-      headers: {
-        'Accept-Encoding': 'gzip',
-      },
-      gzip: true,
-      json: true,
-      fullResponse: false
-    }));
+Object.keys(datatree).slice(0, 1).map(attr => {
+  ['040', '050', '140', '150', '160'].forEach(sumlev => {
+    keys.push({ attr, sumlev });
   });
+});
+
+console.log(keys);
+
+const lookups = keys.map(item => {
+
+  return new Promise((resolve, reject) => {
 
 
+    const expression = getExpressionFromAttr(datatree, item.attr);
 
-  Promise.all(datas).then(data => {
+    const sumlev = item.sumlev;
+    const url = getUrlFromDataset(dataset);
 
-    const combined_data = [];
 
-    // create a data structure where combined_data indexes match fields indexes
-    fields_key.forEach((field_key, field_key_index) => {
-      fields.forEach((field, i) => {
-        if (field_key === field) {
-          if (combined_data[i]) {
-            combined_data[i] = Object.assign({}, combined_data[i], data[field_key_index]);
+    const fields = Array.from(new Set(getFieldsFromExpression(expression)));
+
+    const parser = new Parser();
+    const expr = parser.parse(expression.join(""));
+
+    const datas = [];
+    const fields_key = [];
+
+    fields.forEach(field => {
+      fields_key.push(field);
+      datas.push(rp({
+        method: 'get',
+        uri: `https://${url}/${field}/${sumlev}.json`,
+        headers: {
+          'Accept-Encoding': 'gzip',
+        },
+        gzip: true,
+        json: true,
+        fullResponse: false
+      }));
+    });
+
+    Promise.all(datas).then(data => {
+
+      const combined_data = [];
+
+      // create a data structure where combined_data indexes match fields indexes
+      fields_key.forEach((field_key, field_key_index) => {
+        fields.forEach((field, i) => {
+          if (field_key === field) {
+            if (combined_data[i]) {
+              combined_data[i] = Object.assign({}, combined_data[i], data[field_key_index]);
+            }
+            else {
+              combined_data[i] = data[field_key_index];
+            }
           }
-          else {
-            combined_data[i] = data[field_key_index];
-          }
-        }
+        });
       });
+
+      const evaluated = {};
+
+      // combined_data[0] index is arbitrary.  goal is just to loop through all geoids
+      // create a mini object where each object key is a field name.
+      // then solve the expression, and record the result in a master 'evaluated' object
+      Object.keys(combined_data[0]).forEach(geoid => {
+        const obj = {};
+        fields.forEach((field, i) => {
+          obj[field] = combined_data[i][geoid];
+        });
+        evaluated[geoid] = expr.evaluate(obj);
+      });
+
+      // store in main data object
+      if (!data_store[item.attr]) {
+        data_store[item.attr] = {};
+      }
+
+      data_store[item.attr][item.sumlev] = calcBreaks(evaluated);
+
+      resolve('done');
+
+    }).catch(err => {
+      console.log(err);
     });
 
 
-    const evaluated = {};
-
-    // combined_data[0] index is arbitrary.  goal is just to loop through all geoids
-    // create a mini object where each object key is a field name.
-    // then solve the expression, and record the result in a master 'evaluated' object
-    Object.keys(combined_data[0]).forEach(geoid => {
-      const obj = {};
-      fields.forEach((field, i) => {
-        obj[field] = combined_data[i][geoid];
-      });
-      evaluated[geoid] = expr.evaluate(obj);
-
-    });
-
-    console.log(evaluated);
-
-    return evaluated;
-
-
-
-
   });
-
-
 
 });
+
+
+Promise.all(lookups).then(() => {
+    fs.writeFileSync('./test.json', JSON.stringify(data_store), 'utf8');
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
 
 
 function calcBreaks(data) {
 
   // convert all data to numbers
-  var thedata = data.filter(d => {
-      return !Number.isNaN(d);
+  let thedata = Object.keys(data).filter(key => {
+      return !Number.isNaN(data[key]);
     })
     .map(function(d) {
       return Number(d);
     });
 
 
-  var max = ss.max(thedata);
+  const max = ss.max(thedata);
 
   // all values in array are 0. (presumably no bg data)  Add a '1' to the array so simplestatistics library doesnt fail computing ckmeans.
   if (max === 0) {
     thedata = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
   }
 
-  var min = ss.min(thedata);
-  var median = ss.median(thedata);
-  var stddev = ss.standardDeviation(thedata);
+  const min = ss.min(thedata);
+  const median = ss.median(thedata);
+  const stddev = ss.standardDeviation(thedata);
 
-  var ckmeans5 = ss.ckmeans(thedata, 5);
-  var ckmeans7 = ss.ckmeans(thedata, 7);
-  var ckmeans9 = ss.ckmeans(thedata, 9);
+  const ckmeans5 = ss.ckmeans(thedata, 5);
+  const ckmeans7 = ss.ckmeans(thedata, 7);
+  const ckmeans9 = ss.ckmeans(thedata, 9);
 
-  var computed_breaks = {};
+  const computed_breaks = {};
   computed_breaks.ckmeans5 = [ckmeans5[4][0], ckmeans5[3][0], ckmeans5[2][0], ckmeans5[1][0]];
   computed_breaks.ckmeans7 = [ckmeans7[1][0], ckmeans7[2][0], ckmeans7[3][0], ckmeans7[4][0], ckmeans7[5][0], ckmeans7[6][0]];
   computed_breaks.ckmeans9 = [ckmeans9[8][0], ckmeans9[7][0], ckmeans9[6][0], ckmeans9[5][0], ckmeans9[4][0], ckmeans9[3][0], ckmeans9[2][0], ckmeans9[1][0]];
