@@ -1,5 +1,5 @@
 import React from 'react';
-import { datatree } from '../_Config_JSON/datatree.js';
+const { datatree } = require('../_Config_JSON/datatree.js');
 
 const mouseover_style = { position: 'absolute', 'zIndex': 1000, bottom: '32px', borderRadius: '3px', padding: '5px', left: '9px', backgroundColor: 'white', minWidth: '160px' };
 

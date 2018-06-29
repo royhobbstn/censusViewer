@@ -2,10 +2,12 @@
 
 import { updateStyleData, updateMoeData, busyData, busyMoe, unbusyData, unbusyMoe, changeMouseoverStatistic, changeMouseoverLabel, changeMouseoverMoe, clearActiveLayerNames } from '../actions/a_map.js';
 import LZ from 'lz-string';
-import { datatree } from '../../_Config_JSON/datatree.js';
 
 import worker_script from './worker';
 import { configuration } from '../../_Config_JSON/configuration.js';
+
+const { datatree } = require('../../_Config_JSON/datatree.js');
+
 
 var myEstWorker = new Worker(worker_script);
 var myMoeWorker = new Worker(worker_script);

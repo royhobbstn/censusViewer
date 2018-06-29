@@ -1,12 +1,31 @@
-// node version 9
-// node --experimental-modules calculate-breaks.mjs
+// calculate breaks for themes.  necessary to run this every time there is a 
+// change in the themes file (datatree)
 
+const Promise = require('bluebird');
+const argv = require('yargs').argv;
 const fs = require('fs');
 const ss = require("simple-statistics");
 const rp = require('request-promise');
 const Parser = require('expr-eval').Parser;
+const SAMPLE = 3000;
 
-const dataset = 'acs1115';
+
+if (argv._.length === 0) {
+  console.log('fatal error.  Run like: node calculate-breaks.js acs1014');
+  process.exit();
+}
+
+const dataset = String(argv._[0]);
+
+console.log(dataset);
+
+const valid = ['acs1014', 'acs1115', 'acs1216'];
+
+if (!valid.includes(dataset)) {
+  console.log('valid values are acs1014, acs1115, acs1216');
+  process.exit();
+}
+
 
 const datatree = require(`../src/_Config_JSON/${dataset}_tree.json`);
 
@@ -15,18 +34,16 @@ const data_store = {};
 
 const keys = [];
 
-Object.keys(datatree).slice(0, 1).map(attr => {
+Object.keys(datatree).map(attr => {
   ['040', '050', '140', '150', '160'].forEach(sumlev => {
     keys.push({ attr, sumlev });
   });
 });
 
-console.log(keys);
 
-const lookups = keys.map(item => {
+const lookups = Promise.map(keys, (item) => {
 
   return new Promise((resolve, reject) => {
-
 
     const expression = getExpressionFromAttr(datatree, item.attr);
 
@@ -92,7 +109,13 @@ const lookups = keys.map(item => {
         data_store[item.attr] = {};
       }
 
-      data_store[item.attr][item.sumlev] = calcBreaks(evaluated);
+
+      try {
+        data_store[item.attr][item.sumlev] = calcBreaks(evaluated);
+      }
+      catch (e) {
+        console.log('Error running calcBreaks.', item, 'Skipping.');
+      }
 
       resolve('done');
 
@@ -103,11 +126,12 @@ const lookups = keys.map(item => {
 
   });
 
-});
-
+}, { concurrency: 10 });
 
 Promise.all(lookups).then(() => {
-    fs.writeFileSync('./test.json', JSON.stringify(data_store), 'utf8');
+    console.log('writing...');
+    fs.writeFileSync(`../src/_Config_JSON/breaks_${dataset}.json`, JSON.stringify(data_store), 'utf8');
+    console.log('done!');
   })
   .catch(err => {
     console.log(err);
@@ -118,11 +142,11 @@ Promise.all(lookups).then(() => {
 function calcBreaks(data) {
 
   // convert all data to numbers
-  let thedata = Object.keys(data).filter(key => {
+  let thedata = Object.keys(data).slice(0, SAMPLE).filter(key => {
       return !Number.isNaN(data[key]);
     })
-    .map(function(d) {
-      return Number(d);
+    .map(function(key) {
+      return Number(data[key]);
     });
 
 

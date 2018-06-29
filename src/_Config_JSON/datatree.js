@@ -1,7 +1,11 @@
-import { acs1115 } from './acs1115_tree.js';
+//
 
-export const datatree = {
-  "acs1014": acs1115,
-  "acs1115": acs1115,
-  "acs1216": acs1115
+const acs1014 = require('./acs1014_tree.json');
+const acs1115 = require('./acs1115_tree.json');
+const acs1216 = require('./acs1216_tree.json');
+
+exports.datatree = {
+  acs1014,
+  acs1115,
+  acs1216
 };
