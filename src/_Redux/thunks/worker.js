@@ -21,7 +21,7 @@ const workercode = () => {
 
           if (Object.keys(fetched_data.data).length) {
             // TODO send pre-computed stops and geoids
-            self.postMessage({ type: 'fetch', data: fetched_data });
+            self.postMessage({ type: 'fetch', data: fetched_data, attr: e.data.attr, sumlev: e.data.sumlev, source_dataset: e.data.source_dataset });
             persistent_data = Object.assign({}, persistent_data, fetched_data.data);
           }
           else {
