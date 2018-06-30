@@ -4,10 +4,7 @@
   "private": true,
   "homepage": "https://royhobbstn.github.io/censusViewer",
   "dependencies": {
-    "@std/esm": "^0.18.0",
-    "aws-sdk": "^2.175.0",
     "expr-eval": "^1.2.1",
-    "fast-deep-equal": "^1.0.0",
     "lodash": "^4.17.4",
     "lz-string": "^1.4.4",
     "mapbox-gl": "^0.44.2",
@@ -18,9 +15,6 @@
     "react-select": "^1.1.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "request": "^2.83.0",
-    "request-promise": "^4.2.2",
-    "simple-statistics": "^5.2.1",
     "workerize": "^0.1.6"
   },
   "scripts": {
@@ -32,9 +26,11 @@
     "deploy": "gh-pages -d build"
   },
   "devDependencies": {
+    "simple-statistics": "^5.2.1",
     "bluebird": "^3.5.1",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
     "gh-pages": "^1.1.0",
-    "object-sizeof": "^1.2.0",
     "yargs": "^12.0.1"
   }
 }

@@ -47,7 +47,7 @@ export const configuration = {
   startup: {
     source_geography: 'tract',
     source_dataset: 'acs1014',
-    selected_attr: 'mhi',
+    selected_attr: 'mhv',
   }
 
 };

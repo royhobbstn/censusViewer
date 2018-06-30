@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import '../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 import key from './mapbox_api_key.js';
-import _ from 'lodash';
+import { throttle } from 'lodash';
 import { configuration } from '../_Config_JSON/configuration.js';
 import { state_lookup } from '../_Config_JSON/state_lookup.js';
 // import { style } from '../_Config_JSON/style.js';
@@ -29,7 +29,7 @@ class Map extends Component {
     window.map.on('load', () => {
 
 
-      const findNew = _.throttle((e) => {
+      const findNew = throttle((e) => {
         // const trt = window.performance.now();
         const screenX = e ? e.originalEvent.x : false;
         const screenY = e ? e.originalEvent.y : false;
@@ -158,7 +158,7 @@ class Map extends Component {
         }
       }, "bridge_major_rail_hatching");
 
-      window.map.on('moveend', _.throttle((e) => {
+      window.map.on('moveend', throttle((e) => {
         if (e.originalEvent) {
           findNew(e);
         }
@@ -171,13 +171,13 @@ class Map extends Component {
         }
       });
 
-      window.map.on('zoomstart', _.throttle((e) => {
+      window.map.on('zoomstart', throttle((e) => {
         if (e.originalEvent) {
           findNew(e);
         }
       }, 600));
 
-      window.map.on('mousemove', 'tiles-polygons', _.throttle((e) => {
+      window.map.on('mousemove', 'tiles-polygons', throttle((e) => {
 
         window.map.getCanvas().style.cursor = 'pointer';
         const geoid = e.features[0].properties.GEOID;

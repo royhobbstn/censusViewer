@@ -12,7 +12,7 @@
         "mininc": "1",
         "usezeroasnull": "yes",
         "favtable": "Median Household Income",
-        "favstyle": "jenks,7,mh1",
+        "favstyle": "ckmeans,7,mh1",
         "bg": "yes"
     },
 
@@ -28,7 +28,7 @@
         "mininc": "1",
         "usezeroasnull": "yes",
         "favtable": "Median Home Value",
-        "favstyle": "jenks,7,mh2",
+        "favstyle": "ckmeans,7,mh2",
         "bg": "yes"
     },
     "mfi": {
@@ -43,7 +43,7 @@
         "mininc": "1",
         "usezeroasnull": "yes",
         "favtable": "Median Family Income",
-        "favstyle": "jenks,7,mh3",
+        "favstyle": "ckmeans,7,mh3",
         "bg": "yes"
     },
 
@@ -59,7 +59,7 @@
         "mininc": "1",
         "usezeroasnull": "yes",
         "favtable": "Per Capita Income",
-        "favstyle": "jenks,7,mh4",
+        "favstyle": "ckmeans,7,mh4",
         "bg": "yes"
     },
 
@@ -75,7 +75,7 @@
         "mininc": "1",
         "usezeroasnull": "yes",
         "favtable": "Median Year Built",
-        "favstyle": "jenks,7,mh5",
+        "favstyle": "ckmeans,7,mh5",
         "bg": "yes"
     },
 
@@ -91,7 +91,7 @@
         "mininc": "1",
         "usezeroasnull": "no",
         "favtable": "Basic Population (total)",
-        "favstyle": "jenks,7,mh7",
+        "favstyle": "ckmeans,7,mh7",
         "bg": "yes"
     },
 
@@ -107,7 +107,7 @@
         "mininc": ".01",
         "usezeroasnull": "no",
         "favtable": "Race-Ethnicity (percent)",
-        "favstyle": "jenks,7,mh6",
+        "favstyle": "ckmeans,7,mh6",
         "bg": "yes"
     },
 
@@ -123,7 +123,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Race-Ethnicity (percent)",
-        "favstyle": "jenks,7,mh8",
+        "favstyle": "ckmeans,7,mh8",
         "bg": "yes"
     },
 
@@ -139,7 +139,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Race-Ethnicity (percent)",
-        "favstyle": "jenks,7,mh9",
+        "favstyle": "ckmeans,7,mh9",
         "bg": "yes"
     },
 
@@ -155,7 +155,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Race-Ethnicity (percent)",
-        "favstyle": "jenks,7,sh1",
+        "favstyle": "ckmeans,7,sh1",
         "bg": "yes"
     },
 
@@ -171,7 +171,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Race-Ethnicity (percent)",
-        "favstyle": "jenks,7,sh2",
+        "favstyle": "ckmeans,7,sh2",
         "bg": "yes"
     },
 
@@ -187,7 +187,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Race-Ethnicity (percent)",
-        "favstyle": "jenks,7,sh4",
+        "favstyle": "ckmeans,7,sh4",
         "bg": "yes"
     },
 
@@ -203,7 +203,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Male & Female (percent)",
-        "favstyle": "jenks,7,sh6",
+        "favstyle": "ckmeans,7,sh6",
         "bg": "yes"
     },
 
@@ -219,7 +219,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Male & Female (percent)",
-        "favstyle": "jenks,7,sh5",
+        "favstyle": "ckmeans,7,sh5",
         "bg": "yes"
     },
 
@@ -235,7 +235,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Age Group (percent)",
-        "favstyle": "jenks,7,mh1",
+        "favstyle": "ckmeans,7,mh1",
         "bg": "yes"
     },
 
@@ -251,7 +251,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Age Group (percent)",
-        "favstyle": "jenks,7,mh2",
+        "favstyle": "ckmeans,7,mh2",
         "bg": "yes"
     },
 
@@ -267,7 +267,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Age Group (percent)",
-        "favstyle": "jenks,7,mh3",
+        "favstyle": "ckmeans,7,mh3",
         "bg": "yes"
     },
 
@@ -283,7 +283,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Age Group (percent)",
-        "favstyle": "jenks,7,mh4",
+        "favstyle": "ckmeans,7,mh4",
         "bg": "yes"
     },
 
@@ -299,7 +299,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Age Group (percent)",
-        "favstyle": "jenks,7,mh5",
+        "favstyle": "ckmeans,7,mh5",
         "bg": "yes"
     },
 
@@ -315,7 +315,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Age Group (percent)",
-        "favstyle": "jenks,7,mh6",
+        "favstyle": "ckmeans,7,mh6",
         "bg": "yes"
     },
 
@@ -331,7 +331,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Age Group (percent)",
-        "favstyle": "jenks,7,mh7",
+        "favstyle": "ckmeans,7,mh7",
         "bg": "yes"
     },
 
@@ -347,7 +347,7 @@
         "mininc": "0.1",
         "usezeroasnull": "yes",
         "favtable": "Median Age",
-        "favstyle": "jenks,7,mh8",
+        "favstyle": "ckmeans,7,mh8",
         "bg": "yes"
     },
 
@@ -363,7 +363,7 @@
         "mininc": "1",
         "usezeroasnull": "no",
         "favtable": "Household Type (total)",
-        "favstyle": "jenks,7,mh9",
+        "favstyle": "ckmeans,7,mh9",
         "bg": "yes"
     },
 
@@ -379,7 +379,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Household Type (total)",
-        "favstyle": "jenks,7,mh10",
+        "favstyle": "ckmeans,7,mh10",
         "bg": "yes"
     },
 
@@ -395,7 +395,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Household Type (total)",
-        "favstyle": "jenks,7,mh11",
+        "favstyle": "ckmeans,7,mh11",
         "bg": "yes"
     },
 
@@ -411,7 +411,7 @@
         "mininc": "1",
         "usezeroasnull": "no",
         "favtable": "Housing Units (total)",
-        "favstyle": "jenks,7,mh12",
+        "favstyle": "ckmeans,7,mh12",
         "bg": "yes"
     },
 
@@ -427,7 +427,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Occupancy (percent)",
-        "favstyle": "jenks,7,sh1",
+        "favstyle": "ckmeans,7,sh1",
         "bg": "yes"
     },
 
@@ -443,7 +443,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Occupancy (percent)",
-        "favstyle": "jenks,7,sh2",
+        "favstyle": "ckmeans,7,sh2",
         "bg": "yes"
     },
 
@@ -459,7 +459,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Tenure (percent)",
-        "favstyle": "jenks,7,sh4",
+        "favstyle": "ckmeans,7,sh4",
         "bg": "yes"
     },
 
@@ -475,7 +475,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Tenure (percent)",
-        "favstyle": "jenks,7,sh5",
+        "favstyle": "ckmeans,7,sh5",
         "bg": "yes"
     },
 
@@ -491,7 +491,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Educational Attainment (percent)",
-        "favstyle": "jenks,7,sh6",
+        "favstyle": "ckmeans,7,sh6",
         "bg": "yes"
     },
 
@@ -507,7 +507,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Educational Attainment (percent)",
-        "favstyle": "jenks,7,mh1",
+        "favstyle": "ckmeans,7,mh1",
         "bg": "yes"
     },
 
@@ -523,7 +523,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Educational Attainment (percent)",
-        "favstyle": "jenks,7,mh2",
+        "favstyle": "ckmeans,7,mh2",
         "bg": "yes"
     },
 
@@ -539,7 +539,7 @@
         "mininc": "1",
         "usezeroasnull": "yes",
         "favtable": "Median Contract Rent",
-        "favstyle": "jenks,7,mh3",
+        "favstyle": "ckmeans,7,mh3",
         "bg": "yes"
     },
 
@@ -555,7 +555,7 @@
         "mininc": "1",
         "usezeroasnull": "yes",
         "favtable": "Median Gross Rent",
-        "favstyle": "jenks,7,mh4",
+        "favstyle": "ckmeans,7,mh4",
         "bg": "yes"
     },
 
@@ -571,7 +571,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Citizenship (percent)",
-        "favstyle": "jenks,7,mh5",
+        "favstyle": "ckmeans,7,mh5",
         "bg": "no"
     },
 
@@ -587,7 +587,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Citizenship (percent)",
-        "favstyle": "jenks,7,mh6",
+        "favstyle": "ckmeans,7,mh6",
         "bg": "no"
     },
 
@@ -603,7 +603,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Citizenship (percent)",
-        "favstyle": "jenks,7,mh7",
+        "favstyle": "ckmeans,7,mh7",
         "bg": "no"
     },
 
@@ -619,7 +619,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Birthplace (percent)",
-        "favstyle": "jenks,7,mh8",
+        "favstyle": "ckmeans,7,mh8",
         "bg": "no"
     },
 
@@ -635,7 +635,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Birthplace (percent)",
-        "favstyle": "jenks,7,mh9",
+        "favstyle": "ckmeans,7,mh9",
         "bg": "no"
     },
 
@@ -651,7 +651,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Birthplace (percent)",
-        "favstyle": "jenks,7,mh10",
+        "favstyle": "ckmeans,7,mh10",
         "bg": "no"
     },
 
@@ -667,7 +667,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Birthplace (percent)",
-        "favstyle": "jenks,7,mh11",
+        "favstyle": "ckmeans,7,mh11",
         "bg": "no"
     },
 
@@ -683,7 +683,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Migration (percent)",
-        "favstyle": "jenks,7,mh12",
+        "favstyle": "ckmeans,7,mh12",
         "bg": "no"
     },
 
@@ -699,7 +699,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Migration (percent)",
-        "favstyle": "jenks,7,sh1",
+        "favstyle": "ckmeans,7,sh1",
         "bg": "no"
     },
 
@@ -715,7 +715,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Migration (percent)",
-        "favstyle": "jenks,7,sh2",
+        "favstyle": "ckmeans,7,sh2",
         "bg": "no"
     },
 
@@ -731,7 +731,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Migration (percent)",
-        "favstyle": "jenks,7,sh4",
+        "favstyle": "ckmeans,7,sh4",
         "bg": "no"
     },
 
@@ -747,7 +747,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Migration (percent)",
-        "favstyle": "jenks,7,sh5",
+        "favstyle": "ckmeans,7,sh5",
         "bg": "no"
     },
 
@@ -763,7 +763,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Transportation to Work (percent)",
-        "favstyle": "jenks,7,sh6",
+        "favstyle": "ckmeans,7,sh6",
         "bg": "no"
     },
 
@@ -779,7 +779,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Transportation to Work (percent)",
-        "favstyle": "jenks,7,mh1",
+        "favstyle": "ckmeans,7,mh1",
         "bg": "no"
     },
 
@@ -795,7 +795,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Transportation to Work (percent)",
-        "favstyle": "jenks,7,mh2",
+        "favstyle": "ckmeans,7,mh2",
         "bg": "no"
     },
 
@@ -811,7 +811,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Transportation to Work (percent)",
-        "favstyle": "jenks,7,mh3",
+        "favstyle": "ckmeans,7,mh3",
         "bg": "no"
     },
 
@@ -827,7 +827,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Transportation to Work (percent)",
-        "favstyle": "jenks,7,mh4",
+        "favstyle": "ckmeans,7,mh4",
         "bg": "no"
     },
 
@@ -843,7 +843,7 @@
         "mininc": "0.01",
         "usezeroasnull": "yes",
         "favtable": "Average Household Size",
-        "favstyle": "jenks,7,mh5",
+        "favstyle": "ckmeans,7,mh5",
         "bg": "yes"
     },
 
@@ -859,7 +859,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Insurance (percent)",
-        "favstyle": "jenks,7,mh7",
+        "favstyle": "ckmeans,7,mh7",
         "bg": "no"
     },
 
@@ -875,7 +875,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Insurance (percent)",
-        "favstyle": "jenks,7,mh8",
+        "favstyle": "ckmeans,7,mh8",
         "bg": "no"
     },
 
@@ -891,7 +891,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Enrolled in School (percent)",
-        "favstyle": "jenks,7,mh9",
+        "favstyle": "ckmeans,7,mh9",
         "bg": "no"
     },
 
@@ -907,7 +907,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Enrolled in School (percent)",
-        "favstyle": "jenks,7,mh10",
+        "favstyle": "ckmeans,7,mh10",
         "bg": "no"
     },
 
@@ -923,7 +923,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Enrolled in School (percent)",
-        "favstyle": "jenks,7,mh11",
+        "favstyle": "ckmeans,7,mh11",
         "bg": "no"
     },
 
@@ -939,7 +939,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Enrolled in School (percent)",
-        "favstyle": "jenks,7,mh12",
+        "favstyle": "ckmeans,7,mh12",
         "bg": "no"
     },
 
@@ -955,7 +955,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Enrolled in School (percent)",
-        "favstyle": "jenks,7,sh1",
+        "favstyle": "ckmeans,7,sh1",
         "bg": "no"
     },
 
@@ -971,7 +971,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Poverty (percent)",
-        "favstyle": "jenks,7,sh2",
+        "favstyle": "ckmeans,7,sh2",
         "bg": "yes"
     },
 
@@ -987,7 +987,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Poverty (percent)",
-        "favstyle": "jenks,7,sh4",
+        "favstyle": "ckmeans,7,sh4",
         "bg": "yes"
     },
 
@@ -1003,7 +1003,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Disability (percent)",
-        "favstyle": "jenks,7,sh5",
+        "favstyle": "ckmeans,7,sh5",
         "bg": "no"
     },
 
@@ -1019,7 +1019,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Unemployment (percent)",
-        "favstyle": "jenks,7,sh6",
+        "favstyle": "ckmeans,7,sh6",
         "bg": "yes"
     },
 
@@ -1035,7 +1035,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Unemployment (percent)",
-        "favstyle": "jenks,7,mh1",
+        "favstyle": "ckmeans,7,mh1",
         "bg": "yes"
     },
 
@@ -1051,7 +1051,7 @@
         "mininc": "1",
         "usezeroasnull": "yes",
         "favtable": "",
-        "favstyle": "jenks,7,mh2",
+        "favstyle": "ckmeans,7,mh2",
         "bg": "no"
     },
 
@@ -1067,7 +1067,7 @@
         "mininc": "1",
         "usezeroasnull": "yes",
         "favtable": "",
-        "favstyle": "jenks,7,mh3",
+        "favstyle": "ckmeans,7,mh3",
         "bg": "yes"
     },
 
@@ -1083,7 +1083,7 @@
         "mininc": "1",
         "usezeroasnull": "yes",
         "favtable": "",
-        "favstyle": "jenks,7,mh4",
+        "favstyle": "ckmeans,7,mh4",
         "bg": "yes"
     },
 
@@ -1099,7 +1099,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "",
-        "favstyle": "jenks,7,mh5",
+        "favstyle": "ckmeans,7,mh5",
         "bg": "yes"
     },
 
@@ -1115,7 +1115,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Household Type (total)",
-        "favstyle": "jenks,7,mh6",
+        "favstyle": "ckmeans,7,mh6",
         "bg": "yes"
     },
 
@@ -1131,7 +1131,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Household Type (total)",
-        "favstyle": "jenks,7,mh7",
+        "favstyle": "ckmeans,7,mh7",
         "bg": "yes"
     },
 
@@ -1147,7 +1147,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Household Type (total)",
-        "favstyle": "jenks,7,mh8",
+        "favstyle": "ckmeans,7,mh8",
         "bg": "yes"
     },
 
@@ -1163,7 +1163,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "Household Type (total)",
-        "favstyle": "jenks,7,mh9",
+        "favstyle": "ckmeans,7,mh9",
         "bg": "yes"
     },
 
@@ -1179,7 +1179,7 @@
         "mininc": "0.01",
         "usezeroasnull": "no",
         "favtable": "",
-        "favstyle": "jenks,7,mh10",
+        "favstyle": "ckmeans,7,mh10",
         "bg": "yes"
     },
 
@@ -1195,7 +1195,7 @@
         "mininc": ".01",
         "usezeroasnull": "no",
         "favtable": "Cost Burdened Households (with a Mortgage)",
-        "favstyle": "jenks,7,cbhm",
+        "favstyle": "ckmeans,7,mh11",
         "bg": "yes"
     }
 

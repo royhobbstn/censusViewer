@@ -20,7 +20,7 @@ const workercode = () => {
         .then(fetched_data => {
 
           if (Object.keys(fetched_data.data).length) {
-            // todo send pre-computed stops and geoids
+            // TODO send pre-computed stops and geoids
             self.postMessage({ type: 'fetch', data: fetched_data });
             persistent_data = Object.assign({}, persistent_data, fetched_data.data);
           }

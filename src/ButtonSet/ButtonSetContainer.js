@@ -24,6 +24,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(updateGeography(selectedOption.value));
     },
     handleThemeChange: selectedOption => {
+      console.log(selectedOption.value);
       dispatch(updateTheme(selectedOption.value));
     },
   };
