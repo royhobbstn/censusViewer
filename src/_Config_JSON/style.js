@@ -48,6 +48,25 @@ export const style = {
       },
       "interactive": true
     },
+
+    {
+      "interactive": true,
+      "metadata": {
+        "mapbox:group": "1444849382550.77"
+      },
+      "filter": [
+        "all", [
+          "==",
+          "class",
+          "no"
+        ]
+      ],
+      "type": "line",
+      "source": "mapbox",
+      "id": "blank",
+      "source-layer": "waterway"
+    },
+
     {
       "interactive": true,
       "layout": {
@@ -1090,47 +1109,47 @@ export const style = {
       "source-layer": "admin"
     },
 
-    {
-      "interactive": true,
-      "layout": {
-        "text-field": "{name_en}",
-        "text-font": [
-          "Open Sans Regular",
-          "Arial Unicode MS Regular"
-        ],
-        "text-size": {
-          "base": 1,
-          "stops": [
-            [
-              13,
-              12
-            ],
-            [
-              14,
-              13
-            ]
-          ]
-        },
-        "symbol-placement": "line"
-      },
-      "metadata": {
-        "mapbox:group": "1456163609504.0715"
-      },
-      "filter": [
-        "!=",
-        "class",
-        "ferry"
-      ],
-      "type": "symbol",
-      "source": "mapbox",
-      "id": "road_label",
-      "paint": {
-        "text-color": "#765",
-        "text-halo-width": 1,
-        "text-halo-blur": 0.5
-      },
-      "source-layer": "road_label"
-    },
+    // {
+    //   "interactive": true,
+    //   "layout": {
+    //     "text-field": "{name_en}",
+    //     "text-font": [
+    //       "Open Sans Regular",
+    //       "Arial Unicode MS Regular"
+    //     ],
+    //     "text-size": {
+    //       "base": 1,
+    //       "stops": [
+    //         [
+    //           13,
+    //           12
+    //         ],
+    //         [
+    //           14,
+    //           13
+    //         ]
+    //       ]
+    //     },
+    //     "symbol-placement": "line"
+    //   },
+    //   "metadata": {
+    //     "mapbox:group": "1456163609504.0715"
+    //   },
+    //   "filter": [
+    //     "!=",
+    //     "class",
+    //     "ferry"
+    //   ],
+    //   "type": "symbol",
+    //   "source": "mapbox",
+    //   "id": "road_label",
+    //   "paint": {
+    //     "text-color": "#765",
+    //     "text-halo-width": 1,
+    //     "text-halo-blur": 0.5
+    //   },
+    //   "source-layer": "road_label"
+    // },
     // {
     //   "interactive": true,
     //   "minzoom": 8,
@@ -1175,176 +1194,176 @@ export const style = {
     //   },
     //   "source-layer": "road_label"
     // },
-    {
-      "interactive": true,
-      "layout": {
-        "text-font": [
-          "Open Sans Bold",
-          "Arial Unicode MS Bold"
-        ],
-        "text-transform": "uppercase",
-        "text-letter-spacing": 0.1,
-        "text-field": "{name_en}",
-        "text-max-width": 9,
-        "text-size": {
-          "base": 1.2,
-          "stops": [
-            [
-              12,
-              10
-            ],
-            [
-              15,
-              14
-            ]
-          ]
-        }
-      },
-      "metadata": {
-        "mapbox:group": "1444849272561.29"
-      },
-      "filter": [
-        "in",
-        "type",
-        "hamlet",
-        "suburb",
-        "neighbourhood",
-        "island",
-        "islet"
-      ],
-      "type": "symbol",
-      "source": "mapbox",
-      "id": "place_label_other",
-      "paint": {
-        "text-color": "#633",
-        "text-halo-color": "rgba(255,255,255,0.8)",
-        "text-halo-width": 1.2
-      },
-      "source-layer": "place_label"
-    },
-    {
-      "interactive": true,
-      "layout": {
-        "text-font": [
-          "Open Sans Regular",
-          "Arial Unicode MS Regular"
-        ],
-        "text-field": "{name_en}",
-        "text-max-width": 8,
-        "text-size": {
-          "base": 1.2,
-          "stops": [
-            [
-              10,
-              12
-            ],
-            [
-              15,
-              22
-            ]
-          ]
-        }
-      },
-      "metadata": {
-        "mapbox:group": "1444849272561.29"
-      },
-      "filter": [
-        "==",
-        "type",
-        "village"
-      ],
-      "type": "symbol",
-      "source": "mapbox",
-      "id": "place_label_village",
-      "paint": {
-        "text-color": "#333",
-        "text-halo-color": "rgba(255,255,255,0.8)",
-        "text-halo-width": 1.2
-      },
-      "source-layer": "place_label"
-    },
-    {
-      "interactive": true,
-      "layout": {
-        "text-font": [
-          "Open Sans Regular",
-          "Arial Unicode MS Regular"
-        ],
-        "text-field": "{name_en}",
-        "text-max-width": 8,
-        "text-size": {
-          "base": 1.2,
-          "stops": [
-            [
-              10,
-              14
-            ],
-            [
-              15,
-              24
-            ]
-          ]
-        }
-      },
-      "metadata": {
-        "mapbox:group": "1444849272561.29"
-      },
-      "filter": [
-        "==",
-        "type",
-        "town"
-      ],
-      "type": "symbol",
-      "source": "mapbox",
-      "id": "place_label_town",
-      "paint": {
-        "text-color": "#333",
-        "text-halo-color": "rgba(255,255,255,0.8)",
-        "text-halo-width": 1.2
-      },
-      "source-layer": "place_label"
-    },
-    {
-      "interactive": true,
-      "layout": {
-        "text-font": [
-          "Open Sans Semibold",
-          "Arial Unicode MS Bold"
-        ],
-        "text-field": "{name_en}",
-        "text-max-width": 8,
-        "text-size": {
-          "base": 1.2,
-          "stops": [
-            [
-              7,
-              14
-            ],
-            [
-              11,
-              24
-            ]
-          ]
-        }
-      },
-      "metadata": {
-        "mapbox:group": "1444849272561.29"
-      },
-      "filter": [
-        "==",
-        "type",
-        "city"
-      ],
-      "type": "symbol",
-      "source": "mapbox",
-      "id": "place_label_city",
-      "paint": {
-        "text-color": "#333",
-        "text-halo-color": "rgba(255,255,255,0.8)",
-        "text-halo-width": 1.2
-      },
-      "source-layer": "place_label"
-    }
+    //   {
+    //     "interactive": true,
+    //     "layout": {
+    //       "text-font": [
+    //         "Open Sans Bold",
+    //         "Arial Unicode MS Bold"
+    //       ],
+    //       "text-transform": "uppercase",
+    //       "text-letter-spacing": 0.1,
+    //       "text-field": "{name_en}",
+    //       "text-max-width": 9,
+    //       "text-size": {
+    //         "base": 1.2,
+    //         "stops": [
+    //           [
+    //             12,
+    //             10
+    //           ],
+    //           [
+    //             15,
+    //             14
+    //           ]
+    //         ]
+    //       }
+    //     },
+    //     "metadata": {
+    //       "mapbox:group": "1444849272561.29"
+    //     },
+    //     "filter": [
+    //       "in",
+    //       "type",
+    //       "hamlet",
+    //       "suburb",
+    //       "neighbourhood",
+    //       "island",
+    //       "islet"
+    //     ],
+    //     "type": "symbol",
+    //     "source": "mapbox",
+    //     "id": "place_label_other",
+    //     "paint": {
+    //       "text-color": "#633",
+    //       "text-halo-color": "rgba(255,255,255,0.8)",
+    //       "text-halo-width": 1.2
+    //     },
+    //     "source-layer": "place_label"
+    //   },
+    //   {
+    //     "interactive": true,
+    //     "layout": {
+    //       "text-font": [
+    //         "Open Sans Regular",
+    //         "Arial Unicode MS Regular"
+    //       ],
+    //       "text-field": "{name_en}",
+    //       "text-max-width": 8,
+    //       "text-size": {
+    //         "base": 1.2,
+    //         "stops": [
+    //           [
+    //             10,
+    //             12
+    //           ],
+    //           [
+    //             15,
+    //             22
+    //           ]
+    //         ]
+    //       }
+    //     },
+    //     "metadata": {
+    //       "mapbox:group": "1444849272561.29"
+    //     },
+    //     "filter": [
+    //       "==",
+    //       "type",
+    //       "village"
+    //     ],
+    //     "type": "symbol",
+    //     "source": "mapbox",
+    //     "id": "place_label_village",
+    //     "paint": {
+    //       "text-color": "#333",
+    //       "text-halo-color": "rgba(255,255,255,0.8)",
+    //       "text-halo-width": 1.2
+    //     },
+    //     "source-layer": "place_label"
+    //   },
+    //   {
+    //     "interactive": true,
+    //     "layout": {
+    //       "text-font": [
+    //         "Open Sans Regular",
+    //         "Arial Unicode MS Regular"
+    //       ],
+    //       "text-field": "{name_en}",
+    //       "text-max-width": 8,
+    //       "text-size": {
+    //         "base": 1.2,
+    //         "stops": [
+    //           [
+    //             10,
+    //             14
+    //           ],
+    //           [
+    //             15,
+    //             24
+    //           ]
+    //         ]
+    //       }
+    //     },
+    //     "metadata": {
+    //       "mapbox:group": "1444849272561.29"
+    //     },
+    //     "filter": [
+    //       "==",
+    //       "type",
+    //       "town"
+    //     ],
+    //     "type": "symbol",
+    //     "source": "mapbox",
+    //     "id": "place_label_town",
+    //     "paint": {
+    //       "text-color": "#333",
+    //       "text-halo-color": "rgba(255,255,255,0.8)",
+    //       "text-halo-width": 1.2
+    //     },
+    //     "source-layer": "place_label"
+    //   },
+    //   {
+    //     "interactive": true,
+    //     "layout": {
+    //       "text-font": [
+    //         "Open Sans Semibold",
+    //         "Arial Unicode MS Bold"
+    //       ],
+    //       "text-field": "{name_en}",
+    //       "text-max-width": 8,
+    //       "text-size": {
+    //         "base": 1.2,
+    //         "stops": [
+    //           [
+    //             7,
+    //             14
+    //           ],
+    //           [
+    //             11,
+    //             24
+    //           ]
+    //         ]
+    //       }
+    //     },
+    //     "metadata": {
+    //       "mapbox:group": "1444849272561.29"
+    //     },
+    //     "filter": [
+    //       "==",
+    //       "type",
+    //       "city"
+    //     ],
+    //     "type": "symbol",
+    //     "source": "mapbox",
+    //     "id": "place_label_city",
+    //     "paint": {
+    //       "text-color": "#333",
+    //       "text-halo-color": "rgba(255,255,255,0.8)",
+    //       "text-halo-width": 1.2
+    //     },
+    //     "source-layer": "place_label"
+    //   }
 
   ],
   "created": 0,

@@ -1,18 +1,5 @@
 {
 
-    "mh1_5": {
-        "schemename": "mh1",
-        "count": 5,
-        "ifnull": "gray",
-        "ifzero": "gray",
-        "colors": [
-            "#edf8fb",
-            "#b2e2e2",
-            "#66c2a4",
-            "#2ca25f",
-            "#006d2c"
-        ]
-    }, 
     
     "mh1_7": {
         "schemename": "mh1",
@@ -20,47 +7,16 @@
         "ifnull": "gray",
         "ifzero": "gray",
         "colors": [
-            "#edf8fb",
-            "#ccece6",
-            "#99d8c9",
-            "#66c2a4",
-            "#41ae76",
-            "#238b45",
-            "#005824"
+            "#F3FC71",
+            "#E7D45A",
+            "#D5AD4B",
+            "#BE8A40",
+            "#A16938",
+            "#814C2F",
+            "#5F3225"
         ]
     }, 
-    
-    "mh1_9": {
-        "schemename": "mh1",
-        "count": 9,
-        "ifnull": "gray",
-        "ifzero": "gray",
-        "colors": [
-            "#f7fcfd",
-            "#e5f5f9",
-            "#ccece6",
-            "#99d8c9",
-            "#66c2a4",
-            "#41ae76",
-            "#238b45",
-            "#006d2c",
-            "#00441b"
-        ]
-    }, 
-    
-    "mh2_5":{
-        "schemename": "mh2",
-        "count": 5,
-        "ifnull": "gray",
-        "ifzero": "gray",
-        "colors": [
-            "#edf8fb",
-            "#b3cde3",
-            "#8c96c6",
-            "#8856a7",
-            "#810f7c"
-        ]
-    }, 
+   
     
     "mh2_7":{
         "schemename": "mh2",
@@ -68,47 +24,16 @@
         "ifnull": "gray",
         "ifzero": "gray",
         "colors": [
-            "#bfd3e6",
-            "#9ebcda",
-            "#8c96c6",
-            "#8c6bb1",
-            "#88419d",
-            "#810f7c",
-            "#4d004b"
+            "#E2E062",
+            "#B0CC60",
+            "#83B561",
+            "#5D9D61",
+            "#3D855E",
+            "#256C57",
+            "#15534C"
         ]
     }, 
     
-    "mh2_9": {
-        "schemename": "mh2",
-        "count": 9,
-        "ifnull": "gray",
-        "ifzero": "gray",
-        "colors": [
-            "#f7fcfd",
-            "#e0ecf4",
-            "#bfd3e6",
-            "#9ebcda",
-            "#8c96c6",
-            "#8c6bb1",
-            "#88419d",
-            "#810f7c",
-            "#4d004b"
-        ]
-    }, 
-    
-    "mh3_5": {
-        "schemename": "mh3",
-        "count": 5,
-        "ifnull": "gray",
-        "ifzero": "gray",
-        "colors": [
-            "#f0f9e8",
-            "#bae4bc",
-            "#7bccc4",
-            "#43a2ca",
-            "#0868ac"
-        ]
-    }, 
     
     "mh3_7": {
         "schemename": "mh3",

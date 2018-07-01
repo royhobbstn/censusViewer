@@ -14,6 +14,7 @@ const default_state = {
   selected_attr: configuration.startup.selected_attr,
   mouseover_statistic: undefined,
   mouseover_label: undefined,
+  mouseover_coords: [0, 0],
   mouseover_moe: undefined,
   tiles_already_requested: []
 };
@@ -25,8 +26,8 @@ const map = (
   switch (action.type) {
     case 'UPDATE_MOUSEOVER_STATISTIC':
       return Object.assign({}, state, { mouseover_statistic: action.data });
-    case 'UPDATE_MOUSEOVER_LABEL':
-      return Object.assign({}, state, { mouseover_label: action.data });
+    case 'UPDATE_MOUSEOVER_INFO':
+      return Object.assign({}, state, { mouseover_label: action.data, mouseover_coords: action.coords });
     case 'UPDATE_MOUSEOVER_MOE':
       return Object.assign({}, state, { mouseover_moe: action.data });
     case 'ADD_TO_REQUESTED_TILES_LIST':

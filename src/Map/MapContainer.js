@@ -13,7 +13,11 @@ const mapStateToProps = state => {
     source_dataset: state.map.source_dataset,
     tiles_already_requested: state.map.tiles_already_requested,
     active_layer_names: state.map.active_layer_names,
-    selected_attr: state.map.selected_attr
+    selected_attr: state.map.selected_attr,
+    mouseover_statistic: state.map.mouseover_statistic,
+    mouseover_label: state.map.mouseover_label,
+    mouseover_moe: state.map.mouseover_moe,
+    mouseover_coords: state.map.mouseover_coords
   };
 };
 
@@ -22,8 +26,8 @@ const mapDispatchToProps = dispatch => {
     updateClusters: (pole, current_zoom, current_bounds) => {
       dispatch(thunkUpdateClusters(pole, current_zoom, current_bounds));
     },
-    updateMouseover: (geoid, name) => {
-      dispatch(thunkChangeMouseover(geoid, name));
+    updateMouseover: (geoid, name, coords) => {
+      dispatch(thunkChangeMouseover(geoid, name, coords));
     },
     addToRequested: (urls) => {
       dispatch(addToTilesAlreadyRequested(urls));

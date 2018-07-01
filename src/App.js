@@ -3,7 +3,6 @@ import './App.css';
 
 import MapContainer from './Map/MapContainer.js';
 import ButtonSetContainer from './ButtonSet/ButtonSetContainer.js';
-import MouseoverContainer from './Mouseover/MouseoverContainer.js';
 
 class App extends Component {
   render() {
@@ -11,7 +10,6 @@ class App extends Component {
       <div>
         <MapContainer />
         <ButtonSetContainer />
-        <MouseoverContainer />
       </div>
     );
   }

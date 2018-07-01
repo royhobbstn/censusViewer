@@ -22,10 +22,11 @@ export function changeMouseoverStatistic(data) {
   };
 }
 
-export function changeMouseoverLabel(data) {
+export function changeMouseoverInfo(data, coords) {
   return {
-    type: 'UPDATE_MOUSEOVER_LABEL',
-    data
+    type: 'UPDATE_MOUSEOVER_INFO',
+    data,
+    coords
   };
 }
 
