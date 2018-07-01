@@ -68,13 +68,13 @@
         "ifnull": "gray",
         "ifzero": "gray",
         "colors": [
-            "#edf8fb",
             "#bfd3e6",
             "#9ebcda",
             "#8c96c6",
             "#8c6bb1",
             "#88419d",
-            "#6e016b"
+            "#810f7c",
+            "#4d004b"
         ]
     }, 
     
