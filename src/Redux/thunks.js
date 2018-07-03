@@ -1,15 +1,33 @@
 /* global fetch */
 
-import { updateStyleData, updateMoeData, busyData, busyMoe, unbusyData, unbusyMoe, changeMouseoverStatistic, changeMouseoverInfo, changeMouseoverMoe, clearActiveLayerNames } from './actions.js';
+import {
+  updateStyleData,
+  updateMoeData,
+  busyData,
+  busyMoe,
+  unbusyData,
+  unbusyMoe,
+  changeMouseoverStatistic,
+  changeMouseoverInfo,
+  changeMouseoverMoe,
+  clearActiveLayerNames
+}
+from './actions.js';
+
 import LZ from 'lz-string';
 
 import worker_script from '../Worker/fetch_worker.js';
 import { configuration } from '../Config/configuration.js';
 
-const { datatree } = require('../Config/datatree.js');
-const { breaks } = require('../Config/computed_breaks.js');
-const colortree = require('../Config/colortree.json');
+import { convertDataToStops } from '../Service/data_to_styles.js';
 
+import {
+  getMoeExpressionFromAttr,
+  getExpressionFromAttr
+}
+from '../Service/calc_expressions.js';
+
+import { getSumlevFromGeography } from '../Service/utility.js';
 
 var myEstWorker = new Worker(worker_script);
 var myMoeWorker = new Worker(worker_script);
@@ -43,6 +61,8 @@ export function thunkRemoveLayers() {
     const source_dataset = state.map.source_dataset;
     const active_layer_names = state.map.active_layer_names;
 
+    const year = configuration.datasets[source_dataset].year;
+
     window.map.removeLayer('tiles-polygons');
 
     active_layer_names.forEach(layer => {
@@ -58,7 +78,7 @@ export function thunkRemoveLayers() {
       "type": "vector",
       "minzoom": 3,
       "maxzoom": 9,
-      "tiles": [`https://${configuration.tiles[0]}/${source_geography}_${datasetToYear(source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[1]}/${source_geography}_${datasetToYear(source_dataset)}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[2]}/${source_geography}_${datasetToYear(source_dataset)}/{z}/{x}/{y}.pbf`]
+      "tiles": [`https://${configuration.tiles[0]}/${source_geography}_${year}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[1]}/${source_geography}_${year}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[2]}/${source_geography}_${year}/{z}/{x}/{y}.pbf`]
     });
 
     window.map.addLayer({
@@ -222,170 +242,4 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
     }
 
   };
-}
-
-
-function getExpressionFromAttr(dataset, attr) {
-  const numerator_raw = datatree[dataset][attr].numerator;
-  const denominator_raw = datatree[dataset][attr].denominator;
-
-  const numerator = [];
-  numerator_raw.forEach((item, index) => {
-    numerator.push(item);
-    if (index !== numerator_raw.length - 1) { numerator.push("+"); }
-  });
-
-  const denominator = [];
-  denominator_raw.forEach((item, index) => {
-    denominator.push(item);
-    if (index !== denominator_raw.length - 1) { denominator.push("+"); }
-  });
-  if (!denominator.length) {
-    denominator.push("1");
-  }
-
-  return ["(", ...numerator, ")", "/", "(", ...denominator, ")"];
-}
-
-function getMoeExpressionFromAttr(dataset, attr) {
-  // TODO this needs to be validated
-
-  const numerator_raw = datatree[dataset][attr].numerator;
-  const denominator_raw = datatree[dataset][attr].denominator;
-
-  // escape hatch.  todo, re-examine moe calculation
-  if (numerator_raw.length === 1 && denominator_raw.length === 0) {
-    return [numerator_raw[0] + '_moe'];
-  }
-
-  const numerator = [];
-  numerator_raw.forEach((item, index) => {
-    numerator.push(item);
-    if (index !== numerator_raw.length - 1) { numerator.push("+"); }
-  });
-
-  const denominator = [];
-  denominator_raw.forEach((item, index) => {
-    denominator.push(item);
-    if (index !== denominator_raw.length - 1) { denominator.push("+"); }
-  });
-  if (!denominator.length) {
-    denominator.push("1");
-  }
-
-  const numerator_moe = ["sqrt", "("];
-  numerator_raw.forEach((item, index) => {
-    numerator_moe.push("(");
-    numerator_moe.push(item + '_moe');
-    numerator_moe.push("^");
-    numerator_moe.push("2");
-    numerator_moe.push(")");
-    if (index !== numerator_raw.length - 1) { numerator_moe.push("+"); }
-  });
-  numerator_moe.push(")");
-
-  const denominator_moe = ["sqrt", "("];
-  denominator_raw.forEach((item, index) => {
-    denominator_moe.push("(");
-    denominator_moe.push(item + '_moe');
-    denominator_moe.push("^");
-    denominator_moe.push("2");
-    denominator_moe.push(")");
-    if (index !== denominator_raw.length - 1) { denominator_moe.push("+"); }
-  });
-  if (!denominator_raw.length) {
-    denominator_moe.push("1");
-  }
-  denominator_moe.push(")");
-
-  console.log(["(", "sqrt", "(", "(", "(", ...numerator_moe, ")", "^", "2", ")", "-", "(", "(", "(", "(", ...numerator, ")", "/", "(", ...denominator, ")", ")", "^", "2", ")", "*", "(", "(", ...denominator_moe, ")", "^", "2", ")", ")", ")", ")", "/", "(", ...denominator, ")"]);
-
-  return ["(", "sqrt", "(", "(", "(", ...numerator_moe, ")", "^", "2", ")", "-", "(", "(", "(", "(", ...numerator, ")", "/", "(", ...denominator, ")", ")", "^", "2", ")", "*", "(", "(", ...denominator_moe, ")", "^", "2", ")", ")", ")", ")", "/", "(", ...denominator, ")"];
-}
-
-
-function getSumlevFromGeography(geography) {
-  switch (geography) {
-    case 'county':
-      return '050';
-    case 'state':
-      return '040';
-    case 'tract':
-      return '140';
-    case 'bg':
-      return '150';
-    case 'place':
-      return '160';
-    default:
-      return '000';
-  }
-}
-
-
-
-
-function convertDataToStops(data, attr, source_dataset, sumlev) {
-  //
-
-  const theme_info = datatree[source_dataset][attr];
-
-  // TODO temporarily set everything to favstyle
-  // in future this logic moved to when selecting a new theme
-  // and logic here will just grab existing style info from 
-
-  const favstyle = theme_info.favstyle;
-
-  const components = favstyle.split(',');
-
-  const classify = components[0];
-  const break_count = components[1];
-  const colorscheme = components[2];
-
-
-  const color_info = colortree[`${colorscheme}_${break_count}`];
-
-  const break_values = breaks[source_dataset][attr][sumlev][`${classify}${break_count}`];
-
-  const p_stops = {};
-  Object.keys(data).forEach(key => {
-    p_stops[key] = getStopColor(data[key], color_info, break_values);
-  });
-  return p_stops;
-}
-
-function getStopColor(value, color_info, break_values) {
-  //
-  if (!value && value !== 0) {
-    // null, undefined, NaN
-    return color_info.ifnull;
-  }
-  else if (value === 0) {
-    // zero value
-    return color_info.ifzero;
-  }
-
-  const arr_length = break_values.length;
-  let color = 'black';
-
-  break_values.forEach((brval, index) => {
-    if (index === 0 && value < brval) {
-      // less than first value in breaks array
-      color = color_info.colors[index];
-    }
-    else if ((index === (arr_length - 1)) && value >= brval) {
-      // greater than last item in breaks array
-      color = color_info.colors[index + 1];
-    }
-    else if (value >= brval && value < break_values[index + 1]) {
-      // between two break values
-      color = color_info.colors[index + 1];
-    }
-  });
-
-  return color;
-
-}
-
-export function datasetToYear(dataset) {
-  return configuration.datasets[dataset].year;
 }
