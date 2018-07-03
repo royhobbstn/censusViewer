@@ -3,7 +3,7 @@
 import { updateStyleData, updateMoeData, busyData, busyMoe, unbusyData, unbusyMoe, changeMouseoverStatistic, changeMouseoverInfo, changeMouseoverMoe, clearActiveLayerNames } from './actions.js';
 import LZ from 'lz-string';
 
-import worker_script from './worker';
+import worker_script from '../Worker/fetch_worker.js';
 import { configuration } from '../Config/configuration.js';
 
 const { datatree } = require('../Config/datatree.js');

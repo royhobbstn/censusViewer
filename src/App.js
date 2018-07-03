@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import MapContainer from './Map/MapContainer.js';
-import ButtonSetContainer from './ButtonSet/ButtonSetContainer.js';
+import MapContainer from './Component/MapContainer.js';
+import ButtonSetContainer from './Component/ButtonSetContainer.js';
 
 class App extends Component {
   render() {

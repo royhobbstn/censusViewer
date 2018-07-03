@@ -3,12 +3,12 @@
 import React, { Component } from 'react';
 import '../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
-import key from './mapbox_api_key.js';
+import {key} from './mapbox_api_key.js';
 import { throttle } from 'lodash';
 import { configuration } from '../Config/configuration.js';
 import { state_lookup } from '../Config/state_lookup.js';
 import { style } from '../Config/style.js';
-import cache_worker from './cache_worker';
+import cache_worker from '../Worker/cache_worker';
 import { datasetToYear } from '../Redux/thunks.js';
 const { datatree } = require('../Config/datatree.js');
 
@@ -17,7 +17,7 @@ var myCacheWorker = new Worker(cache_worker);
 class Map extends Component {
   componentDidMount() {
 
-    mapboxgl.accessToken = key.key;
+    mapboxgl.accessToken = key;
     window.map = new mapboxgl.Map({
       container: 'map',
       style,
