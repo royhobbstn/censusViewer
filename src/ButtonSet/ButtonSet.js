@@ -2,9 +2,9 @@ import React from 'react';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
-import { configuration } from '../_Config_JSON/configuration.js';
+import { configuration } from '../Config/configuration.js';
 
-const { datatree } = require('../_Config_JSON/datatree.js');
+const { datatree } = require('../Config/datatree.js');
 
 
 const dataset_style = { position: 'absolute', 'zIndex': 1000, top: '10px', left: '10px', backgroundColor: 'white', width: '160px' };

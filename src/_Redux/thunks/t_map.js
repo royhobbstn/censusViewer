@@ -4,11 +4,11 @@ import { updateStyleData, updateMoeData, busyData, busyMoe, unbusyData, unbusyMo
 import LZ from 'lz-string';
 
 import worker_script from './worker';
-import { configuration } from '../../_Config_JSON/configuration.js';
+import { configuration } from '../../Config/configuration.js';
 
-const { datatree } = require('../../_Config_JSON/datatree.js');
-const { breaks } = require('../../_Config_JSON/computed_breaks.js');
-const colortree = require('../../_Config_JSON/colortree.json');
+const { datatree } = require('../../Config/datatree.js');
+const { breaks } = require('../../Config/computed_breaks.js');
+const colortree = require('../../Config/colortree.json');
 
 
 var myEstWorker = new Worker(worker_script);

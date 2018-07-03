@@ -1,6 +1,6 @@
 // reducer
 
-import { configuration } from '../../_Config_JSON/configuration.js';
+import { configuration } from '../../Config/configuration.js';
 
 
 const default_state = {

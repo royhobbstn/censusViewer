@@ -27,7 +27,7 @@ if (!valid.includes(dataset)) {
 }
 
 
-const datatree = require(`../src/_Config_JSON/${dataset}_tree.json`);
+const datatree = require(`../src/Config/${dataset}_tree.json`);
 
 
 const data_store = {};
@@ -130,7 +130,7 @@ const lookups = Promise.map(keys, (item) => {
 
 Promise.all(lookups).then(() => {
     console.log('writing...');
-    fs.writeFileSync(`../src/_Config_JSON/breaks_${dataset}.json`, JSON.stringify(data_store), 'utf8');
+    fs.writeFileSync(`../src/Config/breaks_${dataset}.json`, JSON.stringify(data_store), 'utf8');
     console.log('done!');
   })
   .catch(err => {
