@@ -29,8 +29,8 @@ from '../Service/calc_expressions.js';
 
 import { getSumlevFromGeography } from '../Service/utility.js';
 
-var myEstWorker = new Worker(worker_script);
-var myMoeWorker = new Worker(worker_script);
+const myEstWorker = new Worker(worker_script);
+const myMoeWorker = new Worker(worker_script);
 
 // give a unique increment id number to each new layer created
 let layer_add = 0;
