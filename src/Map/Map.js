@@ -9,7 +9,7 @@ import { configuration } from '../Config/configuration.js';
 import { state_lookup } from '../Config/state_lookup.js';
 import { style } from '../Config/style.js';
 import cache_worker from './cache_worker';
-import { datasetToYear } from '../_Redux/thunks/t_map.js';
+import { datasetToYear } from '../Redux/thunks.js';
 const { datatree } = require('../Config/datatree.js');
 
 var myCacheWorker = new Worker(cache_worker);

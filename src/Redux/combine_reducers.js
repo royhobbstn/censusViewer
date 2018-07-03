@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import map from './reducers/r_map';
+import map from './reducer.js';
 
 const Store = combineReducers({
-    map
+  map
 });
 
 export default Store;

@@ -3,8 +3,8 @@
 import { connect } from 'react-redux';
 import ButtonSet from './ButtonSet.js';
 
-import { thunkClearWorkers } from '../_Redux/thunks/t_map.js';
-import { updateDataset, updateGeography, updateTheme } from '../_Redux/actions/a_buttonset.js';
+import { thunkClearWorkers } from '../Redux/thunks.js';
+import { updateDataset, updateGeography, updateTheme } from '../Redux/actions.js';
 
 const mapStateToProps = state => {
   return {

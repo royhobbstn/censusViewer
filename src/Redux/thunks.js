@@ -1,14 +1,14 @@
 /* global fetch */
 
-import { updateStyleData, updateMoeData, busyData, busyMoe, unbusyData, unbusyMoe, changeMouseoverStatistic, changeMouseoverInfo, changeMouseoverMoe, clearActiveLayerNames } from '../actions/a_map.js';
+import { updateStyleData, updateMoeData, busyData, busyMoe, unbusyData, unbusyMoe, changeMouseoverStatistic, changeMouseoverInfo, changeMouseoverMoe, clearActiveLayerNames } from './actions.js';
 import LZ from 'lz-string';
 
 import worker_script from './worker';
-import { configuration } from '../../Config/configuration.js';
+import { configuration } from '../Config/configuration.js';
 
-const { datatree } = require('../../Config/datatree.js');
-const { breaks } = require('../../Config/computed_breaks.js');
-const colortree = require('../../Config/colortree.json');
+const { datatree } = require('../Config/datatree.js');
+const { breaks } = require('../Config/computed_breaks.js');
+const colortree = require('../Config/colortree.json');
 
 
 var myEstWorker = new Worker(worker_script);

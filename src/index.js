@@ -5,7 +5,7 @@ import App from './App';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import Store from './_Redux/combine_reducers';
+import Store from './Redux/combine_reducers';
 
 window.update_clusters = 0;
 window.redraw = 0;

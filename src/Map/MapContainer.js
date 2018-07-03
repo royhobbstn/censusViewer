@@ -3,9 +3,9 @@
 import { connect } from 'react-redux';
 import Map from './Map';
 
-import { thunkUpdateClusters, thunkChangeMouseover, thunkRemoveLayers } from '../_Redux/thunks/t_map.js';
+import { thunkUpdateClusters, thunkChangeMouseover, thunkRemoveLayers } from '../Redux/thunks.js';
 
-import { addToTilesAlreadyRequested } from '../_Redux/actions/a_map.js';
+import { addToTilesAlreadyRequested } from '../Redux/actions.js';
 
 const mapStateToProps = state => {
   return {
