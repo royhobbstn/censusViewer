@@ -14,7 +14,7 @@ window.reducer_style = 0;
 window.reducer_moe = 0;
 window.render_map = 0;
 
-let store = createStore(
+export const store = createStore(
   Store,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
   applyMiddleware(thunk)
@@ -27,4 +27,3 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-// registerServiceWorker();

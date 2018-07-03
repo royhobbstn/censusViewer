@@ -2,14 +2,11 @@
 
 import {
   updateStyleData,
-  updateMoeData,
   busyData,
   busyMoe,
   unbusyData,
-  unbusyMoe,
   changeMouseoverStatistic,
   changeMouseoverInfo,
-  changeMouseoverMoe,
   clearActiveLayerNames
 }
 from './actions.js';
@@ -29,8 +26,10 @@ from '../Service/calc_expressions.js';
 
 import { getSumlevFromGeography } from '../Service/utility.js';
 
+import { myMoeWorker } from '../Worker/handle_moe_fetch.js';
+
 const myEstWorker = new Worker(worker_script);
-const myMoeWorker = new Worker(worker_script);
+
 
 // give a unique increment id number to each new layer created
 let layer_add = 0;
@@ -218,24 +217,6 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
 
     if (!state.map.busy_moe) {
       dispatch(busyMoe());
-
-      if (!myMoeWorker.onmessage) {
-        myMoeWorker.onmessage = (m) => {
-
-          if (!m || !m.data) {
-            dispatch(unbusyMoe());
-          }
-          else {
-            if (m.data.type === 'fetch') {
-              dispatch(updateMoeData(m.data.data.clusters));
-            }
-            else if (m.data.type === 'lookup') {
-              dispatch(changeMouseoverMoe(m.data.data));
-            }
-          }
-        };
-
-      }
 
       myMoeWorker.postMessage({ type: 'fetch', url: moe_url });
 
