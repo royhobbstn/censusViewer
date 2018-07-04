@@ -9,11 +9,16 @@ const myCacheWorker = new Worker(cache_worker);
 
 //
 
-export function loadMouseEvents(source_geography, source_dataset, tiles_already_requested, addToRequested, updateClusters, updateMouseover) {
+export function loadMouseEvents(source_geography, source_dataset, tiles_already_requested,
+  addToRequested, updateClusters, updateMouseover, updateZoomMessage) {
   //
 
 
+  // how is this working at all???!
+
   const findNew = throttle((e) => {
+
+    updateZoomMessage(window.map.getZoom());
 
     const screenX = e ? e.originalEvent.x : false;
     const screenY = e ? e.originalEvent.y : false;
@@ -32,6 +37,7 @@ export function loadMouseEvents(source_geography, source_dataset, tiles_already_
     updateClusters(pole, current_zoom, current_bounds);
   }, 500);
 
+  // get initial map data
   findNew();
 
 
@@ -55,6 +61,8 @@ export function loadMouseEvents(source_geography, source_dataset, tiles_already_
   }, 600));
 
   window.map.on('mousemove', 'tiles-polygons', throttle((e) => {
+
+
 
     window.map.getCanvas().style.cursor = 'pointer';
     const geoid = e.features[0].properties.GEOID;

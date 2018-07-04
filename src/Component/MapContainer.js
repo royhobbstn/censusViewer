@@ -3,9 +3,14 @@
 import { connect } from 'react-redux';
 import Map from './Map';
 
-import { thunkUpdateClusters, thunkChangeMouseover, thunkRemoveLayers } from '../Redux/thunks.js';
+import {
+  thunkUpdateClusters,
+  thunkChangeMouseover,
+  thunkRemoveLayers,
+}
+from '../Redux/thunks.js';
 
-import { addToTilesAlreadyRequested } from '../Redux/actions.js';
+import { addToTilesAlreadyRequested, actionUpdateZoomMessage } from '../Redux/actions.js';
 
 const mapStateToProps = state => {
   return {
@@ -34,6 +39,9 @@ const mapDispatchToProps = dispatch => {
     },
     clearActiveLayers: () => {
       dispatch(thunkRemoveLayers());
+    },
+    updateZoomMessage: zoom => {
+      dispatch(actionUpdateZoomMessage(zoom));
     }
   };
 };

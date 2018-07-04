@@ -5,6 +5,7 @@ import '../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 import { key } from './mapbox_api_key.js';
 import { style } from '../Config/style.js';
+import { configuration } from '../Config/configuration.js';
 
 import { formatNumber } from '../Service/utility.js';
 import { loadMapLayers } from '../Service/load_map_layers.js';
@@ -20,7 +21,7 @@ class Map extends Component {
       container: 'map',
       style,
       center: [-104.9, 39.75],
-      zoom: 7,
+      zoom: configuration.startup.zoom,
       maxZoom: 13,
       minZoom: 3
     });
@@ -29,7 +30,7 @@ class Map extends Component {
 
       loadMapLayers(this.props.source_geography, this.props.source_dataset);
 
-      loadMouseEvents(this.props.source_geography, this.props.source_dataset, this.props.tiles_already_requested, this.props.addToRequested, this.props.updateClusters, this.props.updateMouseover);
+      loadMouseEvents(this.props.source_geography, this.props.source_dataset, this.props.tiles_already_requested, this.props.addToRequested, this.props.updateClusters, this.props.updateMouseover, this.props.updateZoomMessage);
 
       window.map.on('error', event => console.log(event));
 

@@ -32,33 +32,22 @@ myEstWorker.onmessage = (m) => {
 
       layer_add++;
 
-      console.time('start');
-      console.time('start1');
-      console.time('start2');
-      console.time('start3');
-
-      // TODO lift this calculation to a worker
+      // Future lift this (single-line) calc to the worker.  
+      // not practical with es6 commonjs interopability currently
       const values = convertDataToStops(m.data.data.data, m.data.attr, m.data.source_dataset, m.data.sumlev);
-      console.timeEnd('start1');
+
+
 
       const unique_geoids = Object.keys(values);
-
-      console.timeEnd('start2');
-
 
       const stops = unique_geoids.map(key => {
         return [key, values[key]];
       });
 
-      console.timeEnd('start3');
-
-
       // to avoid 'must have stops' errors
       const drawn_stops = (stops.length) ? stops : [
         ["0", 'blue']
       ];
-
-      console.timeEnd('start');
 
       const new_layer_name = `tiles-polygons-${layer_add}`;
 

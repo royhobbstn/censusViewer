@@ -48,6 +48,7 @@ export const configuration = {
     source_geography: 'tract',
     source_dataset: 'acs1014',
     selected_attr: 'mhv',
+    zoom: 7
   }
 
 };

@@ -70,6 +70,7 @@ export function thunkRemoveLayers() {
       "tiles": [`https://${configuration.tiles[0]}/${source_geography}_${year}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[1]}/${source_geography}_${year}/{z}/{x}/{y}.pbf`, `https://${configuration.tiles[2]}/${source_geography}_${year}/{z}/{x}/{y}.pbf`]
     });
 
+    // layer is re-added because source changed
     window.map.addLayer({
       'id': 'tiles-polygons',
       'type': 'fill',

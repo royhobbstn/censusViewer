@@ -4,6 +4,7 @@ import { configuration } from '../Config/configuration.js';
 
 
 const default_state = {
+  map_zoom: configuration.startup.zoom,
   active_layer_names: [],
   busy_data: false,
   busy_moe: false,
@@ -24,6 +25,8 @@ const map = (
   action
 ) => {
   switch (action.type) {
+    case 'UPDATE_ZOOM_MESSAGE':
+      return Object.assign({}, state, { map_zoom: action.zoom });
     case 'UPDATE_MOUSEOVER_STATISTIC':
       return Object.assign({}, state, { mouseover_statistic: action.data });
     case 'UPDATE_MOUSEOVER_INFO':

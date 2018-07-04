@@ -97,3 +97,10 @@ export function clearActiveLayerNames() {
     type: 'CLEAR_ACTIVE_LAYER_NAMES'
   };
 }
+
+export function actionUpdateZoomMessage(zoom) {
+  return {
+    type: 'UPDATE_ZOOM_MESSAGE',
+    zoom
+  };
+}

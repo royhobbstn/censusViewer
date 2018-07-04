@@ -3,6 +3,7 @@ import './App.css';
 
 import MapContainer from './Component/MapContainer.js';
 import ButtonSetContainer from './Component/ButtonSetContainer.js';
+import ZoomMessageContainer from './Component/ZoomMessageContainer.js';
 
 class App extends Component {
   render() {
@@ -10,6 +11,7 @@ class App extends Component {
       <div>
         <MapContainer />
         <ButtonSetContainer />
+        <ZoomMessageContainer />
       </div>
     );
   }
