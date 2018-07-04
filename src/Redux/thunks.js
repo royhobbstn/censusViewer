@@ -1,11 +1,8 @@
 /* global fetch */
 
 import {
-  updateStyleData,
   busyData,
   busyMoe,
-  unbusyData,
-  changeMouseoverStatistic,
   changeMouseoverInfo,
   clearActiveLayerNames
 }
@@ -13,10 +10,8 @@ from './actions.js';
 
 import LZ from 'lz-string';
 
-import worker_script from '../Worker/fetch_worker.js';
 import { configuration } from '../Config/configuration.js';
 
-import { convertDataToStops } from '../Service/data_to_styles.js';
 
 import {
   getMoeExpressionFromAttr,
@@ -27,12 +22,7 @@ from '../Service/calc_expressions.js';
 import { getSumlevFromGeography } from '../Service/utility.js';
 
 import { myMoeWorker } from '../Worker/handle_moe_fetch.js';
-
-const myEstWorker = new Worker(worker_script);
-
-
-// give a unique increment id number to each new layer created
-let layer_add = 0;
+import { myEstWorker } from '../Worker/handle_est_fetch.js';
 
 
 export function thunkClearWorkers(geoid, name) {
@@ -104,105 +94,11 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
     const cluster_done_list = LZ.compressToEncodedURIComponent(JSON.stringify(state.map.cluster_done_list));
     const moe_cluster_done_list = LZ.compressToEncodedURIComponent(JSON.stringify(state.map.moe_cluster_done_list));
 
-
     const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
     const bounds = encodeURIComponent(JSON.stringify(current_bounds));
 
-
-    // const root = 'http://34.211.152.253:8081/retrieve?';
     const root = 'https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?';
-
     const url = `${root}theme=${attr}&expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${cluster_done_list}`;
-
-
-    if (!myEstWorker.onmessage) {
-      myEstWorker.onmessage = (m) => {
-
-        if (!m || !m.data) {
-          dispatch(unbusyData());
-        }
-        else {
-
-          if (m.data.type === 'fetch') {
-
-            layer_add++;
-
-            console.time('start');
-            console.time('start1');
-            console.time('start2');
-            console.time('start3');
-
-            // TODO lift this calculation to a worker
-            const values = convertDataToStops(m.data.data.data, m.data.attr, m.data.source_dataset, m.data.sumlev);
-            console.timeEnd('start1');
-
-            const unique_geoids = Object.keys(values);
-
-            console.timeEnd('start2');
-
-
-            const stops = unique_geoids.map(key => {
-              return [key, values[key]];
-            });
-
-            console.timeEnd('start3');
-
-
-            // to avoid 'must have stops' errors
-            const drawn_stops = (stops.length) ? stops : [
-              ["0", 'blue']
-            ];
-
-            console.timeEnd('start');
-
-            const new_layer_name = `tiles-polygons-${layer_add}`;
-
-            window.map.addLayer({
-              'id': new_layer_name,
-              'type': 'fill',
-              'source': 'tiles',
-              'source-layer': 'main',
-              filter: ['in', 'GEOID', ...unique_geoids],
-              'paint': {
-                'fill-antialias': false,
-                'fill-opacity': 0.6,
-                'fill-color': {
-                  property: 'GEOID',
-                  type: 'categorical',
-                  stops: drawn_stops
-                }
-              }
-            }, "blank");
-
-            window.map.addLayer({
-              'id': new_layer_name + '_line',
-              'type': 'line',
-              'source': 'tiles',
-              'source-layer': 'main',
-              filter: ['in', 'GEOID', ...unique_geoids],
-              'paint': {
-                'line-opacity': 0.8,
-                'line-width': 0.5,
-                'line-offset': 0.25,
-                'line-color': {
-                  property: 'GEOID',
-                  type: 'categorical',
-                  stops: drawn_stops
-                }
-              }
-            }, "blank");
-
-            dispatch(updateStyleData(m.data.data.clusters, new_layer_name));
-
-          }
-          else if (m.data.type === 'lookup') {
-            dispatch(changeMouseoverStatistic(m.data.data));
-          }
-        }
-
-      };
-    }
-
 
     if (!state.map.busy_data) {
       dispatch(busyData());
@@ -210,16 +106,11 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
     }
 
     const moe_expression = encodeURIComponent(JSON.stringify(getMoeExpressionFromAttr(source_dataset, attr)));
-
     const moe_url = `${root}theme=${attr}&expression=${moe_expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${moe_cluster_done_list}&moe=true`;
-
-
 
     if (!state.map.busy_moe) {
       dispatch(busyMoe());
-
       myMoeWorker.postMessage({ type: 'fetch', url: moe_url });
-
     }
 
   };
