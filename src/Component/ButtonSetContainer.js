@@ -21,9 +21,11 @@ const mapDispatchToProps = dispatch => {
       dispatch(updateDataset(selectedOption.value));
     },
     handleGeographyChange: selectedOption => {
+      dispatch(thunkClearWorkers());
       dispatch(updateGeography(selectedOption.value));
     },
     handleThemeChange: selectedOption => {
+      dispatch(thunkClearWorkers());
       dispatch(updateTheme(selectedOption.value));
     },
   };

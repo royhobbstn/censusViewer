@@ -2,6 +2,7 @@
 
 import { configuration } from '../Config/configuration.js';
 import { datasetToYear } from '../Service/utility.js';
+import { key } from '../Component/mapbox_api_key.js';
 
 
 export function calcTileCache(pole, current_zoom, current_bounds, source_geography, source_dataset, tiles_already_requested) {
@@ -86,8 +87,9 @@ export function calcTileCache(pole, current_zoom, current_bounds, source_geograp
     for (let i = lat_tile_1; i <= lat_tile_2; i++) {
       for (let j = long_tile_1; j < long_tile_2; j++) {
         tiles_to_get.push(`https://${configuration.tiles[0]}/${source_geography}_${datasetToYear(source_dataset)}/${zoom}/${j}/${i}.pbf`);
-        // TODO? optimistic mapbox tile fetching turned off
+        // optimistic mapbox tile fetching turned off
         // tiles_to_get.push(`https://a.tiles.mapbox.com/v4/mapbox.mapbox-terrain-v2,mapbox.mapbox-streets-v7/${zoom}/${j}/${i}.vector.pbf?access_token=${key.key}`);
+        tiles_to_get.push(`https://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v7/${zoom}/${j}/${i}.vector.pbf?access_token=${key}`);
       }
     }
 

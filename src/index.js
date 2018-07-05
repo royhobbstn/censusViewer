@@ -1,18 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+
+import MainMenuContainer from './Component/MainMenuContainer.js';
+import MapContainer from './Component/MapContainer.js';
+import ButtonSetContainer from './Component/ButtonSetContainer.js';
+import ZoomMessageContainer from './Component/ZoomMessageContainer.js';
 
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import Store from './Redux/combine_reducers';
 
-window.update_clusters = 0;
-window.redraw = 0;
-window.repaint = 0;
-window.reducer_style = 0;
-window.reducer_moe = 0;
-window.render_map = 0;
+import 'semantic-ui-css/semantic.min.css';
+import './index.css';
+
 
 export const store = createStore(
   Store,
@@ -22,8 +23,12 @@ export const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+      <React.Fragment>
+      <MapContainer /> 
+      <MainMenuContainer />
+      <ButtonSetContainer />
+      <ZoomMessageContainer />
+      </React.Fragment>
   </Provider>,
   document.getElementById('root')
 );
-

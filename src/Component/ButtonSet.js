@@ -7,11 +7,11 @@ import { configuration } from '../Config/configuration.js';
 const { datatree } = require('../Config/datatree.js');
 
 
-const dataset_style = { position: 'absolute', 'zIndex': 1000, top: '10px', left: '10px', backgroundColor: 'white', width: '160px' };
+const dataset_style = { position: 'absolute', 'zIndex': 1000, top: '100px', left: '10px', backgroundColor: 'white', width: '160px' };
 
-const geography_style = { position: 'absolute', 'zIndex': 1000, top: '10px', left: '200px', backgroundColor: 'white', width: '160px' };
+const geography_style = { position: 'absolute', 'zIndex': 1000, top: '100px', left: '200px', backgroundColor: 'white', width: '160px' };
 
-const theme_style = { position: 'absolute', 'zIndex': 1000, top: '10px', left: '390px', backgroundColor: 'white', width: '240px' };
+const theme_style = { position: 'absolute', 'zIndex': 1000, top: '100px', left: '390px', backgroundColor: 'white', width: '240px' };
 
 const ButtonSet = ({
   handleDatasetChange,

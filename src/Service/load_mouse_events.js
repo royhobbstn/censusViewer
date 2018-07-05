@@ -22,7 +22,7 @@ export function loadMouseEvents(getCurrentData,
     const screenX = e ? e.originalEvent.x : false;
     const screenY = e ? e.originalEvent.y : false;
 
-    const pole = e ? window.map.unproject([screenX, screenY]) : center;
+    const pole = e ? window.map.unproject([screenX, screenY]) : window.map.getCenter();
 
     const current_zoom = window.map.getZoom();
     const current_bounds = window.map.getBounds();
@@ -39,22 +39,20 @@ export function loadMouseEvents(getCurrentData,
     updateClusters(pole, current_zoom, current_bounds);
   };
 
-  // get initial map data
-  findNew(null, window.map.getCenter());
+  // get initial map data (trigger initial map render)
+  findNew();
 
+  // custom event to manually trigger redraw on geo/dataset/theme change
+  window.map.on('redraw', () => {
+    console.log('redraw');
+    findNew();
+  });
 
-  window.map.on('moveend', throttle((e) => {
+  window.map.on('moveend', (e => {
     if (e.originalEvent) {
       findNew(e);
     }
-  }), 500);
-
-  // when map data source is changed
-  // window.map.on('sourcedata', (e) => {
-  //   if (e.isSourceLoaded) {
-  //     findNew(null, window.map.getCenter());
-  //   }
-  // });
+  }));
 
   window.map.on('zoomstart', throttle((e) => {
     if (e.originalEvent) {

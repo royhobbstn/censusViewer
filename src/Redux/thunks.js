@@ -81,6 +81,10 @@ export function thunkRemoveLayers() {
       'source': 'tiles',
       'source-layer': 'main',
     }, "background");
+
+
+    // initiate redraw of map tiles
+    window.map.fire('redraw');
   };
 }
 

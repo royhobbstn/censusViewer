@@ -63,7 +63,8 @@ const map = (
         mouseover_moe: undefined,
         mouseover_label: undefined,
         cluster_done_list: [],
-        moe_cluster_done_list: []
+        moe_cluster_done_list: [],
+        pole_list: []
       });
     case 'UPDATE_GEOGRAPHY':
       console.log('updating geography');
@@ -73,7 +74,8 @@ const map = (
         mouseover_moe: undefined,
         mouseover_label: undefined,
         cluster_done_list: [],
-        moe_cluster_done_list: []
+        moe_cluster_done_list: [],
+        pole_list: []
       });
     case 'UPDATE_THEME':
       console.log('updating theme');
@@ -83,7 +85,8 @@ const map = (
         mouseover_moe: undefined,
         mouseover_label: undefined,
         cluster_done_list: [],
-        moe_cluster_done_list: []
+        moe_cluster_done_list: [],
+        pole_list: []
       });
     case 'CLEAR_ACTIVE_LAYER_NAMES':
       return Object.assign({}, state, {

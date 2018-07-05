@@ -18,6 +18,8 @@
     "react-select": "^1.1.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
+    "semantic-ui-css": "^2.3.2",
+    "semantic-ui-react": "^0.81.3",
     "workerize": "^0.1.6"
   },
   "scripts": {
