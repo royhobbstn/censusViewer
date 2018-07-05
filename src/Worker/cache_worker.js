@@ -23,7 +23,7 @@ const workercode = () => {
     });
 
     Promise.all(requests).then((cached) => {
-      // console.log('request batch done: ' + cached.length);
+      console.log('request batch done: ' + cached.length);
     });
 
   };

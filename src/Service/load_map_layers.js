@@ -6,6 +6,24 @@ import { datasetToYear } from '../Service/utility.js';
 
 export function loadMapLayers(source_geography, source_dataset) {
 
+  window.map.addSource('point', {
+    "type": "geojson",
+    "data": {
+      "type": "Point",
+      "coordinates": [0, 0]
+    }
+  });
+
+  window.map.addLayer({
+    "id": "point",
+    "source": "point",
+    "type": "circle",
+    "paint": {
+      "circle-radius": 4,
+      "circle-color": "red"
+    }
+  });
+
 
   window.map.addSource('tiles', {
     "type": "vector",

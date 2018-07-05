@@ -9,23 +9,25 @@ const myCacheWorker = new Worker(cache_worker);
 
 //
 
-export function loadMouseEvents(source_geography, source_dataset, tiles_already_requested,
+export function loadMouseEvents(getCurrentData,
   addToRequested, updateClusters, updateMouseover, updateZoomMessage) {
   //
 
+  const findNew = (e, center) => {
 
-  // how is this working at all???!
-
-  const findNew = throttle((e) => {
+    console.log('fired');
 
     updateZoomMessage(window.map.getZoom());
 
     const screenX = e ? e.originalEvent.x : false;
     const screenY = e ? e.originalEvent.y : false;
 
-    const pole = e ? window.map.unproject([screenX, screenY]) : window.map.getCenter();
+    const pole = e ? window.map.unproject([screenX, screenY]) : center;
+
     const current_zoom = window.map.getZoom();
     const current_bounds = window.map.getBounds();
+
+    const { source_geography, source_dataset, tiles_already_requested } = getCurrentData();
 
     const filtered_tiles_to_get = calcTileCache(pole, current_zoom, current_bounds, source_geography, source_dataset, tiles_already_requested);
 
@@ -35,34 +37,35 @@ export function loadMouseEvents(source_geography, source_dataset, tiles_already_
     }
 
     updateClusters(pole, current_zoom, current_bounds);
-  }, 500);
+  };
 
   // get initial map data
-  findNew();
+  findNew(null, window.map.getCenter());
 
 
   window.map.on('moveend', throttle((e) => {
     if (e.originalEvent) {
       findNew(e);
     }
-  }), 750);
+  }), 500);
 
   // when map data source is changed
-  window.map.on('sourcedata', (e) => {
-    if (e.isSourceLoaded) {
-      findNew();
-    }
-  });
+  // window.map.on('sourcedata', (e) => {
+  //   if (e.isSourceLoaded) {
+  //     findNew(null, window.map.getCenter());
+  //   }
+  // });
 
   window.map.on('zoomstart', throttle((e) => {
     if (e.originalEvent) {
       findNew(e);
     }
-  }, 600));
+  }, 500));
+
+  //
+
 
   window.map.on('mousemove', 'tiles-polygons', throttle((e) => {
-
-
 
     window.map.getCanvas().style.cursor = 'pointer';
     const geoid = e.features[0].properties.GEOID;

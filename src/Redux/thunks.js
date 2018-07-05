@@ -1,5 +1,9 @@
 /* global fetch */
 
+import { point } from '@turf/helpers';
+import buffer from '@turf/buffer';
+import booleanWithin from '@turf/boolean-within';
+
 import {
   busyData,
   busyMoe,
@@ -89,6 +93,23 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
     const source_dataset = state.map.source_dataset;
     const sumlev = getSumlevFromGeography(state.map.source_geography);
     const attr = state.map.selected_attr;
+    const pole_list = state.map.pole_list;
+
+
+    // determine if it is a new pole - start with 1 mile and adjust as needed
+    const pt = point([pole.lng, pole.lat]);
+    const pt_buffer = buffer(pt, 1, { units: 'miles' });
+
+    const already_processed_pole = pole_list.some(p => {
+      const test_pt = point([p.lng, p.lat]);
+      return booleanWithin(test_pt, pt_buffer);
+    });
+
+    console.log({ already_processed_pole });
+
+    if (already_processed_pole) {
+      return;
+    }
 
     // need to keep track of clusters already retrieved on client and send that information to lambda
     // lambda will figure out clusters to get
@@ -98,11 +119,17 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
     const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
     const bounds = encodeURIComponent(JSON.stringify(current_bounds));
 
+    // draw the pole... demo only, not for live
+    window.map.getSource('point').setData({
+      "type": "Point",
+      "coordinates": [pole.lng, pole.lat]
+    });
+
     const root = 'https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?';
     const url = `${root}theme=${attr}&expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${cluster_done_list}`;
 
     if (!state.map.busy_data) {
-      dispatch(busyData());
+      dispatch(busyData({ lng: pole.lng, lat: pole.lat }));
       myEstWorker.postMessage({ type: 'fetch', url: url, attr, source_dataset, sumlev });
     }
 

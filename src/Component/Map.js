@@ -14,6 +14,16 @@ import { loadMouseEvents } from '../Service/load_mouse_events.js';
 
 
 class Map extends Component {
+
+
+  getCurrentData = ()=> {
+    return {
+      source_geography: this.props.source_geography,
+      source_dataset: this.props.source_dataset,
+      tiles_already_requested: this.props.tiles_already_requested
+    };
+  }
+
   componentDidMount() {
 
     mapboxgl.accessToken = key;
@@ -30,13 +40,14 @@ class Map extends Component {
 
       loadMapLayers(this.props.source_geography, this.props.source_dataset);
 
-      loadMouseEvents(this.props.source_geography, this.props.source_dataset, this.props.tiles_already_requested, this.props.addToRequested, this.props.updateClusters, this.props.updateMouseover, this.props.updateZoomMessage);
+      loadMouseEvents(this.getCurrentData, this.props.addToRequested, this.props.updateClusters, this.props.updateMouseover, this.props.updateZoomMessage);
 
       window.map.on('error', event => console.log(event));
 
     });
 
   }
+
 
 
   shouldComponentUpdate(nextProps, nextState) {

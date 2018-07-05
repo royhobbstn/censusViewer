@@ -61,9 +61,10 @@ export function changeMouseoverMoe(data) {
   };
 }
 
-export function busyData() {
+export function busyData(pole) {
   return {
-    type: 'BUSY_DATA'
+    type: 'BUSY_DATA',
+    pole
   };
 }
 

@@ -4,6 +4,7 @@ import { configuration } from '../Config/configuration.js';
 
 
 const default_state = {
+  pole_list: [],
   map_zoom: configuration.startup.zoom,
   active_layer_names: [],
   busy_data: false,
@@ -36,7 +37,7 @@ const map = (
     case 'ADD_TO_REQUESTED_TILES_LIST':
       return Object.assign({}, state, { tiles_already_requested: [...state.tiles_already_requested, ...action.urls] });
     case 'BUSY_DATA':
-      return Object.assign({}, state, { busy_data: true });
+      return Object.assign({}, state, { busy_data: true, pole_list: [...state.pole_list, action.pole] });
     case 'BUSY_MOE':
       return Object.assign({}, state, { busy_moe: true });
     case 'UNBUSY_DATA':

@@ -4,6 +4,9 @@
   "private": true,
   "homepage": "https://royhobbstn.github.io/censusViewer",
   "dependencies": {
+    "@turf/boolean-within": "^6.0.1",
+    "@turf/buffer": "^5.1.5",
+    "@turf/helpers": "^6.1.4",
     "expr-eval": "^1.2.1",
     "lodash": "^4.17.4",
     "lz-string": "^1.4.4",
