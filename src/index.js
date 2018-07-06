@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 
 import MainMenuContainer from './Component/MainMenuContainer.js';
 import MapContainer from './Component/MapContainer.js';
-import ButtonSetContainer from './Component/ButtonSetContainer.js';
 import ZoomMessageContainer from './Component/ZoomMessageContainer.js';
 
 import { Provider } from 'react-redux';
@@ -26,7 +25,6 @@ ReactDOM.render(
       <React.Fragment>
       <MapContainer /> 
       <MainMenuContainer />
-      <ButtonSetContainer />
       <ZoomMessageContainer />
       </React.Fragment>
   </Provider>,
