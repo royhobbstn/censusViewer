@@ -9,8 +9,8 @@ import { updateDataset, updateGeography, updateTheme } from '../Redux/actions.js
 
 const mapStateToProps = state => {
   return {
-    selected_attr: state.map.selected_attr,
     source_dataset: state.map.source_dataset,
+    selected_attr: state.map.selected_attr,
     source_geography: state.map.source_geography
   };
 };

@@ -2,3 +2,18 @@
 body { margin:0; padding:0; -moz-osx-font-smoothing: grayscale; -webkit-font-smoothing: antialiased;}
 
 #map { position:absolute; top:0; bottom:0; width:100%; }
+
+
+/* Semantic UI Menu */
+
+.ui.top.attached.menu {
+  background: linear-gradient(white, ghostwhite, gainsboro);
+  border-bottom: 1px solid silver;
+  border-top: none;
+}
+
+
+.ui[class*="top attached"].menu {
+  border-radius: 0;
+}
+

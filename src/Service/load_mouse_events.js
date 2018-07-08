@@ -15,8 +15,6 @@ export function loadMouseEvents(getCurrentData,
 
   const findNew = (e, center) => {
 
-    console.log('fired');
-
     updateZoomMessage(window.map.getZoom());
 
     const screenX = e ? e.originalEvent.x : false;
@@ -44,7 +42,6 @@ export function loadMouseEvents(getCurrentData,
 
   // custom event to manually trigger redraw on geo/dataset/theme change
   window.map.on('redraw', () => {
-    console.log('redraw');
     findNew();
   });
 

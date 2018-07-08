@@ -47,8 +47,6 @@ export function thunkChangeMouseover(geoid, name, coords) {
 export function thunkRemoveLayers() {
   return (dispatch, getState) => {
 
-    console.log('REMOVING LAYERS');
-
     const state = getState();
     const source_geography = state.map.source_geography;
     const source_dataset = state.map.source_dataset;
@@ -109,8 +107,6 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
       return booleanWithin(test_pt, pt_buffer);
     });
 
-    console.log({ already_processed_pole });
-
     if (already_processed_pole) {
       return;
     }
@@ -122,12 +118,6 @@ export function thunkUpdateClusters(pole, current_zoom, current_bounds) {
 
     const expression = encodeURIComponent(JSON.stringify(getExpressionFromAttr(source_dataset, attr)));
     const bounds = encodeURIComponent(JSON.stringify(current_bounds));
-
-    // draw the pole... demo only, not for live
-    window.map.getSource('point').setData({
-      "type": "Point",
-      "coordinates": [pole.lng, pole.lat]
-    });
 
     const root = 'https://34suzrhb22.execute-api.us-west-2.amazonaws.com/dev/retrieve?';
     const url = `${root}theme=${attr}&expression=${expression}&dataset=${source_dataset}&sumlev=${sumlev}&pole_lat=${pole.lat}&pole_lng=${pole.lng}&current_zoom=${current_zoom}&current_bounds=${bounds}&cluster_done_list=${cluster_done_list}`;

@@ -11,10 +11,7 @@ from '../Redux/actions.js';
 import { convertDataToStops } from '../Service/data_to_styles.js';
 
 import worker_script from '../Worker/fetch_worker.js';
-
 export const myEstWorker = new Worker(worker_script);
-
-
 
 
 // give a unique increment id number to each new layer created
@@ -35,8 +32,6 @@ myEstWorker.onmessage = (m) => {
       // Future lift this (single-line) calc to the worker.  
       // not practical with es6 commonjs interopability currently
       const values = convertDataToStops(m.data.data.data, m.data.attr, m.data.source_dataset, m.data.sumlev);
-
-
 
       const unique_geoids = Object.keys(values);
 

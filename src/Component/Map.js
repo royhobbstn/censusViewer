@@ -54,7 +54,6 @@ class Map extends Component {
 
     // redraw layer on theme / geo / dataset change
     if (this.props.source_geography !== nextProps.source_geography || this.props.source_dataset !== nextProps.source_dataset || this.props.selected_attr !== nextProps.selected_attr) {
-      console.log('geography, theme or dataset changed');
       // geography or year changed.  update source and redraw
       this.props.clearActiveLayers();
     }

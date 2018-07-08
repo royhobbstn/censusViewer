@@ -67,7 +67,6 @@ const map = (
         pole_list: []
       });
     case 'UPDATE_GEOGRAPHY':
-      console.log('updating geography');
       return Object.assign({}, state, {
         source_geography: action.geography,
         mouseover_statistic: undefined,
