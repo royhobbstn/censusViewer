@@ -3,6 +3,9 @@
 https://royhobbstn.github.io/censusViewer/
 
 
+![Census Map](img/map_capture.jpg)
+
+
 ## Background
 
 This is (at least) my 3rd take on creating a comprehensive Census / American Community Survey map.  The first was created as part of my Masters Capstone project as a student at the University of Denver (no longer online).  The 2nd version was built for the Colorado State Demography Office, and is still visible here:
