@@ -8,7 +8,7 @@
     "@turf/buffer": "^5.1.5",
     "@turf/helpers": "^6.1.4",
     "expr-eval": "^1.2.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "lz-string": "^1.4.4",
     "mapbox-gl": "1.6.0",
     "react": "^16.2.0",
