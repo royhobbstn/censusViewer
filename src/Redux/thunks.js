@@ -1,4 +1,3 @@
-/* global fetch */
 
 import { point } from '@turf/helpers';
 import buffer from '@turf/buffer';
