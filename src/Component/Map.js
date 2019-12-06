@@ -7,7 +7,6 @@ import { key } from './mapbox_api_key.js';
 import { style } from '../Config/style.js';
 import { configuration } from '../Config/configuration.js';
 
-import { formatNumber } from '../Service/utility.js';
 import { loadMapLayers } from '../Service/load_map_layers.js';
 import { loadMouseEvents } from '../Service/load_mouse_events.js';
 
@@ -59,21 +58,12 @@ class Map extends Component {
     }
 
     // update mouseover text
-    if (this.props.mouseover_statistic !== nextProps.mouseover_statistic || this.props.mouseover_label !== nextProps.mouseover_label || this.props.mouseover_moe !== nextProps.mouseover_moe || this.props.mouseover_coords !== nextProps.mouseover_coords) {
+    if (this.props.mouseover_statistic !== nextProps.mouseover_statistic || this.props.mouseover_label !== nextProps.mouseover_label || this.props.mouseover_moe !== nextProps.mouseover_moe) {
 
-      window.map.getSource('mouseover').setData({
-        "type": "FeatureCollection",
-        "features": [{
-          "type": "Feature",
-          "geometry": {
-            "type": "Point",
-            "coordinates": nextProps.mouseover_coords
-          },
-          "properties": {
-            "title": `${nextProps.mouseover_label}\n${formatNumber(nextProps.mouseover_statistic, nextProps.source_dataset, nextProps.selected_attr)}  ± ${formatNumber(nextProps.mouseover_moe, nextProps.source_dataset, nextProps.selected_attr)}`
-          }
-        }]
-      });
+      // TODO populate something with mouseover info
+
+            // "title": `${nextProps.mouseover_label}\n${formatNumber(nextProps.mouseover_statistic, nextProps.source_dataset, nextProps.selected_attr)}  ± ${formatNumber(nextProps.mouseover_moe, nextProps.source_dataset, nextProps.selected_attr)}`
+
 
     }
 

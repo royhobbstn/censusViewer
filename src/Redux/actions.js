@@ -46,11 +46,10 @@ export function changeMouseoverStatistic(data) {
   };
 }
 
-export function changeMouseoverInfo(data, coords) {
+export function changeMouseoverInfo(data) {
   return {
     type: 'UPDATE_MOUSEOVER_INFO',
-    data,
-    coords
+    data
   };
 }
 

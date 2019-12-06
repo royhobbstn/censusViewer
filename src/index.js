@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import MainMenuContainer from './Component/MainMenuContainer.js';
 import MapContainer from './Component/MapContainer.js';
 import ZoomMessageContainer from './Component/ZoomMessageContainer.js';
+import InfoContainer from './Component/InfoContainer.js';
 
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
@@ -23,7 +24,8 @@ export const store = createStore(
 ReactDOM.render(
   <Provider store={store}>
       <React.Fragment>
-      <MapContainer /> 
+      <MapContainer />
+            <InfoContainer />
       <MainMenuContainer />
       <ZoomMessageContainer />
       </React.Fragment>

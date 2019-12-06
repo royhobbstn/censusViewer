@@ -62,14 +62,17 @@ export function loadMouseEvents(getCurrentData,
 
   window.map.on('mousemove', 'tiles-polygons', throttle((e) => {
 
+    if(!(e.features && e.features[0])){
+      return;
+    }
+
     window.map.getCanvas().style.cursor = 'pointer';
     const geoid = e.features[0].properties.GEOID;
     const name = e.features[0].properties.NAME;
     const label = getLabel(geoid, name);
-    const coords = [e.lngLat.lng, e.lngLat.lat];
 
     if (geoid && label) {
-      updateMouseover(geoid, label, coords);
+      updateMouseover(geoid, label);
     }
 
   }, 132));

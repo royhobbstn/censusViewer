@@ -36,11 +36,11 @@ export function thunkClearWorkers(geoid, name) {
   };
 }
 
-export function thunkChangeMouseover(geoid, name, coords) {
+export function thunkChangeMouseover(geoid, name) {
   return (dispatch, getState) => {
     myEstWorker.postMessage({ type: 'lookup', data: geoid });
     myMoeWorker.postMessage({ type: 'lookup', data: geoid });
-    dispatch(changeMouseoverInfo(name, coords));
+    dispatch(changeMouseoverInfo(name));
   };
 }
 

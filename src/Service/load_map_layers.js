@@ -65,41 +65,6 @@ export function loadMapLayers(source_geography, source_dataset) {
     }
   }, "admin_level_3");
 
-  window.map.addSource('mouseover', {
-    "type": "geojson",
-    "data": {
-      "type": "FeatureCollection",
-      "features": [{
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [0, 0]
-        },
-        "properties": {
-          "title": ""
-        }
-      }]
-    }
-  });
-
-  window.map.addLayer({
-    "id": "points",
-    "type": "symbol",
-    "source": "mouseover",
-    "layout": {
-      "text-field": "{title}",
-      "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-      "text-size": 12,
-      "text-justify": "left",
-      "text-anchor": "bottom-left"
-    },
-    "paint": {
-      "text-halo-color": "white",
-      "text-halo-width": 3
-    }
-  });
-
-
 
   // TODO directly change style object
   // Add a filter for only US Geo

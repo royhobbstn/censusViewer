@@ -21,8 +21,7 @@ const mapStateToProps = state => {
     selected_attr: state.map.selected_attr,
     mouseover_statistic: state.map.mouseover_statistic,
     mouseover_label: state.map.mouseover_label,
-    mouseover_moe: state.map.mouseover_moe,
-    mouseover_coords: state.map.mouseover_coords
+    mouseover_moe: state.map.mouseover_moe
   };
 };
 
@@ -31,8 +30,8 @@ const mapDispatchToProps = dispatch => {
     updateClusters: (pole, current_zoom, current_bounds) => {
       dispatch(thunkUpdateClusters(pole, current_zoom, current_bounds));
     },
-    updateMouseover: (geoid, name, coords) => {
-      dispatch(thunkChangeMouseover(geoid, name, coords));
+    updateMouseover: (geoid, name) => {
+      dispatch(thunkChangeMouseover(geoid, name));
     },
     addToRequested: (urls) => {
       dispatch(addToTilesAlreadyRequested(urls));
